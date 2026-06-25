@@ -1,15 +1,15 @@
 topic_id,label,description,keywords
-1,Sistem Informasi Hukum,Topic with 22 documents,hukum;pidana;information;model;undang;perspektif;islam;kesuksesan;system;klasifikasi
-2,Kualitas Layanan dan Website,Topic with 30 documents,kualitas;webqual;layanan;model;website;perpustakaan;ipa;qual;sekolah;penerimaan
-3,Akademik & Keamanan Informasi,Topic with 26 documents,akademik;keamanan;pengguna;risiko;manajemen;octave;allegro;tingkat;kepuasan;fit
-4,Evaluasi Kepuasan Pengguna,Topic with 31 documents,model;kepuasan;pengguna;end;user;computing;satisfaction;web;eucs;mobile
-5,Usability & Keberhasilan Sistem,Topic with 26 documents,usability;model;system;kesuksesan;delone;mclean;pssuq;post;study;scale
-6,Web Service & Customer Satisfaction,Topic with 20 documents,web;service;pengguna;satisfaction;kepuasan;android;baturaja;pln;customer;akademik
-7,Analisis Sentimen & Rekomendasi,Topic with 22 documents,algoritma;sentimen;ulasan;pengguna;nearest;neighbor;growth;penjualan;naïve;transaksi
-8,Web Development & Rapid Application Development,Topic with 16 documents,web;rapid;application;development;kerja;muhammadiyah;monitoring;rad;membangun;khusus
-9,Penerimaan Pengguna & Sistem Dukungan Keputusan,Topic with 23 documents,penerimaan;model;rapid;application;development;pendukung;keputusan;kepuasan;pengguna;prediksi
-10,User Experience Evaluation,Topic with 16 documents,user;experience;questionnaire;model;ueq;website;satya;negara;kualitas;pelanggan
-11,E-commerce & Administrasi Data,Topic with 39 documents,web;penjualan;data;manajemen;administrasi;model;office;information;pondok;pesantren
-12,Extreme Programming & Pengembangan Perangkat Lunak,Topic with 22 documents,extreme;programming;manajemen;kerja;dosen;based;skripsi;publik;ilir;praktik
-13,Perencanaan Strategis & Tracer Study,Topic with 20 documents,perencanaan;strategis;tracer;study;barang;penjualan;alumni;servqual;kualitas;layanan
-14,Geographic Information Systems,Topic with 23 documents,model;technology;geografis;pemetaan;web;human;organization;fit;website;kesiapan
+1,Klasifikasi Naive Bayes,Topic with 22 documents,hukum;pidana;rad;struktur;sistematis;undang;perspektif;klasifikasi;layak;giat
+2,Analisis Kualitas Layanan,Topic with 30 documents,kualitas;webqual;evaluasi;qual;pustaka;struktur;sistematis;terima;weighting;additive
+3,Sistem Informasi Akademik,Topic with 26 documents,akademik;aman;ukur;komunikasi;allegro;octave;security;indeks;task;risiko
+4,Sistem Monitoring,Topic with 31 documents,puas;evaluasi;mobile;sistematis;struktur;prototype;komunikasi;use;commerce;startup
+5,Evaluasi Sistem DeLone & McLean,Topic with 26 documents,usability;delone;mclean;sukses;scale;pssuq;technique;post;attribute;multi
+6,Sistem Informasi Akademik,Topic with 20 documents,customer;sistematis;struktur;service;baturaja;puas;index;android;akademik;pln
+7,K-Nearest Neighbor (KNN),Topic with 22 documents,algoritma;sentimen;ulas;nearest;neighbor;evaluasi;transaksi;pola;machine;risiko
+8,Support Vector Machine (SVM),Topic with 16 documents,komunikasi;struktur;sistematis;latih;support;vector;khusus;monitoring;rad;blk
+9,Prediksi & Forecasting,Topic with 23 documents,terima;tam;didik;linear;regresi;pilih;prediksi;puas;moora;syariah
+10,Analisis Kualitas Layanan,Topic with 16 documents,experience;questionnaire;stia;evaluasi;langgan;ueq;satya;negara;rup;lilin
+11,Sistem Manajemen Arsip,Topic with 39 documents,sistematis;struktur;jual;office;arsip;komunikasi;motor;administrasi;sales;hubung
+12,Asuransi Customer Relationship Nikah,Topic with 22 documents,programming;extreme;asuransi;customer;relationship;nikah;praktik;lapang;bumiputera;desain
+13,Analisis Kualitas Layanan (ServQual),Topic with 20 documents,servqual;sistematis;struktur;kualitas;tracer;strategis;rencana;barang;alumni;ward
+14,Sistem Manajemen Surat,Topic with 23 documents,evaluasi;sistematis;struktur;geografis;surat;meta;tool;kesiap;balanced;scorecard
