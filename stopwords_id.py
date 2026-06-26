@@ -12,9 +12,23 @@ CUSTOM_STOPWORDS_SI = {
     "hasil", "data", "analisis", "berdasarkan", "tujuan",
     "dilakukan", "dapat", "dalam", "untuk", "dengan",
     "pada", "yang", "ini", "adalah", "sebagai",
-    "studi", "kasus", "pengembangan", "implementasi", "rancang",
+    "studi", "kasus", "pengembangan", "rancang",
     "bangun", "berbasis", "menghasilkan", "digunakan", "dihasilkan",
-    "proses", "teknik", "pendekatan", "output", "input",
+    "output", "input",
+
+    # Boilerplate template abstrak (muncul di >90% dokumen, tidak membedakan topik)
+    "urgensi", "dasar", "tingkat", "efisiensi", "akurasi", "performa",
+    "tata", "kelola", "operasional", "kait", "laksana", "metodologi",
+    "terap", "ancang", "struktur", "sistematis", "cakup", "tahap",
+    "utama", "butuh", "fungsional", "non", "kumpul", "primer", "sekunder",
+    "arsitektur", "fungsionalitas", "black", "box", "bebas", "kendala",
+    "teknis", "harap", "kontribusi", "nyata", "dokumen", "rekomendasi",
+    "analitis", "solutif", "civitas", "manfaat", "instrumen", "dukung",
+    "putus", "optimal", "publik", "internal", "organisasi", "fokus",
+    "topik", "kerja", "institut", "instansi", "tahapan",
+    "kinerja", "guna", "pihak", "terkait", "luaran", "berkelanjutan",
+    "diawali", "fase", "pula", "serta", "bersifat", "berjalan",
+    "sasaran", "berupa", "akhirnya", "berkaitan", "setelah", "sambil",
     "bahwa", "telah", "akan", "dari", "atau",
     "oleh", "juga", "sehingga", "secara", "lebih",
     "sangat", "tidak", "ada", "hal", "cara",
@@ -25,11 +39,9 @@ CUSTOM_STOPWORDS_SI = {
     "studi", "mahasiswa", "skripsi", "tugas", "akhir",
     "dosen", "pembimbing", "penguji",
 
-    # Kata teknis generik SI yang tidak membedakan topik
-    "database", "aplikasi", "website", "web", "user",
-    "pengguna", "interface", "fitur", "fungsi", "modul",
-    "testing", "pengujian", "blackbox", "whitebox",
-    "waterfall", "sdlc", "erd", "uml", "dfd",
+    # Kata teknis SI yang terlalu generik (tetap di-stopword)
+    "aplikasi", "website", "web", "user",
+    "pengguna",
 
     # ── KELOMPOK BARU 4: Entitas Lokal / Objek Studi Kasus (Noise) ──
     "sakit", "rumah", "toko", "agama", "sungai", "pondok", 
@@ -48,16 +60,13 @@ CUSTOM_STOPWORDS_SI = {
     "out", "off", "over", "under", "then", "than", "so", "but",
     "or", "if", "while", "although", "because", "since", "until",
 
-    # Kata Inggris teknis generik yang muncul di hampir semua abstrak SI
-    # tapi tidak membedakan topik
-    "information", "system", "model", "method", "using", "based",
-    "development", "application", "result", "analysis", "approach",
-    "process", "management", "design", "study", "case", "research",
-    "performance", "quality", "evaluation", "implementation",
-    "framework", "testing", "user", "data", "technology", "fit",
-    "human", "organization", "simple", "rapid", "unified", "rational",
-    "growth", "importance", "acceptance", "computing", "end",
-    "satisfaction", "process", "function", "feature", "module",
+    # Kata Inggris generik (hanya yang benar-benar tidak membedakan topik)
+    "information", "system", "method", "using", "based",
+    "application", "result", "approach",
+    "study", "case", "data",
+    "fit", "human", "organization",
+    "growth", "importance",
+    "process", "function", "feature", "module",
 
     # ── KELOMPOK BARU 2: Nama Lokasi & Institusi Lokal ──
     # Nama geografis dan institusi yang tidak bermakna sebagai topik SI
@@ -74,10 +83,10 @@ CUSTOM_STOPWORDS_SI = {
     # ── KELOMPOK BARU 3: Akronim & Kode Tidak Bermakna ──
     # Akronim yang terlalu spesifik dan membingungkan KeyBERT
     "eucs", "iso", "ipa", "hot", "mus", "iii", "ii", "iv",
-    "vi", "vii", "viii", "ix", "xi", "xii", "spk", "dss",
-    "erp", "crm", "scm", "pos", "lan", "wan", "vpn", "http",
+    "vi", "vii", "viii", "ix", "xi", "xii",
+    "pos", "lan", "wan", "vpn", "http",
     "https", "api", "sql", "php", "css", "html", "xml", "json",
-    "ram", "cpu", "gpu", "os", "pc", "it", "ict", "ai", "ml",
+    "ram", "cpu", "gpu", "os", "pc", "it", "ict",
 }
 
 def get_all_stopwords():

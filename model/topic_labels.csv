@@ -1,15 +1,6 @@
 topic_id,label,description,keywords
-1,Klasifikasi Naive Bayes,Topic with 22 documents,hukum;pidana;rad;struktur;sistematis;undang;perspektif;klasifikasi;layak;giat
-2,Analisis Kualitas Layanan,Topic with 30 documents,kualitas;webqual;evaluasi;qual;pustaka;struktur;sistematis;terima;weighting;additive
-3,Sistem Informasi Akademik,Topic with 26 documents,akademik;aman;ukur;komunikasi;allegro;octave;security;indeks;task;risiko
-4,Sistem Monitoring,Topic with 31 documents,puas;evaluasi;mobile;sistematis;struktur;prototype;komunikasi;use;commerce;startup
-5,Evaluasi Sistem DeLone & McLean,Topic with 26 documents,usability;delone;mclean;sukses;scale;pssuq;technique;post;attribute;multi
-6,Sistem Informasi Akademik,Topic with 20 documents,customer;sistematis;struktur;service;baturaja;puas;index;android;akademik;pln
-7,K-Nearest Neighbor (KNN),Topic with 22 documents,algoritma;sentimen;ulas;nearest;neighbor;evaluasi;transaksi;pola;machine;risiko
-8,Support Vector Machine (SVM),Topic with 16 documents,komunikasi;struktur;sistematis;latih;support;vector;khusus;monitoring;rad;blk
-9,Prediksi & Forecasting,Topic with 23 documents,terima;tam;didik;linear;regresi;pilih;prediksi;puas;moora;syariah
-10,Analisis Kualitas Layanan,Topic with 16 documents,experience;questionnaire;stia;evaluasi;langgan;ueq;satya;negara;rup;lilin
-11,Sistem Manajemen Arsip,Topic with 39 documents,sistematis;struktur;jual;office;arsip;komunikasi;motor;administrasi;sales;hubung
-12,Asuransi Customer Relationship Nikah,Topic with 22 documents,programming;extreme;asuransi;customer;relationship;nikah;praktik;lapang;bumiputera;desain
-13,Analisis Kualitas Layanan (ServQual),Topic with 20 documents,servqual;sistematis;struktur;kualitas;tracer;strategis;rencana;barang;alumni;ward
-14,Sistem Manajemen Surat,Topic with 23 documents,evaluasi;sistematis;struktur;geografis;surat;meta;tool;kesiap;balanced;scorecard
+1,Analisis Kualitas Layanan,Topic with 60 documents,variabel;kualitas;puas;nilai;model;pengaruh;satisfaction;mobile;layan;quality
+2,Sistem Informasi Penjualan,Topic with 39 documents,jual;algoritma;barang;proses;nilai;beli;lapor;transaksi;uji;sedia
+3,Analisis Sentimen,Topic with 62 documents,model;pengaruh;quality;puas;risiko;layan;kualitas;nilai;satisfaction;variabel
+4,Evaluasi Usabilitas Sistem,Topic with 54 documents,usability;research;results;development;not;which;nthe;users;one;nkeywords
+5,Extreme Programming (XP),Topic with 96 documents,layan;proses;nilai;akademik;manajemen;kualitas;bantu;mudah;terima;tuju

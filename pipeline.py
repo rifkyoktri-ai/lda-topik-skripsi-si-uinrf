@@ -69,48 +69,45 @@ def main():
             pickle.dump(corpus, f)
         print(f"  Dictionary : {len(dictionary)} kata unik")
 
-    print("\n[3/5] Training model LDA final (K=14, langsung)...")
-    OPTIMAL_K = 14
-    ALPHA     = 'auto'
-    BETA      = 'auto'
-    PASSES    = 20
+    print("\n[3/5] Auto-tune K (4-12)...")
+    K_RANGE = range(4, 13)
+    coherence_scores = []
+    models = {}
 
-    print(f"  K       : {OPTIMAL_K}")
-    print(f"  Alpha   : {ALPHA}")
-    print(f"  Beta    : {BETA}")
-    print(f"  Passes  : {PASSES}")
+    for k in K_RANGE:
+        print(f"  Training K={k}...", end=' ')
+        model = LdaModel(
+            corpus=corpus,
+            id2word=dictionary,
+            num_topics=k,
+            alpha='auto',
+            eta='auto',
+            passes=20,
+            iterations=400,
+            random_state=42,
+            per_word_topics=True
+        )
+        cm = CoherenceModel(
+            model=model,
+            texts=tokenized_docs,
+            dictionary=dictionary,
+            coherence='c_v',
+            processes=1
+        )
+        cv = cm.get_coherence()
+        models[k] = model
+        coherence_scores.append((k, cv))
+        print(f"coherence={cv:.4f}")
 
-    lda_model = LdaModel(
-        corpus=corpus,
-        id2word=dictionary,
-        num_topics=OPTIMAL_K,
-        alpha=ALPHA,
-        eta=BETA,
-        passes=PASSES,
-        random_state=42,
-        per_word_topics=True
-    )
+    # Pick best K
+    coherence_scores.sort(key=lambda x: -x[1])
+    OPTIMAL_K, coherence_final = coherence_scores[0]
+    print(f"\n  K optimal: {OPTIMAL_K} (coherence={coherence_final:.4f})")
 
-    print("\n  Evaluasi model final...")
-    coherence_model = CoherenceModel(
-        model=lda_model,
-        texts=tokenized_docs,
-        dictionary=dictionary,
-        coherence='c_v',
-        processes=1
-    )
-    coherence_final = coherence_model.get_coherence()
+    lda_model = models[OPTIMAL_K]
     perplexity_final = lda_model.log_perplexity(corpus)
 
-    print(f"  Coherence (CV)  : {coherence_final:.4f}")
-    print(f"  Log Perplexity : {perplexity_final:.4f}")
-
-    print("\nTop 10 kata per topik:")
-    print("=" * 60)
-    for i in range(OPTIMAL_K):
-        top_words = lda_model.show_topic(i, topn=10)
-        words = ' | '.join([f'{w} ({p:.3f})' for w, p in top_words])
-        print(f"Topik {i+1:2d}: {words}")
+    print(f"\nTop 10 kata per topik (K={OPTIMAL_K}):")
     print("=" * 60)
 
     n_cols = 3
@@ -142,7 +139,8 @@ def main():
     print("\n[4/5] Menentukan topik dominan & KeyBERT labeling...")
 
     topic_df = get_dominant_topic(lda_model, corpus)
-    df_result = pd.concat([df[['Nama', 'Judul', 'Tahun']].reset_index(drop=True), topic_df], axis=1)
+    df_result = pd.concat([df[['Judul', 'Tahun']].reset_index(drop=True), topic_df], axis=1)
+    df_result.insert(0, 'Nama', '')  # dummy column for dashboard compatibility
 
     topic_counts = df_result['topik_dominan'].value_counts().sort_index()
 
@@ -184,7 +182,11 @@ def main():
     print(f"  Plot tren tahunan -> {MODEL_DIR}/tren_topik_per_tahun.png")
 
     all_stopwords = get_all_stopwords()
-    topic_labels = label_topics_with_keybert(lda_model, all_stopwords)
+    topic_labels = label_topics_with_keybert(
+        lda_model, all_stopwords,
+        df_result=df_result,
+        text_column='Judul'
+    )
 
     labels_rows = []
     for tid_str, info in topic_labels.items():

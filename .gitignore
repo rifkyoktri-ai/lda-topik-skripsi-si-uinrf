@@ -1,2 +1,15 @@
 .venv
 data/raw/
+__pycache__/
+*.pyc
+*.gensim
+*.gensim.*
+corpus.pkl
+# temporary scripts
+check_*.py
+find_*.py
+gen_*.py
+script_*.js
+console_*.js
+scrape_repo.py
+test_uc.py
