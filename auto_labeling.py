@@ -105,7 +105,9 @@ LABEL_MAPPING = {
     "marketplace"                     : "E-Commerce & Marketplace",
     "hukum"                           : "Sistem Informasi Hukum",
     "syariah"                         : "Sistem Informasi Keuangan Syariah",
-    # "akademik", "keuangan" dihapus: terlalu generik
+    "akademik"                        : "Sistem Informasi Akademik",
+    "keuangan"                        : "Sistem Informasi Keuangan",
+    "risiko"                          : "Manajemen Risiko",
     "jaringan"                        : "Jaringan Komputer",
 }
 
