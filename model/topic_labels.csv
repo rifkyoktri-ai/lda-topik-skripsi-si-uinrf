@@ -1,6 +1,6 @@
-topic_id,label,description,keywords
-1,Analisis Kualitas Layanan,Topic with 60 documents,variabel;kualitas;puas;nilai;model;pengaruh;satisfaction;mobile;layan;quality
-2,Sistem Informasi Penjualan,Topic with 39 documents,jual;algoritma;barang;proses;nilai;beli;lapor;transaksi;uji;sedia
-3,Analisis Sentimen,Topic with 62 documents,model;pengaruh;quality;puas;risiko;layan;kualitas;nilai;satisfaction;variabel
-4,Evaluasi Usabilitas Sistem,Topic with 54 documents,usability;research;results;development;not;which;nthe;users;one;nkeywords
-5,Extreme Programming (XP),Topic with 96 documents,layan;proses;nilai;akademik;manajemen;kualitas;bantu;mudah;terima;tuju
+topic_id,label,description,keywords,label_score,quality_coherence
+1,Sistem Informasi Akademik,Topic with 60 documents,variabel;kualitas;puas;nilai;model,0.803,
+2,Prediksi & Forecasting,Topic with 39 documents,jual;algoritma;barang;proses;nilai,0.7659,
+3,Analisis Sentimen,Topic with 62 documents,model;pengaruh;quality;puas;risiko,0.852,
+4,Evaluasi Usabilitas Sistem,Topic with 54 documents,usability;research;results;development;not,0.6337,
+5,Extreme Programming (XP),Topic with 96 documents,layan;proses;kelola;nilai;akademik,0.7784,

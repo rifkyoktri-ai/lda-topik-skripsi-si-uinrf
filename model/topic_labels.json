@@ -1,0 +1,147 @@
+{
+    "0": {
+        "label_auto": "nilai pengaruh satisfaction mobile",
+        "score": 0.803,
+        "top_words": [
+            "variabel",
+            "kualitas",
+            "puas",
+            "nilai",
+            "model",
+            "pengaruh",
+            "satisfaction",
+            "mobile",
+            "layan",
+            "quality"
+        ],
+        "top_words_filtered": [
+            "variabel",
+            "kualitas",
+            "puas",
+            "nilai",
+            "pengaruh",
+            "satisfaction",
+            "mobile",
+            "layan",
+            "quality",
+            "akademik"
+        ],
+        "label_final": "Sistem Informasi Akademik"
+    },
+    "1": {
+        "label_auto": "jual algoritma barang nilai",
+        "score": 0.7659,
+        "top_words": [
+            "jual",
+            "algoritma",
+            "barang",
+            "proses",
+            "nilai",
+            "beli",
+            "lapor",
+            "transaksi",
+            "kelola",
+            "uji"
+        ],
+        "top_words_filtered": [
+            "jual",
+            "algoritma",
+            "barang",
+            "nilai",
+            "beli",
+            "lapor",
+            "transaksi",
+            "sedia",
+            "produk",
+            "salah"
+        ],
+        "label_final": "Prediksi & Forecasting"
+    },
+    "2": {
+        "label_auto": "pengaruh quality puas risiko",
+        "score": 0.852,
+        "top_words": [
+            "model",
+            "pengaruh",
+            "quality",
+            "puas",
+            "risiko",
+            "layan",
+            "kualitas",
+            "guna",
+            "nilai",
+            "satisfaction"
+        ],
+        "top_words_filtered": [
+            "pengaruh",
+            "quality",
+            "puas",
+            "risiko",
+            "layan",
+            "kualitas",
+            "nilai",
+            "satisfaction",
+            "variabel",
+            "sentimen"
+        ],
+        "label_final": "Analisis Sentimen"
+    },
+    "3": {
+        "label_auto": "konseling academic management students",
+        "score": 0.6337,
+        "top_words": [
+            "usability",
+            "research",
+            "results",
+            "development",
+            "not",
+            "which",
+            "nthe",
+            "users",
+            "one",
+            "nkeywords"
+        ],
+        "top_words_filtered": [
+            "usability",
+            "results",
+            "not",
+            "which",
+            "nthe",
+            "users",
+            "one",
+            "nkeywords",
+            "making",
+            "konseling"
+        ],
+        "label_final": "Evaluasi Usabilitas Sistem"
+    },
+    "4": {
+        "label_auto": "akademik manajemen kualitas bantu",
+        "score": 0.7784,
+        "top_words": [
+            "layan",
+            "proses",
+            "kelola",
+            "nilai",
+            "akademik",
+            "manajemen",
+            "tingkat",
+            "kualitas",
+            "bantu",
+            "mudah"
+        ],
+        "top_words_filtered": [
+            "layan",
+            "nilai",
+            "akademik",
+            "manajemen",
+            "kualitas",
+            "bantu",
+            "mudah",
+            "terima",
+            "tuju",
+            "kembang"
+        ],
+        "label_final": "Extreme Programming (XP)"
+    }
+}

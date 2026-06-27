@@ -178,6 +178,15 @@ def plot_topic_trend(df_result: pd.DataFrame):
     plt.close()
     logger.info(f"  Plot tren tahunan -> {MODEL_DIR}/tren_topik_per_tahun.png")
 
+    # Save raw counts as CSV (topic proportion per year)
+    pivot.to_csv(f'{MODEL_DIR}/topic_trend_counts.csv')
+    # Save normalized (proportion) as topic_trend.csv
+    pivot_normalized = pivot.div(pivot.sum(axis=1), axis=0)
+    pivot_normalized.reset_index().to_csv(
+        f'{MODEL_DIR}/topic_trend.csv', index=False, encoding='utf-8-sig'
+    )
+    logger.info(f"  Trend data (proportion) -> {MODEL_DIR}/topic_trend.csv")
+
 
 def main():
     parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling')

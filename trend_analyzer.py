@@ -53,7 +53,7 @@ def analyze_topic_trends(
 
     for col in topic_cols:
         try:
-            topic_id = int(''.join(filter(str.isdigit, col)))
+            topic_id = int(''.join(filter(str.isdigit, col))) - 1
         except:
             topic_id = topic_cols.index(col)
 

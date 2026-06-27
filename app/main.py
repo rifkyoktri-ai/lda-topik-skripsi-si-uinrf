@@ -197,7 +197,7 @@ if page == "📈 Overview":
             color_continuous_scale='Viridis'
         )
         fig.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         st.subheader("Distribusi Probabilitas Topik Dominan")
@@ -209,7 +209,7 @@ if page == "📈 Overview":
             color_discrete_sequence=['#636EFA']
         )
         fig.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
     st.markdown("---")
     
@@ -224,7 +224,7 @@ if page == "📈 Overview":
         markers=True
     )
     fig.update_layout(height=400, hovermode='x unified')
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, use_container_width=True)
 
 
 # PAGE 2: VISUALISASI LDA
@@ -288,7 +288,7 @@ elif page == "🔵 Visualisasi LDA":
     )
     fig_bubble.update_traces(marker=dict(line=dict(width=2, color='white')))
     
-    st.plotly_chart(fig_bubble, width='stretch')
+    st.plotly_chart(fig_bubble, use_container_width=True)
     
     st.markdown("---")
     
@@ -300,7 +300,7 @@ elif page == "🔵 Visualisasi LDA":
         display_table = topic_stats[['topic_id', 'label', 'doc_count', 'avg_prob', 'year_min', 'year_max']].copy()
         display_table.columns = ['Topic ID', 'Label', 'Documents', 'Avg Probability', 'First Year', 'Last Year']
         display_table = display_table.sort_values('Documents', ascending=False)
-        st.dataframe(display_table, width='stretch', hide_index=True)
+        st.dataframe(display_table, use_container_width=True)
     
     with col2:
         st.subheader("📈 Summary")
@@ -380,7 +380,7 @@ elif page == "📊 Model Metrics":
     st.markdown("---")
     
     st.subheader("📋 Detailed Metrics Table")
-    st.dataframe(metrics_df, width='stretch', hide_index=True)
+    st.dataframe(metrics_df, use_container_width=True)
     
     st.markdown("---")
     
@@ -424,7 +424,7 @@ elif page == "🏷️ Topic Analysis":
             color_continuous_scale='Blues'
         )
         fig.update_layout(height=400, showlegend=False, yaxis={'categoryorder':'total ascending'})
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         st.subheader("Quick Stats")
@@ -457,7 +457,7 @@ elif page == "🏷️ Topic Analysis":
             fig_q.add_hline(y=0.4, line_dash="dash", line_color="red",
                           annotation_text="Threshold (0.4)")
             fig_q.update_layout(height=400)
-            st.plotly_chart(fig_q, width='stretch')
+            st.plotly_chart(fig_q, use_container_width=True)
 
         with col_b:
             st.metric("Rata-rata Quality", f"{quality_df['quality_coherence'].mean():.3f}")
@@ -470,7 +470,7 @@ elif page == "🏷️ Topic Analysis":
 
         st.markdown("---")
         with st.expander("📋 Detail Tabel Kualitas Label"):
-            st.dataframe(quality_df, width='stretch', hide_index=True)
+            st.dataframe(quality_df, use_container_width=True)
     else:
         st.info("Data kualitas label belum tersedia. Jalankan pipeline ulang dengan `--label-method tfidf` untuk mendapatkannya.")
 
@@ -495,7 +495,7 @@ elif page == "🏷️ Topic Analysis":
         color_continuous_scale='Greens'
     )
     fig.update_layout(height=400, showlegend=False)
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, use_container_width=True)
     
     st.markdown("---")
     
@@ -546,7 +546,7 @@ elif page == "🏷️ Topic Analysis":
         # Display data with error handling
         if len(topic_docs) > 0:
             display_df = topic_docs[['Nama', 'Judul', 'Tahun', 'prob_dominan']].head(15).reset_index(drop=True)
-            st.dataframe(display_df, width='stretch')
+            st.dataframe(display_df, use_container_width=True)
         else:
             st.info("No documents found for this topic.")
             
@@ -649,7 +649,7 @@ elif page == "📖 Data Info":
     st.markdown("---")
     
     st.subheader("📋 Raw Data Preview")
-    st.dataframe(topic_dist_df.head(20), width='stretch', hide_index=True)
+    st.dataframe(topic_dist_df.head(20), use_container_width=True)
     
     st.markdown("---")
     
@@ -727,7 +727,7 @@ elif page == "📈 Prediksi Tren":
             hovermode='x unified',
             legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("---")
 
@@ -738,7 +738,7 @@ elif page == "📈 Prediksi Tren":
         display_df['2026'] = display_df['2026'].apply(lambda x: f"{x:.2f}%")
         display_df['2027'] = display_df['2027'].apply(lambda x: f"{x:.2f}%")
         display_df.columns = ['Label Topik', 'R²', 'Linearitas', '2026 (%)', '2027 (%)', 'Arah Tren']
-        st.dataframe(display_df, width='stretch', hide_index=True)
+        st.dataframe(display_df, use_container_width=True)
 
         st.markdown("---")
 
@@ -751,7 +751,7 @@ elif page == "📈 Prediksi Tren":
 
         # ── Detail per topik ──
         with st.expander("📋 Detail Semua Topik"):
-            st.dataframe(trend_df, width='stretch', hide_index=True)
+            st.dataframe(trend_df, use_container_width=True)
 
     else:
         st.info("Data prediksi tren belum tersedia.")
@@ -759,7 +759,7 @@ elif page == "📈 Prediksi Tren":
 
         if topic_trend_df is not None:
             st.subheader("Data Historis Tersedia (topic_trend.csv)")
-            st.dataframe(topic_trend_df, width='stretch', hide_index=True)
+            st.dataframe(topic_trend_df, use_container_width=True)
         else:
             st.warning("Data historis topik per tahun (`model/topic_trend.csv`) juga belum tersedia.")
             st.write("Jalankan pipeline utama terlebih dahulu.")
@@ -910,7 +910,7 @@ elif page == "⚙️ Manage Labels":
     st.markdown("---")
     
     st.subheader("📋 Preview Semua Label")
-    st.dataframe(st.session_state.labels_edited, width='stretch', hide_index=True)
+    st.dataframe(st.session_state.labels_edited, use_container_width=True)
 
 # Footer
 st.markdown("---")
