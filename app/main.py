@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import json
@@ -284,7 +285,7 @@ def load_topic_trend():
 def display_html(html_content):
     """Display HTML content safely"""
     try:
-        st.html(html_content)
+        components.v1.html(html_content, height=900, scrolling=True)
     except Exception as e:
         st.error(f"Error: {e}")
         st.write("💡 Untuk melihat visualisasi, silakan buka file HTML langsung: `model/lda_visualization.html`")
@@ -469,8 +470,7 @@ elif page == "🔵 Visualisasi LDA":
         section_header("📍 PyLDAvis Interactive Visualization")
         st.caption("Klik pada topik untuk melihat top terms")
         try:
-            with st.container(height=900):
-                st.html(lda_viz_html)
+            components.v1.html(lda_viz_html, height=900, scrolling=True)
         except Exception as e:
             st.info("💡 Buka file `model/lda_visualization.html` untuk visualisasi PyLDAvis interaktif.")
             with st.expander("📚 Tentang PyLDAvis"):
