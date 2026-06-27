@@ -1,6 +1,8 @@
 ﻿topic_id,Label,R2,Metode,Arah,2021,2022,2023,2024,2025,2026,2027,Linearitas
-0,Sistem Informasi Perpustakaan & Digital Library,0.0124,Weighted Moving Average,Meningkat,12.9,7.87,10.42,19.61,8.7,12.12,12.19,Tidak Linier
-1,Evaluasi Usabilitas Sistem,0.2361,Weighted Moving Average,Meningkat,12.9,23.6,18.75,15.69,7.61,14.48,14.06,Tidak Linier
-2,Sistem Informasi Akademik,0.0068,Weighted Moving Average,Meningkat,29.03,23.6,20.83,33.33,22.83,25.75,25.69,Tidak Linier
-3,Klasifikasi & Data Mining,0.458,Weighted Moving Average,Menurun,6.45,19.1,12.5,11.76,27.17,17.67,18.43,Tidak Linier
-4,Extreme Programming (XP),0.0997,Weighted Moving Average,Menurun,38.71,25.84,37.5,19.61,33.7,29.99,29.63,Tidak Linier
+0,Systems Technology Siswa Satisfaction,0.0045,Weighted Moving Average,Meningkat,9.68,7.87,8.33,15.69,6.52,9.72,9.75,Tidak Linier
+1,Quality Which Making Cpo,0.148,Weighted Moving Average,Meningkat,9.68,15.73,8.33,15.69,3.26,9.68,9.39,Tidak Linier
+2,Akademik Terima Quality Technology,0.447,Weighted Moving Average,Stabil,25.81,22.47,12.5,17.65,17.39,17.72,17.24,Tidak Linier
+3,Sistem Manajemen Surat,0.7357,Weighted Moving Average,Stabil,6.45,10.11,10.42,13.73,11.96,11.51,11.83,Cukup Linier
+4,Extreme Programming (XP),0.3134,Weighted Moving Average,Menurun,35.48,16.85,25.0,5.88,21.74,18.43,17.57,Tidak Linier
+5,Analisis Kualitas Website (WebQual),0.959,Weighted Moving Average,Menurun,9.68,10.11,14.58,17.65,21.74,16.86,17.57,Sangat Linier
+6,Klasifikasi & Data Mining,0.3496,Weighted Moving Average,Menurun,3.23,16.85,20.83,13.73,17.39,16.09,16.65,Tidak Linier

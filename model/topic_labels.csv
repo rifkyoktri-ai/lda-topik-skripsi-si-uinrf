@@ -1,6 +1,8 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Sistem Informasi Perpustakaan & Digital Library,Topic with 34 documents,bina;satisfaction;pustaka;support;systems,0.5971,0.4482
-2,Evaluasi Usabilitas Sistem,Topic with 49 documents,risiko;level;results;quality;not,0.6383,0.3322
-3,Sistem Informasi Akademik,Topic with 78 documents,variabel;puas;layan;kualitas;pengaruh,0.7583,0.5108
-4,Klasifikasi & Data Mining,Topic with 56 documents,nilai;kualitas;usability;layan;quality,0.7733,0.3795
-5,Extreme Programming (XP),Topic with 94 documents,kelola;bantu;mudah;manajemen;programming,0.6927,0.5772
+1,Systems Technology Siswa Satisfaction,Topic with 28 documents,bina;mobile;warga;learning;terap,0.7273,0.4147
+2,Quality Which Making Cpo,Topic with 32 documents,risiko;results;not;quality;which,0.6337,0.4796
+3,Akademik Terima Quality Technology,Topic with 59 documents,puas;layan;kualitas;variabel;pengaruh,0.7256,0.5353
+4,Sistem Manajemen Surat,Topic with 34 documents,usability;nilai;layan;quality;milik,0.7109,0.3832
+5,Extreme Programming (XP),Topic with 61 documents,kelola;mudah;terima;bantu;barang,0.6768,0.56
+6,Analisis Kualitas Website (WebQual),Topic with 48 documents,kualitas;layan;variabel;puas;nilai,0.8325,0.4587
+7,Klasifikasi & Data Mining,Topic with 49 documents,nilai;algoritma;layan;sentimen;aman,0.7685,0.3599

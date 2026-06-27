@@ -8,6 +8,7 @@ import json
 import warnings
 import sys
 from pathlib import Path
+from collections import Counter
 import numpy as np
 warnings.filterwarnings('ignore')
 
@@ -29,7 +30,7 @@ LABEL_MAPPING = {
     "kepuasan pengguna"               : "Analisis Kepuasan Pengguna",
     "kepuasan"                        : "Analisis Kepuasan Pengguna",
     "kualitas layanan"                : "Analisis Kualitas Layanan",
-    "usability"                       : "Evaluasi Usabilitas Sistem",
+    # "usability" dihapus: terlalu generik, menyebabkan false positive duplikat
 
     # Machine Learning & Data Mining
     "k-nearest neighbor"              : "K-Nearest Neighbor (KNN)",
@@ -56,8 +57,7 @@ LABEL_MAPPING = {
     "rapid application"               : "Rapid Application Development (RAD)",
     "prototyping"                     : "Metode Prototyping",
     "agile scrum"                     : "Agile Scrum",
-    "bangun"                          : "Pengembangan Sistem Informasi",
-    "mudah"                           : "Pengembangan Sistem Informasi",
+    # "bangun", "mudah" dihapus: terlalu generik
 
     # Sistem Pendukung Keputusan
     "sistem pendukung keputusan"      : "Sistem Pendukung Keputusan (SPK)",
@@ -83,7 +83,7 @@ LABEL_MAPPING = {
     "persediaan"                      : "Sistem Manajemen Inventori",
     "penjualan"                       : "Sistem Informasi Penjualan",
     "kepegawaian"                     : "Sistem Informasi Kepegawaian",
-    "pegawai"                         : "Sistem Informasi Kepegawaian",
+    # "pegawai" dihapus: terlalu generik
     "surat"                           : "Sistem Manajemen Surat",
     "arsip"                           : "Sistem Manajemen Arsip",
     "monitoring"                      : "Sistem Monitoring & Evaluasi",
@@ -99,14 +99,13 @@ LABEL_MAPPING = {
     "internet of things"              : "Internet of Things (IoT)",
     "geographic information"          : "Geographic Information System (GIS)",
     "android"                         : "Pengembangan Aplikasi Android",
-    "mobile"                          : "Aplikasi Mobile",
+    # "mobile" dihapus: terlalu generik, false positive
     "e-commerce"                      : "E-Commerce & Transaksi Online",
     "ecommerce"                       : "E-Commerce & Transaksi Online",
     "marketplace"                     : "E-Commerce & Marketplace",
     "hukum"                           : "Sistem Informasi Hukum",
     "syariah"                         : "Sistem Informasi Keuangan Syariah",
-    "akademik"                        : "Sistem Informasi Akademik",
-    "keuangan"                        : "Sistem Informasi Keuangan",
+    # "akademik", "keuangan" dihapus: terlalu generik
     "jaringan"                        : "Jaringan Komputer",
 }
 
@@ -118,6 +117,21 @@ def apply_label_mapping(label_auto: str, top_words: list) -> str:
         if pattern.lower() in search_text:
             return LABEL_MAPPING[pattern]
     return label_auto.strip().title()
+
+
+def deduplicate_labels(topic_labels: dict) -> dict:
+    labels = [v["label_final"] for v in topic_labels.values()]
+    if len(labels) == len(set(labels)):
+        return topic_labels
+    counts = Counter(labels)
+    seen = {}
+    for tid in list(topic_labels.keys()):
+        label = topic_labels[tid]["label_final"]
+        if counts[label] > 1:
+            seen[label] = seen.get(label, 0) + 1
+            words = " ".join(topic_labels[tid]["top_words_filtered"][:3])
+            topic_labels[tid]["label_final"] = f"{label} ({words})"
+    return topic_labels
 
 
 def label_topics_keybert(lda_model, all_stopwords: set) -> dict:
@@ -208,10 +222,12 @@ def label_topics_keybert(lda_model, all_stopwords: set) -> dict:
             "label_final"       : label_final
         }
 
+    topic_labels = deduplicate_labels(topic_labels)
     return topic_labels
 
 
 def save_topic_labels(topic_labels: dict, output_dir: str = "model") -> None:
+    topic_labels = deduplicate_labels(topic_labels)
     output_path = Path(output_dir) / "topic_labels.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w', encoding='utf-8') as f:
