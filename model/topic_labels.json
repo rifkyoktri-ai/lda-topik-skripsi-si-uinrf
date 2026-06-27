@@ -26,7 +26,8 @@
             "pola",
             "minimum"
         ],
-        "label_final": "Nkeywords Strategic Rencana Academic"
+        "label_final": "Nkeywords Strategic Rencana Academic",
+        "quality_coherence": 0.4482
     },
     "1": {
         "label_auto": "risiko level results quality",
@@ -55,7 +56,8 @@
             "users",
             "aman"
         ],
-        "label_final": "Evaluasi Usabilitas Sistem"
+        "label_final": "Evaluasi Usabilitas Sistem",
+        "quality_coherence": 0.3322
     },
     "2": {
         "label_auto": "sukses quality mobile",
@@ -84,7 +86,8 @@
             "terima",
             "sukses"
         ],
-        "label_final": "Sistem Informasi Akademik"
+        "label_final": "Sistem Informasi Akademik",
+        "quality_coherence": 0.5108
     },
     "3": {
         "label_auto": "evaluasi service webqual siswa",
@@ -113,7 +116,8 @@
             "algoritma",
             "kategori"
         ],
-        "label_final": "Klasifikasi & Data Mining"
+        "label_final": "Klasifikasi & Data Mining",
+        "quality_coherence": 0.3795
     },
     "4": {
         "label_auto": "manajemen programming extreme jual",
@@ -142,6 +146,7 @@
             "salah",
             "terima"
         ],
-        "label_final": "Manajemen Programming Extreme Jual"
+        "label_final": "Manajemen Programming Extreme Jual",
+        "quality_coherence": 0.5772
     }
 }

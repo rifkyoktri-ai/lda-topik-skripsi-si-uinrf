@@ -289,6 +289,30 @@ def main():
     logger.info("  Labeling method: KeyBERT (dari LDA top words)")
     topic_labels = label_topics_keybert(lda_model, all_stopwords)
 
+    # Compute per-topic coherence untuk quality_coherence
+    logger.info("  Menghitung per-topic coherence...")
+    coherence_per_topic = {}
+    try:
+        for tid_str in topic_labels.keys():
+            tid = int(tid_str)
+            top_words = [w for w, _ in lda_model.show_topic(tid, topn=20)]
+            cm_topic = CoherenceModel(
+                texts=tokenized_docs,
+                dictionary=dictionary,
+                topics=[top_words],
+                coherence='c_v',
+                processes=1
+            )
+            coherence_per_topic[tid_str] = round(cm_topic.get_coherence(), 4)
+    except Exception as e:
+        logger.warning(f"  Gagal menghitung per-topic coherence: {e}")
+        for tid_str in topic_labels.keys():
+            coherence_per_topic[tid_str] = 0.0
+
+    # Inject quality_coherence ke JSON
+    for tid_str, info in topic_labels.items():
+        info['quality_coherence'] = coherence_per_topic.get(tid_str, 0.0)
+
     # Save JSON (primary)
     save_topic_labels(topic_labels, MODEL_DIR)
 
@@ -303,7 +327,7 @@ def main():
             'description': f"Topic with {doc_count} documents",
             'keywords': ';'.join(info['top_words'][:5]),
             'label_score': info['score'],
-            'quality_coherence': ''
+            'quality_coherence': coherence_per_topic.get(tid_str, '')
         })
 
     labels_df = pd.DataFrame(labels_rows)
