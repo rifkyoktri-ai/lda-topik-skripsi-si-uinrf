@@ -13,7 +13,6 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 from gensim import corpora
 from gensim.models import LdaModel, CoherenceModel
@@ -164,11 +163,13 @@ def plot_topic_trend(df_result: pd.DataFrame):
     pivot = df_result.groupby(['Tahun', 'topik_dominan']).size().unstack(fill_value=0)
 
     plt.figure(figsize=(12, 6))
-    sns.heatmap(
-        pivot, annot=True, fmt='d', cmap='YlOrRd',
-        linewidths=0.5, linecolor='grey',
-        cbar_kws={'label': 'Jumlah Dokumen'}
-    )
+    plt.imshow(pivot.values, aspect='auto', cmap='YlOrRd', interpolation='nearest')
+    for i in range(pivot.shape[0]):
+        for j in range(pivot.shape[1]):
+            plt.text(j, i, str(pivot.values[i, j]), ha='center', va='center', fontsize=9)
+    plt.colorbar(label='Jumlah Dokumen')
+    plt.xticks(ticks=range(pivot.shape[1]), labels=pivot.columns)
+    plt.yticks(ticks=range(pivot.shape[0]), labels=pivot.index)
     plt.title('Distribusi Tren Topik per Tahun', fontsize=13, fontweight='bold')
     plt.xlabel('Topik')
     plt.ylabel('Tahun')

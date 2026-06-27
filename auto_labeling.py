@@ -12,8 +12,6 @@ import numpy as np
 warnings.filterwarnings('ignore')
 
 from gensim.models import LdaModel
-from keybert import KeyBERT
-from sentence_transformers import SentenceTransformer
 from indonesian_stopwords import get_all_stopwords
 
 LABEL_MAPPING = {
@@ -129,6 +127,8 @@ def label_topics_keybert(lda_model, all_stopwords: set) -> dict:
 
     print("\n[1/3] Loading KeyBERT model...")
     print("      Download ~500MB jika belum ada di cache...")
+    from keybert import KeyBERT
+    from sentence_transformers import SentenceTransformer
     sentence_model = SentenceTransformer(
         'paraphrase-multilingual-MiniLM-L12-v2'
     )
