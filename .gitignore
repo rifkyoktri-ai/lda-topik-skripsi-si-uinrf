@@ -1,7 +1,10 @@
 .venv
-data/raw/
+logs/
 __pycache__/
+data/raw/*_files/
 *.pyc
+*.pyo
+.env
 *.gensim
 *.gensim.*
 corpus.pkl

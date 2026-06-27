@@ -1,26 +1,37 @@
+import logging
+import sys
 import pandas as pd
 import pickle
 import os
 import re
-import ast
+from datetime import datetime
 
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from stopwords_id import get_all_stopwords
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler(f'logs/preprocess_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log', encoding='utf-8')
+    ]
+)
+logger = logging.getLogger(__name__)
+
 PROSES_DIR = 'data/proses'
 os.makedirs(PROSES_DIR, exist_ok=True)
+os.makedirs('logs', exist_ok=True)
 
-print("=" * 60)
-print("PREPROCESSING DATASET 2021-2025")
-print("=" * 60)
+logger.info("=" * 60)
+logger.info("PREPROCESSING DATASET 2021-2025")
+logger.info("=" * 60)
 
-# Load data
-print("\n[1/4] Memuat data...")
+logger.info("\n[1/4] Memuat data...")
 df = pd.read_csv('data/processed/thesis_for_pipeline.csv')
-print(f"  Total: {len(df)}")
-print(f"  Dengan abstrak: {df['abstract'].notna().sum()}")
+logger.info(f"  Total: {len(df)}")
+logger.info(f"  Dengan abstrak: {df['abstract'].notna().sum()}")
 
-# Create teks_gabung
 df['teks_gabung'] = df.apply(
     lambda r: (str(r['title']) + ' ' + str(r['abstract'])).strip()
     if pd.notna(r['abstract']) and str(r['abstract']).strip()
@@ -28,9 +39,8 @@ df['teks_gabung'] = df.apply(
     axis=1
 )
 
-print(f"\n[2/4] Membersihkan teks...")
+logger.info(f"\n[2/4] Membersihkan teks...")
 
-# Load stemmer & stopwords
 factory = StemmerFactory()
 stemmer = factory.create_stemmer()
 all_stopwords = get_all_stopwords()
@@ -53,17 +63,15 @@ df['teks_bersih'] = df['teks_gabung'].apply(bersihkan)
 df['tokens_raw'] = df['teks_bersih'].apply(tokenize)
 df['tokens'] = df['tokens_raw'].apply(stem_tokens)
 
-print(f"\n[3/4] Filter extremes...")
-# Remove empty docs
+logger.info(f"\n[3/4] Filter extremes...")
 df = df[df['tokens'].apply(len) > 0].reset_index(drop=True)
-print(f"  Setelah filter dokumen kosong: {len(df)}")
+logger.info(f"  Setelah filter dokumen kosong: {len(df)}")
 
 from gensim import corpora
 dictionary = corpora.Dictionary(df['tokens'].tolist())
 dictionary.filter_extremes(no_below=2, no_above=0.80)
-print(f"  Vocabulary: {len(dictionary)} kata unik")
+logger.info(f"  Vocabulary: {len(dictionary)} kata unik")
 
-# Save dictionary and corpus
 DICT_PATH = f'{PROSES_DIR}/dictionary.gensim'
 CORPUS_PATH = f'{PROSES_DIR}/corpus.pkl'
 
@@ -71,11 +79,10 @@ dictionary.save(DICT_PATH)
 corpus = [dictionary.doc2bow(doc) for doc in df['tokens'].tolist()]
 with open(CORPUS_PATH, 'wb') as f:
     pickle.dump(corpus, f)
-print(f"  Dictionary, corpus saved")
+logger.info(f"  Dictionary, corpus saved")
 
-# Prepare final dataframe matching pipeline expectations
 df_final = pd.DataFrame({
-    'Nama': '',  # dummy, no student names in our data
+    'Nama': '',
     'Judul': df['title'],
     'Abstrak': df['abstract'].fillna(''),
     'Tahun': df['year'],
@@ -86,14 +93,13 @@ df_final = pd.DataFrame({
 
 df_final.to_csv(f'{PROSES_DIR}/dataset_preprocessed.csv', index=False)
 
-print(f"\n[4/4] Selesai!")
-print(f"  Output: {PROSES_DIR}/dataset_preprocessed.csv")
-print(f"  Total dokumen: {len(df_final)}")
-print(f"  Vocabulary: {len(dictionary)} kata unik")
+logger.info(f"\n[4/4] Selesai!")
+logger.info(f"  Output: {PROSES_DIR}/dataset_preprocessed.csv")
+logger.info(f"  Total dokumen: {len(df_final)}")
+logger.info(f"  Vocabulary: {len(dictionary)} kata unik")
 
-# Show vocabulary stats
 word_freq = [(dictionary[id], dictionary.dfs.get(id, 0)) for id in dictionary]
 word_freq.sort(key=lambda x: -x[1])
-print(f"\n  Top 20 kata:")
+logger.info(f"\n  Top 20 kata:")
 for w, f in word_freq[:20]:
-    print(f"    {w}: {f}")
+    logger.info(f"    {w}: {f}")

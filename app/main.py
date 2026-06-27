@@ -58,22 +58,29 @@ def load_topic_labels():
     try:
         if labels_path.exists():
             labels_df = pd.read_csv(labels_path)
+            # Ensure new columns exist with defaults
+            for col in ['label_score', 'quality_coherence']:
+                if col not in labels_df.columns:
+                    labels_df[col] = ''
             return labels_df
         else:
-            # Return default labels if file doesn't exist
             return pd.DataFrame({
-                'topic_id': range(14),
-                'label': [f'Topic {i}' for i in range(14)],
-                'description': [''] * 14,
-                'keywords': [''] * 14
+                'topic_id': range(5),
+                'label': [f'Topic {i}' for i in range(5)],
+                'description': [''] * 5,
+                'keywords': [''] * 5,
+                'label_score': [''] * 5,
+                'quality_coherence': [''] * 5
             })
     except Exception as e:
         st.warning(f"Could not load topic labels: {e}")
         return pd.DataFrame({
-            'topic_id': range(14),
-            'label': [f'Topic {i}' for i in range(14)],
-            'description': [''] * 14,
-            'keywords': [''] * 14
+            'topic_id': range(5),
+            'label': [f'Topic {i}' for i in range(5)],
+            'description': [''] * 5,
+            'keywords': [''] * 5,
+            'label_score': [''] * 5,
+            'quality_coherence': [''] * 5
         })
 
 # Load LDA visualization HTML
@@ -392,7 +399,48 @@ elif page == "🏷️ Topic Analysis":
         st.metric("Min Prob", f"{topic_dist_df['prob_dominan'].min():.4f}")
     
     st.markdown("---")
-    
+
+    # Coherence quality per topic
+    st.subheader("Kualitas Label per Topik")
+    if 'quality_coherence' in topic_labels_df.columns and topic_labels_df['quality_coherence'].astype(str).str.strip().str.len().sum() > 0:
+        quality_df = topic_labels_df[['topic_id', 'label', 'label_score', 'quality_coherence']].copy()
+        quality_df['quality_coherence'] = pd.to_numeric(quality_df['quality_coherence'], errors='coerce')
+        quality_df['label_score'] = pd.to_numeric(quality_df['label_score'], errors='coerce')
+        quality_df = quality_df.sort_values('quality_coherence', ascending=False)
+
+        col_a, col_b = st.columns([2, 1])
+        with col_a:
+            fig_q = px.bar(
+                quality_df.dropna(subset=['quality_coherence']),
+                x='label', y='quality_coherence',
+                title="Coherence Quality per Topik",
+                labels={'label': 'Topik', 'quality_coherence': 'Quality Coherence'},
+                color='quality_coherence',
+                color_continuous_scale='RdYlGn',
+                range_color=[0, 1]
+            )
+            fig_q.add_hline(y=0.4, line_dash="dash", line_color="red",
+                          annotation_text="Threshold (0.4)")
+            fig_q.update_layout(height=400)
+            st.plotly_chart(fig_q, width='stretch')
+
+        with col_b:
+            st.metric("Rata-rata Quality", f"{quality_df['quality_coherence'].mean():.3f}")
+            low_q = len(quality_df[quality_df['quality_coherence'] < 0.4])
+            st.metric("Perlu Review (<0.4)", str(low_q))
+            if low_q > 0:
+                st.warning(f"⚠️ {low_q} topik punya coherence rendah")
+            else:
+                st.success("✅ Semua topik di atas threshold")
+
+        st.markdown("---")
+        with st.expander("📋 Detail Tabel Kualitas Label"):
+            st.dataframe(quality_df, width='stretch', hide_index=True)
+    else:
+        st.info("Data kualitas label belum tersedia. Jalankan pipeline ulang dengan `--label-method tfidf` untuk mendapatkannya.")
+
+    st.markdown("---")
+
     # Topic probability analysis
     st.subheader("Average Probability per Topic (Labeled)")
     avg_prob = topic_dist_df.groupby('topik_dominan')['prob_dominan'].mean().sort_values(ascending=False)
@@ -436,6 +484,17 @@ elif page == "🏷️ Topic Analysis":
                 st.write(f"*{topic_label['description']}*")
             if topic_label['keywords']:
                 st.caption(f"Keywords: {topic_label['keywords']}")
+            # Quality indicators
+            qc = topic_label.get('quality_coherence', '')
+            ls = topic_label.get('label_score', '')
+            if qc != '' and pd.notna(qc) and str(qc).strip():
+                qc_val = float(qc)
+                if qc_val < 0.4:
+                    st.warning(f"⚠️ Kualitas label rendah (coherence={qc_val:.3f}) — perlu review manual")
+                else:
+                    st.success(f"✅ Kualitas label baik (coherence={qc_val:.3f})")
+            if ls != '' and pd.notna(ls) and str(ls).strip():
+                st.caption(f"Label Score: {float(ls):.4f}")
             st.markdown("---")
         
         topic_docs = topic_dist_df[topic_dist_df['topik_dominan'] == selected_topic]
@@ -589,6 +648,10 @@ elif page == "⚙️ Manage Labels":
     # Initialize session state for labels
     if 'labels_edited' not in st.session_state:
         st.session_state.labels_edited = topic_labels_df.copy()
+        # Ensure new columns exist
+        for col in ['label_score', 'quality_coherence']:
+            if col not in st.session_state.labels_edited.columns:
+                st.session_state.labels_edited[col] = ''
     
     st.subheader("📝 Edit Topic Labels")
     
@@ -639,6 +702,18 @@ elif page == "⚙️ Manage Labels":
                         value=topic_row['keywords'].values[0],
                         key=f"keywords_{actual_topic_id}"
                     )
+
+                    # Show quality metrics if available
+                    qc_val = topic_row['quality_coherence'].values[0] if 'quality_coherence' in topic_row.columns else ''
+                    ls_val = topic_row['label_score'].values[0] if 'label_score' in topic_row.columns else ''
+                    if qc_val != '' and pd.notna(qc_val) and str(qc_val).strip():
+                        qc_float = float(qc_val)
+                        if qc_float < 0.4:
+                            st.warning(f"⚠️ Quality Coherence: {qc_float:.3f}")
+                        else:
+                            st.info(f"✅ Quality Coherence: {qc_float:.3f}")
+                    if ls_val != '' and pd.notna(ls_val) and str(ls_val).strip():
+                        st.caption(f"Label Score: {float(ls_val):.4f}")
                     
                     # Update session state
                     st.session_state.labels_edited.loc[
