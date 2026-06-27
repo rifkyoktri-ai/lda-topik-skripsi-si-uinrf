@@ -344,6 +344,20 @@ def main():
         sort_topics=False
     )
     pyLDAvis.save_html(vis_data, f'{MODEL_DIR}/lda_visualization.html')
+    # Inline JS library agar bisa dirender di Streamlit (CDN diblokir CSP)
+    viz_path = f'{MODEL_DIR}/lda_visualization.html'
+    lib_path = f'{MODEL_DIR}/pyldavis_lib.js'
+    if os.path.exists(lib_path):
+        with open(viz_path, 'r', encoding='utf-8') as f:
+            viz_html = f.read()
+        with open(lib_path, 'r', encoding='utf-8') as f:
+            lib_js = f.read()
+        cdn_url = 'https://cdn.jsdelivr.net/gh/bmabey/pyLDAvis@3.4.0/pyLDAvis/js/ldavis.v1.0.0.js'
+        viz_html = viz_html.replace(f'<script type="text/javascript" src="{cdn_url}"></script>',
+                                    f'<script type="text/javascript">{lib_js}</script>')
+        with open(viz_path, 'w', encoding='utf-8') as f:
+            f.write(viz_html)
+        logger.info(f"  JS library inlined -> self-contained HTML")
     logger.info(f"  LDA viz -> {MODEL_DIR}/lda_visualization.html")
 
     lda_model.save(f'{MODEL_DIR}/lda_model.gensim')

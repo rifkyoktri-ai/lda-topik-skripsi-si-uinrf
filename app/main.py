@@ -285,7 +285,7 @@ def load_topic_trend():
 def display_html(html_content):
     """Display HTML content safely"""
     try:
-        components.v1.html(html_content, height=900, scrolling=True)
+        components.html(html_content, height=900, scrolling=True)
     except Exception as e:
         st.error(f"Error: {e}")
         st.write("💡 Untuk melihat visualisasi, silakan buka file HTML langsung: `model/lda_visualization.html`")
@@ -469,17 +469,14 @@ elif page == "🔵 Visualisasi LDA":
         card_start()
         section_header("📍 PyLDAvis Interactive Visualization")
         st.caption("Klik pada topik untuk melihat top terms")
-        try:
-            components.v1.html(lda_viz_html, height=900, scrolling=True)
-        except Exception as e:
-            st.info("💡 Buka file `model/lda_visualization.html` untuk visualisasi PyLDAvis interaktif.")
-            with st.expander("📚 Tentang PyLDAvis"):
-                st.markdown("""
-                **PyLDAvis** menampilkan:
-                - **Lingkaran**: Setiap topik (ukuran = jumlah dokumen)
-                - **Jarak antar lingkaran**: Similarity antar topik
-                - **Top Terms**: Terms paling relevan untuk setiap topik
-                """)
+        components.html(lda_viz_html, height=900, scrolling=True)
+        with st.expander("📚 Tentang PyLDAvis"):
+            st.markdown("""
+            **PyLDAvis** menampilkan:
+            - **Lingkaran**: Setiap topik (ukuran = jumlah dokumen)
+            - **Jarak antar lingkaran**: Similarity antar topik
+            - **Top Terms**: Terms paling relevan untuk setiap topik
+            """)
         card_end()
 
 
