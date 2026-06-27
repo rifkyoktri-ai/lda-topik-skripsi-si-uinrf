@@ -279,8 +279,7 @@ def main():
     logger.info(f"\n[4/6] Menentukan topik dominan & labeling...")
 
     topic_df = get_dominant_topic(lda_model, corpus)
-    df_result = pd.concat([df[['Judul', 'Tahun']].reset_index(drop=True), topic_df], axis=1)
-    df_result.insert(0, 'Nama', '')
+    df_result = pd.concat([df[['ID', 'Judul', 'Tahun']].reset_index(drop=True), topic_df], axis=1)
 
     plot_topic_distribution(df_result, OPTIMAL_K)
     plot_topic_trend(df_result)

@@ -545,7 +545,7 @@ elif page == "🏷️ Topic Analysis":
         
         # Display data with error handling
         if len(topic_docs) > 0:
-            display_df = topic_docs[['Nama', 'Judul', 'Tahun', 'prob_dominan']].head(15).reset_index(drop=True)
+            display_df = topic_docs[['ID', 'Judul', 'Tahun', 'prob_dominan']].head(15).reset_index(drop=True)
             st.dataframe(display_df, use_container_width=True)
         else:
             st.info("No documents found for this topic.")
@@ -564,7 +564,7 @@ elif page == "🔍 Document Search":
     with col1:
         search_type = st.selectbox(
             "Cari berdasarkan:",
-            ["Nama Penulis", "Judul", "Tahun", "Topic ID"],
+            ["ID", "Judul", "Tahun", "Topic ID"],
             key="search_type"
         )
     
@@ -573,10 +573,10 @@ elif page == "🔍 Document Search":
     
     with col2:
         try:
-            if search_type == "Nama Penulis":
-                search_term = st.text_input("Masukkan nama penulis:", key="nama_search")
+            if search_type == "ID":
+                search_term = st.text_input("Masukkan ID dokumen:", key="id_search")
                 if search_term:
-                    results = topic_dist_df[topic_dist_df['Nama'].str.contains(search_term, case=False, na=False)]
+                    results = topic_dist_df[topic_dist_df['ID'].astype(str).str.contains(search_term, case=False, na=False)]
             
             elif search_type == "Judul":
                 search_term = st.text_input("Masukkan keyword judul:", key="judul_search")
@@ -606,7 +606,7 @@ elif page == "🔍 Document Search":
         st.subheader("Search Results")
         
         # Display options
-        display_cols = ['Nama', 'Judul', 'Tahun', 'topik_dominan', 'prob_dominan']
+        display_cols = ['ID', 'Judul', 'Tahun', 'topik_dominan', 'prob_dominan']
         st.dataframe(
             results[display_cols].reset_index(drop=True),
             width='stretch',
@@ -635,7 +635,7 @@ elif page == "📖 Data Info":
     with col1:
         st.subheader("📊 Dataset Statistics")
         st.metric("Total Documents", len(topic_dist_df))
-        st.metric("Unique Authors", len(topic_dist_df['Nama'].unique()))
+        st.metric("Total Dokumen", len(topic_dist_df))
         st.metric("Year Range", f"{topic_dist_df['Tahun'].min():.0f} - {topic_dist_df['Tahun'].max():.0f}")
         st.metric("Unique Topics", len(topic_dist_df['topik_dominan'].unique()))
     
@@ -657,7 +657,7 @@ elif page == "📖 Data Info":
     with st.expander("📚 Data Description"):
         st.markdown("""
         ### Dataset Columns:
-        - **Nama**: Nama penulis skripsi
+        - **ID**: ID dokumen
         - **Judul**: Judul lengkap skripsi
         - **Tahun**: Tahun penulisan skripsi
         - **topik_dominan**: ID topic dominan dari model LDA

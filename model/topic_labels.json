@@ -1,147 +1,147 @@
 {
     "0": {
-        "label_auto": "nilai pengaruh satisfaction mobile",
-        "score": 0.803,
+        "label_auto": "nkeywords strategic rencana academic",
+        "score": 0.5971,
         "top_words": [
-            "variabel",
-            "kualitas",
-            "puas",
-            "nilai",
-            "model",
-            "pengaruh",
+            "bina",
             "satisfaction",
-            "mobile",
-            "layan",
-            "quality"
+            "pustaka",
+            "support",
+            "systems",
+            "warga",
+            "growth",
+            "algoritma",
+            "pola",
+            "minimum"
         ],
         "top_words_filtered": [
-            "variabel",
-            "kualitas",
-            "puas",
-            "nilai",
-            "pengaruh",
+            "bina",
             "satisfaction",
-            "mobile",
-            "layan",
-            "quality",
-            "akademik"
+            "pustaka",
+            "support",
+            "systems",
+            "warga",
+            "growth",
+            "algoritma",
+            "pola",
+            "minimum"
         ],
-        "label_final": "Sistem Informasi Akademik"
+        "label_final": "Nkeywords Strategic Rencana Academic"
     },
     "1": {
-        "label_auto": "jual algoritma barang nilai",
-        "score": 0.7659,
+        "label_auto": "risiko level results quality",
+        "score": 0.6383,
         "top_words": [
-            "jual",
-            "algoritma",
-            "barang",
-            "proses",
-            "nilai",
-            "beli",
-            "lapor",
-            "transaksi",
-            "kelola",
-            "uji"
-        ],
-        "top_words_filtered": [
-            "jual",
-            "algoritma",
-            "barang",
-            "nilai",
-            "beli",
-            "lapor",
-            "transaksi",
-            "sedia",
-            "produk",
-            "salah"
-        ],
-        "label_final": "Prediksi & Forecasting"
-    },
-    "2": {
-        "label_auto": "pengaruh quality puas risiko",
-        "score": 0.852,
-        "top_words": [
-            "model",
-            "pengaruh",
-            "quality",
-            "puas",
             "risiko",
-            "layan",
-            "kualitas",
-            "guna",
-            "nilai",
-            "satisfaction"
-        ],
-        "top_words_filtered": [
-            "pengaruh",
+            "level",
+            "results",
             "quality",
-            "puas",
-            "risiko",
-            "layan",
-            "kualitas",
-            "nilai",
-            "satisfaction",
-            "variabel",
-            "sentimen"
-        ],
-        "label_final": "Analisis Sentimen"
-    },
-    "3": {
-        "label_auto": "konseling academic management students",
-        "score": 0.6337,
-        "top_words": [
-            "usability",
-            "research",
-            "results",
-            "development",
             "not",
-            "which",
-            "nthe",
+            "layan",
+            "service",
+            "usability",
             "users",
-            "one",
-            "nkeywords"
+            "aman"
         ],
         "top_words_filtered": [
-            "usability",
+            "risiko",
+            "level",
             "results",
+            "quality",
             "not",
-            "which",
-            "nthe",
+            "layan",
+            "service",
+            "usability",
             "users",
-            "one",
-            "nkeywords",
-            "making",
-            "konseling"
+            "aman"
         ],
         "label_final": "Evaluasi Usabilitas Sistem"
     },
-    "4": {
-        "label_auto": "akademik manajemen kualitas bantu",
-        "score": 0.7784,
+    "2": {
+        "label_auto": "sukses quality mobile",
+        "score": 0.7583,
         "top_words": [
+            "variabel",
+            "puas",
             "layan",
-            "proses",
-            "kelola",
-            "nilai",
-            "akademik",
-            "manajemen",
-            "tingkat",
             "kualitas",
-            "bantu",
-            "mudah"
+            "pengaruh",
+            "nilai",
+            "satisfaction",
+            "akademik",
+            "guna",
+            "terima"
         ],
         "top_words_filtered": [
+            "variabel",
+            "puas",
             "layan",
-            "nilai",
-            "akademik",
-            "manajemen",
             "kualitas",
+            "pengaruh",
+            "nilai",
+            "satisfaction",
+            "akademik",
+            "terima",
+            "sukses"
+        ],
+        "label_final": "Sistem Informasi Akademik"
+    },
+    "3": {
+        "label_auto": "evaluasi service webqual siswa",
+        "score": 0.7733,
+        "top_words": [
+            "nilai",
+            "kualitas",
+            "usability",
+            "layan",
+            "quality",
+            "sentimen",
+            "milik",
+            "terap",
+            "pengaruh",
+            "algoritma"
+        ],
+        "top_words_filtered": [
+            "nilai",
+            "kualitas",
+            "usability",
+            "layan",
+            "quality",
+            "sentimen",
+            "milik",
+            "pengaruh",
+            "algoritma",
+            "kategori"
+        ],
+        "label_final": "Klasifikasi & Data Mining"
+    },
+    "4": {
+        "label_auto": "manajemen programming extreme jual",
+        "score": 0.6927,
+        "top_words": [
+            "kelola",
             "bantu",
             "mudah",
-            "terima",
-            "tuju",
-            "kembang"
+            "manajemen",
+            "programming",
+            "extreme",
+            "jual",
+            "bangun",
+            "tingkat",
+            "lapor"
         ],
-        "label_final": "Extreme Programming (XP)"
+        "top_words_filtered": [
+            "bantu",
+            "mudah",
+            "manajemen",
+            "programming",
+            "extreme",
+            "jual",
+            "lapor",
+            "barang",
+            "salah",
+            "terima"
+        ],
+        "label_final": "Manajemen Programming Extreme Jual"
     }
 }

@@ -82,7 +82,7 @@ with open(CORPUS_PATH, 'wb') as f:
 logger.info(f"  Dictionary, corpus saved")
 
 df_final = pd.DataFrame({
-    'Nama': '',
+    'ID': df['id'],
     'Judul': df['title'],
     'Abstrak': df['abstract'].fillna(''),
     'Tahun': df['year'],

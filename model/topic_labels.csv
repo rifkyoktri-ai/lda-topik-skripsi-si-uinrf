@@ -1,6 +1,6 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Sistem Informasi Akademik,Topic with 60 documents,variabel;kualitas;puas;nilai;model,0.803,
-2,Prediksi & Forecasting,Topic with 39 documents,jual;algoritma;barang;proses;nilai,0.7659,
-3,Analisis Sentimen,Topic with 62 documents,model;pengaruh;quality;puas;risiko,0.852,
-4,Evaluasi Usabilitas Sistem,Topic with 54 documents,usability;research;results;development;not,0.6337,
-5,Extreme Programming (XP),Topic with 96 documents,layan;proses;kelola;nilai;akademik,0.7784,
+1,Nkeywords Strategic Rencana Academic,Topic with 34 documents,bina;satisfaction;pustaka;support;systems,0.5971,
+2,Evaluasi Usabilitas Sistem,Topic with 49 documents,risiko;level;results;quality;not,0.6383,
+3,Sistem Informasi Akademik,Topic with 78 documents,variabel;puas;layan;kualitas;pengaruh,0.7583,
+4,Klasifikasi & Data Mining,Topic with 56 documents,nilai;kualitas;usability;layan;quality,0.7733,
+5,Manajemen Programming Extreme Jual,Topic with 94 documents,kelola;bantu;mudah;manajemen;programming,0.6927,
