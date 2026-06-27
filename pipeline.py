@@ -22,6 +22,7 @@ import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 
 from indonesian_stopwords import get_all_stopwords
+from auto_labeling import label_topics_keybert, save_topic_labels
 
 logging.basicConfig(
     level=logging.INFO,
@@ -190,7 +191,7 @@ def main():
     parser.add_argument('--eta', type=str, default=None,
                         help='Eta parameter (default: auto)')
     parser.add_argument('--label-method', type=str, default='keybert',
-                        choices=['keybert', 'tfidf', 'dynamic'],
+                        choices=['keybert'],
                         help='Metode pelabelan (default: keybert)')
     parser.add_argument('--no-auto-tune', action='store_true',
                         help='Nonaktifkan auto-tune (wajib set --num-topics)')
@@ -276,47 +277,24 @@ def main():
 
     all_stopwords = get_all_stopwords()
 
-    if args.label_method == 'tfidf':
-        from modeling.auto_labeling import auto_label_all_topics
-        logger.info("  Labeling method: TF-IDF")
-        topic_labels = auto_label_all_topics(
-            lda_model,
-            df['Judul'].tolist(),
-            dictionary,
-            all_stopwords,
-            method='tfidf'
-        )
-    elif args.label_method == 'dynamic':
-        from modeling.auto_labeling import auto_label_all_topics
-        logger.info("  Labeling method: Dynamic")
-        topic_labels = auto_label_all_topics(
-            lda_model,
-            df['Judul'].tolist(),
-            dictionary,
-            all_stopwords,
-            method='dynamic'
-        )
-    else:
-        from modeling.keybert_labeler import label_topics_with_keybert
-        logger.info("  Labeling method: KeyBERT")
-        topic_labels = label_topics_with_keybert(
-            lda_model, all_stopwords,
-            df_result=df_result,
-            text_column='Judul'
-        )
+    logger.info("  Labeling method: KeyBERT (dari LDA top words)")
+    topic_labels = label_topics_keybert(lda_model, all_stopwords)
 
+    # Save JSON (primary)
+    save_topic_labels(topic_labels, MODEL_DIR)
+
+    # Save CSV (backward compat untuk dashboard)
     labels_rows = []
     for tid_str, info in topic_labels.items():
         tid = int(tid_str) + 1
         doc_count = len(df_result[df_result['topik_dominan'] == tid])
-        quality_str = info.get('quality', {}).get('coherence', '')
         labels_rows.append({
             'topic_id': tid,
-            'label': info['label_final'] if 'label_final' in info else info['label_auto'],
+            'label': info['label_final'],
             'description': f"Topic with {doc_count} documents",
-            'keywords': ';'.join(info.get('top_words', info.get('top_ngrams', []))),
-            'label_score': info.get('score', ''),
-            'quality_coherence': quality_str
+            'keywords': ';'.join(info['top_words'][:5]),
+            'label_score': info['score'],
+            'quality_coherence': ''
         })
 
     labels_df = pd.DataFrame(labels_rows)

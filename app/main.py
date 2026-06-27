@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import json
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
@@ -50,15 +51,31 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return None, None, None
 
-# Load topic labels
+# Load topic labels from JSON (primary) or CSV (fallback)
 @st.cache_data
 def load_topic_labels():
     base_path = Path(__file__).parent.parent
-    labels_path = base_path / "model" / "topic_labels.csv"
+    json_path = base_path / "model" / "topic_labels.json"
+    csv_path = base_path / "model" / "topic_labels.csv"
+
     try:
-        if labels_path.exists():
-            labels_df = pd.read_csv(labels_path)
-            # Ensure new columns exist with defaults
+        if json_path.exists():
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            rows = []
+            for tid_str, info in data.items():
+                tid = int(tid_str) + 1
+                rows.append({
+                    'topic_id': tid,
+                    'label': info['label_final'],
+                    'description': f"Topik {tid}: {info['label_final']}",
+                    'keywords': ';'.join(info.get('top_words_filtered', info.get('top_words', []))[:5]),
+                    'label_score': info.get('score', ''),
+                    'quality_coherence': ''
+                })
+            return pd.DataFrame(rows).sort_values('topic_id').reset_index(drop=True)
+        elif csv_path.exists():
+            labels_df = pd.read_csv(csv_path)
             for col in ['label_score', 'quality_coherence']:
                 if col not in labels_df.columns:
                     labels_df[col] = ''
@@ -93,6 +110,24 @@ def load_lda_viz():
             return f.read()
     return None
 
+# Load trend prediction data
+@st.cache_data
+def load_trend_prediction():
+    base_path = Path(__file__).parent.parent
+    trend_path = base_path / "model" / "trend_prediction.csv"
+    if trend_path.exists():
+        return pd.read_csv(trend_path)
+    return None
+
+# Load topic trend data (historical proportions per year)
+@st.cache_data
+def load_topic_trend():
+    base_path = Path(__file__).parent.parent
+    trend_path = base_path / "model" / "topic_trend.csv"
+    if trend_path.exists():
+        return pd.read_csv(trend_path)
+    return None
+
 # Display HTML with proper rendering
 def display_html(html_content):
     """Display HTML content safely"""
@@ -121,7 +156,7 @@ with st.sidebar:
     st.header("🎛️ Navigation")
     page = st.radio(
         "Pilih Halaman:",
-        ["📈 Overview", "🔵 Visualisasi LDA", "📊 Model Metrics", "🏷️ Topic Analysis", "🔍 Document Search", "📖 Data Info", "⚙️ Manage Labels"]
+        ["📈 Overview", "🔵 Visualisasi LDA", "📊 Model Metrics", "🏷️ Topic Analysis", "🔍 Document Search", "📖 Data Info", "⚙️ Manage Labels", "📈 Prediksi Tren"]
     )
 
 # PAGE 1: OVERVIEW
@@ -634,6 +669,102 @@ elif page == "📖 Data Info":
         """)
 
 
+# PAGE 7: PREDIKSI TREN
+elif page == "📈 Prediksi Tren":
+    st.header("📈 Prediksi Tren Topik")
+    st.markdown("---")
+
+    trend_df = load_trend_prediction()
+    topic_trend_df = load_topic_trend()
+
+    if trend_df is not None and not trend_df.empty:
+        # ── Grafik Garis Interaktif ──
+        st.subheader("Grafik Prediksi Tren per Topik")
+
+        colors = px.colors.qualitative.Set2
+        fig = go.Figure()
+
+        for i, (_, row) in enumerate(trend_df.iterrows()):
+            color = colors[i % len(colors)]
+            # Data historis (solid)
+            fig.add_trace(go.Scatter(
+                x=[2021, 2022, 2023, 2024, 2025],
+                y=[row['2021'], row['2022'], row['2023'],
+                   row['2024'], row['2025']],
+                mode='lines+markers',
+                name=row['Label'],
+                line=dict(width=2, color=color),
+                marker=dict(size=6),
+                legendgroup=row['Label'],
+            ))
+            # Prediksi (dashed)
+            fig.add_trace(go.Scatter(
+                x=[2025, 2026, 2027],
+                y=[row['2025'], row['2026'], row['2027']],
+                mode='lines+markers',
+                name=f"{row['Label']} (prediksi)",
+                line=dict(dash='dash', width=2, color=color),
+                marker=dict(size=6, symbol='circle-open'),
+                showlegend=False,
+                legendgroup=row['Label'],
+            ))
+
+        # Vertical line batas prediksi
+        fig.add_vline(
+            x=2025.5,
+            line_dash="dot",
+            line_color="gray",
+            annotation_text="Batas Prediksi",
+            annotation_position="top",
+            annotation_font_size=12
+        )
+
+        fig.update_layout(
+            title="Tren Proporsi Topik: Historis (2021-2025) vs Prediksi WMA (2026-2027)",
+            xaxis=dict(tickmode='array', tickvals=[2021, 2022, 2023, 2024, 2025, 2026, 2027]),
+            yaxis=dict(title="Proporsi (%)", ticksuffix="%"),
+            height=500,
+            hovermode='x unified',
+            legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
+        )
+        st.plotly_chart(fig, width='stretch')
+
+        st.markdown("---")
+
+        # ── Tabel Ringkasan ──
+        st.subheader("Tabel Ringkasan Prediksi")
+        display_cols = ['Label', 'R2', 'Linearitas', '2026', '2027', 'Arah']
+        display_df = trend_df[display_cols].copy()
+        display_df['2026'] = display_df['2026'].apply(lambda x: f"{x:.2f}%")
+        display_df['2027'] = display_df['2027'].apply(lambda x: f"{x:.2f}%")
+        display_df.columns = ['Label Topik', 'R²', 'Linearitas', '2026 (%)', '2027 (%)', 'Arah Tren']
+        st.dataframe(display_df, width='stretch', hide_index=True)
+
+        st.markdown("---")
+
+        # ── Disclaimer ──
+        st.warning("""
+        ⚠️ **Prediksi menggunakan Weighted Moving Average (WMA)** dengan bobot linier 
+        (tahun terbaru lebih berpengaruh). Bersifat indikatif berdasarkan pola 5 tahun 
+        historis (2021-2025). Bukan prediksi presisi — gunakan sebagai panduan arah tren.
+        """)
+
+        # ── Detail per topik ──
+        with st.expander("📋 Detail Semua Topik"):
+            st.dataframe(trend_df, width='stretch', hide_index=True)
+
+    else:
+        st.info("Data prediksi tren belum tersedia.")
+        st.write("Jalankan `python trend_analyzer.py` untuk menghasilkan prediksi.")
+
+        if topic_trend_df is not None:
+            st.subheader("Data Historis Tersedia (topic_trend.csv)")
+            st.dataframe(topic_trend_df, width='stretch', hide_index=True)
+        else:
+            st.warning("Data historis topik per tahun (`model/topic_trend.csv`) juga belum tersedia.")
+            st.write("Jalankan pipeline utama terlebih dahulu.")
+
+
 # PAGE 6: MANAGE LABELS
 elif page == "⚙️ Manage Labels":
     st.header("⚙️ Kelola Label Topik")
@@ -737,9 +868,24 @@ elif page == "⚙️ Manage Labels":
         if st.button("💾 Simpan Semua Label", use_container_width=True):
             try:
                 base_path = Path(__file__).parent.parent
-                labels_path = base_path / "model" / "topic_labels.csv"
-                st.session_state.labels_edited.to_csv(labels_path, index=False)
-                st.success("✅ Label berhasil disimpan!")
+                # Save to JSON
+                labels_json = {}
+                for _, row in st.session_state.labels_edited.iterrows():
+                    tid = row['topic_id']
+                    labels_json[str(tid - 1)] = {
+                        'label_final': row['label'],
+                        'label_auto': row['label'],
+                        'score': row.get('label_score', ''),
+                        'top_words': [],
+                        'top_words_filtered': []
+                    }
+                json_path = base_path / "model" / "topic_labels.json"
+                with open(json_path, 'w', encoding='utf-8') as f:
+                    json.dump(labels_json, f, ensure_ascii=False, indent=4)
+                # Also save CSV for backward compat
+                csv_path = base_path / "model" / "topic_labels.csv"
+                st.session_state.labels_edited.to_csv(csv_path, index=False)
+                st.success("✅ Label berhasil disimpan ke JSON + CSV!")
                 st.cache_data.clear()
                 st.rerun()
             except Exception as e:
