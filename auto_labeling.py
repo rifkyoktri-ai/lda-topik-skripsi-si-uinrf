@@ -67,6 +67,13 @@ LABEL_MAPPING = {
     "usability risiko": "Manajemen Risiko & Usability Website",
     "kualitas sistem": "Kualitas Layanan Sistem Informasi",
     "kualitas aplikasi": "Kualitas Layanan Sistem Informasi",
+    "monitoring kesuksesan": "Kualitas Layanan Sistem Informasi",
+    "kesuksesan sistem": "Kualitas Layanan Sistem Informasi",
+    "kesuksesan implementasi": "Kualitas Layanan Sistem Informasi",
+    "technologies kepuasan": "Kepuasan Pengguna Sistem Informasi",
+    "teknologi kepuasan": "Kepuasan Pengguna Sistem Informasi",
+    "kepuasan teknologi": "Kepuasan Pengguna Sistem Informasi",
+    "kepuasan pengguna sistem": "Kepuasan Pengguna Sistem Informasi",
     "usability quality": "Manajemen Risiko & Usability Website",
     "quality satisfaction": "Service Quality & User Satisfaction",
 }
