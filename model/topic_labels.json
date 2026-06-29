@@ -1,219 +1,163 @@
 {
   "0": {
-    "label_final": "Extreme Programming (XP)",
-    "label_auto": "Palm Business",
-    "score": 0.6323,
+    "label_final": "Manajemen Risiko & Usability Website",
+    "label_auto": "Usability Quality",
+    "score": 0.7842,
     "top_words": [
-      "barang",
-      "programming",
-      "extreme",
-      "cpo",
-      "learning",
-      "palm",
-      "business",
-      "oil",
-      "making",
-      "office"
+      "layan",
+      "usability",
+      "quality",
+      "salah"
     ],
     "top_words_filtered": [
-      "barang",
-      "programming",
-      "extreme",
-      "cpo",
-      "learning",
-      "palm",
-      "business",
-      "oil",
-      "making",
-      "office"
+      "layan",
+      "usability",
+      "quality",
+      "salah"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.4095
+    "quality_coherence": 0.4234
   },
   "1": {
-    "label_final": "Analisis Sentimen & NLP",
-    "label_auto": "Bas Pilih",
-    "score": 0.5904,
+    "label_final": "Analisis Sentimen & Klasifikasi Teks",
+    "label_auto": "Score Recall",
+    "score": 0.7044,
     "top_words": [
-      "bantu",
       "sentimen",
-      "surat",
-      "terima",
-      "bas",
-      "pilih",
-      "mudah",
-      "tuju",
-      "pegawai",
-      "kembang"
+      "ulas",
+      "mobile",
+      "significant",
+      "score",
+      "recall",
+      "positif",
+      "negatif",
+      "precision",
+      "store"
     ],
     "top_words_filtered": [
-      "bantu",
       "sentimen",
-      "surat",
-      "terima",
-      "bas",
-      "pilih",
-      "mudah",
-      "tuju",
-      "pegawai",
-      "kembang"
+      "ulas",
+      "mobile",
+      "significant",
+      "score",
+      "recall",
+      "positif",
+      "negatif",
+      "precision",
+      "store"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.5392
+    "quality_coherence": 0.4021
   },
   "2": {
-    "label_final": "Audit & Evaluasi SIAKAD",
-    "label_auto": "Audit Evaluation",
-    "score": 0.6725,
+    "label_final": "Kualitas Layanan Sistem Informasi",
+    "label_auto": "Sukses",
+    "score": 0.7529,
     "top_words": [
-      "akademik",
-      "simak",
-      "level",
-      "kategori",
-      "terima",
-      "audit",
-      "evaluation",
-      "siakad",
+      "layan",
+      "laku",
       "tuju",
-      "technology"
+      "terima",
+      "sukses"
     ],
     "top_words_filtered": [
-      "akademik",
-      "simak",
-      "level",
-      "kategori",
-      "terima",
-      "audit",
-      "evaluation",
-      "siakad",
+      "layan",
+      "laku",
       "tuju",
-      "technology"
+      "terima",
+      "sukses"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.3438
+    "quality_coherence": 0.5428
   },
   "3": {
-    "label_final": "Teknologi Informasi Akademik",
-    "label_auto": "Technology Akademik",
-    "score": 0.6287,
+    "label_final": "Service Quality & User Satisfaction",
+    "label_auto": "Quality Satisfaction",
+    "score": 0.8273,
     "top_words": [
-      "layan",
-      "mobile",
-      "giat",
-      "mudah",
-      "aset",
-      "pkl",
-      "salah",
-      "bantu",
-      "technology",
-      "akademik"
+      "quality",
+      "satisfaction",
+      "service",
+      "results",
+      "level",
+      "which",
+      "users"
     ],
     "top_words_filtered": [
-      "layan",
-      "mobile",
-      "giat",
-      "mudah",
-      "aset",
-      "pkl",
-      "salah",
-      "bantu",
-      "technology",
-      "akademik"
+      "quality",
+      "satisfaction",
+      "service",
+      "results",
+      "level",
+      "which",
+      "users"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.408
+    "quality_coherence": 0.6012
   },
   "4": {
-    "label_final": "Service Quality & Kepuasan Pengguna",
-    "label_auto": "Service Satisfaction",
-    "score": 0.7351,
+    "label_final": "Extreme Programming (XP)",
+    "label_auto": "Programming Extreme",
+    "score": 0.5516,
     "top_words": [
-      "quality",
-      "service",
-      "satisfaction",
-      "not",
-      "results",
-      "significant",
-      "net",
-      "success",
-      "users",
-      "technology"
+      "kembang",
+      "laku",
+      "programming",
+      "extreme",
+      "bantu",
+      "tuju",
+      "jual",
+      "mudah"
     ],
     "top_words_filtered": [
-      "quality",
-      "service",
-      "satisfaction",
-      "not",
-      "results",
-      "significant",
-      "net",
-      "success",
-      "users",
-      "technology"
+      "kembang",
+      "laku",
+      "programming",
+      "extreme",
+      "bantu",
+      "tuju",
+      "jual",
+      "mudah"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.4796
+    "quality_coherence": 0.5718
   },
   "5": {
-    "label_final": "Extreme Programming (XP) (Usability)",
-    "label_auto": "Quality Programming",
-    "score": 0.6701,
+    "label_final": "Kepuasan Pengguna Sistem Informasi",
+    "label_auto": "Puas Satisfaction",
+    "score": 0.9327,
     "top_words": [
-      "usability",
-      "quality",
-      "programming",
-      "extreme",
-      "layan",
-      "bina",
-      "mudah",
+      "puas",
+      "satisfaction",
       "tuju",
-      "sedia",
-      "webqual"
+      "laku"
     ],
     "top_words_filtered": [
-      "usability",
-      "quality",
-      "programming",
-      "extreme",
-      "layan",
-      "bina",
-      "mudah",
+      "puas",
+      "satisfaction",
       "tuju",
-      "sedia",
-      "webqual"
+      "laku"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.3214
+    "quality_coherence": 0.5607
   },
   "6": {
-    "label_final": "Kepuasan Pengguna SI Akademik",
-    "label_auto": "Satisfaction Akademik",
-    "score": 0.6765,
+    "label_final": "Usability & Layanan Akademik",
+    "label_auto": "Usability Layan",
+    "score": 0.7877,
     "top_words": [
-      "puas",
-      "satisfaction",
-      "akademik",
-      "sukses",
-      "computing",
-      "end",
-      "content",
-      "ease",
-      "bimbing",
-      "format"
+      "usability",
+      "layan",
+      "simak",
+      "tuju"
     ],
     "top_words_filtered": [
-      "puas",
-      "satisfaction",
-      "akademik",
-      "sukses",
-      "computing",
-      "end",
-      "content",
-      "ease",
-      "bimbing",
-      "format"
+      "usability",
+      "layan",
+      "simak",
+      "tuju"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.4798
+    "quality_coherence": 0.4905
   }
 }

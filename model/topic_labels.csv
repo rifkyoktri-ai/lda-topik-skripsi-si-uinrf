@@ -1,8 +1,8 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Extreme Programming (XP),Topic with 34 documents,barang;programming;extreme;cpo;learning,0.6323,0.4095
-2,Analisis Sentimen & NLP,Topic with 52 documents,bantu;sentimen;surat;terima;bas,0.5904,0.5392
-3,Audit & Evaluasi SIAKAD,Topic with 52 documents,akademik;simak;level;kategori;terima,0.6725,0.3438
-4,Teknologi Informasi Akademik,Topic with 42 documents,layan;mobile;giat;mudah;aset,0.6287,0.408
-5,Service Quality & Kepuasan Pengguna,Topic with 33 documents,quality;service;satisfaction;not;results,0.7351,0.4796
-6,Extreme Programming (XP) (Usability),Topic with 56 documents,usability;quality;programming;extreme;layan,0.6701,0.3214
-7,Kepuasan Pengguna SI Akademik,Topic with 42 documents,puas;satisfaction;akademik;sukses;computing,0.6765,0.4798
+1,Manajemen Risiko & Usability Website,Topic with 27 documents,layan;usability;quality;salah,0.7842,0.4234
+2,Analisis Sentimen & Klasifikasi Teks,Topic with 7 documents,sentimen;ulas;mobile;significant;score,0.7044,0.4021
+3,Kualitas Layanan Sistem Informasi,Topic with 59 documents,layan;laku;tuju;terima;sukses,0.7529,0.5428
+4,Service Quality & User Satisfaction,Topic with 58 documents,quality;satisfaction;service;results;level,0.8273,0.6012
+5,Extreme Programming (XP),Topic with 82 documents,kembang;laku;programming;extreme;bantu,0.5516,0.5718
+6,Kepuasan Pengguna Sistem Informasi,Topic with 55 documents,puas;satisfaction;tuju;laku,0.9327,0.5607
+7,Usability & Layanan Akademik,Topic with 23 documents,usability;layan;simak;tuju,0.7877,0.4905

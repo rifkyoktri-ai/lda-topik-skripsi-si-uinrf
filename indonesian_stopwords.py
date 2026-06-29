@@ -182,3 +182,54 @@ def get_all_stopwords():
         nltk.download('stopwords')
         nltk_sw = set(stopwords.words('indonesian'))
     return nltk_sw.union(CUSTOM_STOPWORDS_SI)
+
+
+def get_conservative_stopwords():
+    """
+    Stopwords minimal untuk preprocessing LDA.
+    HANYA kata benar-benar generik — TIDAK termasuk kata teknis domain SI
+    seperti 'sistem', 'informasi', 'aplikasi', 'data', 'teknologi', dll.
+    """
+    return {
+        # Kata tugas bahasa Indonesia
+        "yang", "dan", "di", "ke", "dari", "dengan", "untuk", "pada", "ini",
+        "itu", "adalah", "sebagai", "dalam", "oleh", "serta", "atau", "tidak",
+        "akan", "telah", "juga", "dapat", "sudah", "ada", "hal", "lebih",
+        "sangat", "semakin", "setelah", "sebelum", "ketika", "saat", "karena",
+        "sehingga", "maka", "bahwa", "secara", "antara", "tersebut", "yaitu",
+        "yakni", "seperti", "mengenai", "tentang", "sambil", "pula", "lalu",
+        "pun", "para", "ia", "mereka", "kami", "kita", "dia", "merupakan",
+        "terdiri", "macam", "jenis", "terdapat", "bagian", "menjadi", "berbagai",
+        "memiliki", "sebagaimana", "sejumlah", "sering", "suatu", "sebuah",
+        "seluruh", "semua", "setiap", "sendiri", "sekitar", "sebagian",
+        "selalu", "selama", "selesai", "semenjak", "sementara", "sempat",
+        "sepanjang", "seringkali", "sesudah", "supaya", "tadi", "tak",
+        "tampak", "tapi", "telah", "tempat", "tengah", "tentu", "terakhir",
+        "terhadap", "terjadi", "terkait", "terlalu", "termasuk", "ternyata",
+        "terus", "tetap", "tetapi", "tiap", "tiba", "toh", "turut",
+        "umum", "umumnya", "untuk", "waktu", "walau", "walaupun", "wong",
+        "yaitu", "yakin", "yakni", "zaman", "awal", "akhir", "baru", "lama",
+        "mungkin", "bisa", "harus", "boleh", "ingin", "mau", "pernah",
+        "belum", "sedang", "masih", "cukup", "kurang", "paling",
+        "amat", "begitu", "demikian", "makin", "banyak", "sedikit",
+        "beberapa", "rata", "masing", "bersama", "lain",
+        # Angka dasar
+        "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan",
+        "sembilan", "sepuluh", "puluh", "ratus", "ribu", "juta", "milyar", "nol",
+        "pertama", "kedua", "ketiga",
+        # Kata sangat generik konteks akademik (bukan teknis SI)
+        "penelitian", "penulis", "skripsi", "tugas", "akhir",
+        "bab", "halaman", "tabel", "gambar", "lampiran",
+        # Stopwords Inggris sangat umum
+        "the", "and", "of", "in", "to", "a", "is", "are", "was",
+        "were", "be", "been", "being", "have", "has", "had", "do",
+        "does", "did", "will", "would", "could", "should", "may",
+        "might", "shall", "can", "need", "this", "that", "these",
+        "those", "it", "its", "with", "for", "on", "at", "by",
+        "from", "as", "into", "through", "during", "before", "after",
+        "above", "below", "between", "out", "off", "over", "under",
+        "then", "than", "so", "but", "or", "if", "while", "although",
+        "because", "since", "until", "about", "against", "within",
+        "without", "some", "any", "every", "each", "both", "few",
+        "more", "most", "other",
+    }

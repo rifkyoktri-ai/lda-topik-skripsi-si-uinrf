@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from indonesian_stopwords import get_all_stopwords
+from indonesian_stopwords import get_conservative_stopwords
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,7 +43,7 @@ logger.info(f"\n[2/4] Membersihkan teks...")
 
 factory = StemmerFactory()
 stemmer = factory.create_stemmer()
-all_stopwords = get_all_stopwords()
+all_stopwords = get_conservative_stopwords()
 
 def bersihkan(teks):
     if not isinstance(teks, str):

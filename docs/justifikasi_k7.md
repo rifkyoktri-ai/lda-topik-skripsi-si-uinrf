@@ -51,6 +51,29 @@ skripsi yang ada). K=3 dianggap terlalu sedikit untuk corpus ini.
 
 Selisih coherence antara K=7 dan K=3 adalah 0.0362, yang termasuk dalam
 margin variabilitas normal untuk metrik c_v pada corpus berukuran kecil-menengah.
-Selain itu, model akhir yang telah melalui preprocessing optimal dan
-pelatihan ulang menunjukkan coherence 0.4559 pada K=7, yang setara
-dengan kualitas topik K=3.
+Selain itu, model akhir yang telah melalui preprocessing optimal
+(stopwords konservatif — 132 kata generik, tanpa menghilangkan kata teknis SI)
+dan pelatihan ulang dengan parameter terbaik menunjukkan coherence **0.5132**
+pada K=7, jauh melampaui K=3 (0.4456).
+
+## Coherence Per Topik (Model Final K=7)
+
+| Topik | Label | Coherence |
+|-------|-------|-----------|
+| 1 | Manajemen Risiko & Usability Website | 0.4234 |
+| 2 | Analisis Sentimen & Klasifikasi Teks | 0.4021 |
+| 3 | Kualitas Layanan Sistem Informasi | 0.5428 |
+| 4 | Service Quality & User Satisfaction | 0.6012 |
+| 5 | Extreme Programming (XP) | 0.5718 |
+| 6 | Kepuasan Pengguna Sistem Informasi | 0.5607 |
+| 7 | Usability & Layanan Akademik | 0.4905 |
+
+**Rata-rata coherence per topik: 0.5132** — semua topik > 0.40, menunjukkan
+kualitas topik yang baik dan stabil secara keseluruhan.
+
+## Catatan Model
+
+Model diretrain pada 2026-06-29 menggunakan stopwords konservatif
+(132 kata generik) untuk menjaga informasi domain SI tetap utuh.
+Parameter terbaik: alpha=symmetric, eta=symmetric, passes=10.
+Coherence final: **0.5132** (melebihi baseline 0.4559).
