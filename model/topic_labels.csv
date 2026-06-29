@@ -1,8 +1,8 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Systems Technology Siswa Satisfaction,Topic with 28 documents,bina;mobile;warga;learning;terap,0.7273,0.4147
-2,Manajemen Risiko,Topic with 32 documents,risiko;results;not;quality;which,0.6337,0.4796
-3,Sistem Informasi Akademik,Topic with 59 documents,puas;layan;kualitas;variabel;pengaruh,0.7256,0.5353
-4,Sistem Manajemen Surat,Topic with 34 documents,usability;nilai;layan;quality;milik,0.7109,0.3832
-5,Extreme Programming (XP),Topic with 61 documents,kelola;mudah;terima;bantu;barang,0.6768,0.56
-6,Analisis Kualitas Website (WebQual),Topic with 48 documents,kualitas;layan;variabel;puas;nilai,0.8325,0.4587
-7,Klasifikasi & Data Mining,Topic with 49 documents,nilai;algoritma;layan;sentimen;aman,0.7685,0.3599
+1,Extreme Programming (XP),Topic with 34 documents,barang;programming;extreme;cpo;learning,0.6323,0.4095
+2,Analisis Sentimen & NLP,Topic with 52 documents,bantu;sentimen;surat;terima;bas,0.5904,0.5392
+3,Audit & Evaluasi SIAKAD,Topic with 52 documents,akademik;simak;level;kategori;terima,0.6725,0.3438
+4,Teknologi Informasi Akademik,Topic with 42 documents,layan;mobile;giat;mudah;aset,0.6287,0.408
+5,Service Quality & Kepuasan Pengguna,Topic with 33 documents,quality;service;satisfaction;not;results,0.7351,0.4796
+6,Extreme Programming (XP) (Usability),Topic with 56 documents,usability;quality;programming;extreme;layan,0.6701,0.3214
+7,Kepuasan Pengguna SI Akademik,Topic with 42 documents,puas;satisfaction;akademik;sukses;computing,0.6765,0.4798

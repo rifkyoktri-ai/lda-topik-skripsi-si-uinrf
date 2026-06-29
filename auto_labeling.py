@@ -1,142 +1,57 @@
-"""
-Auto Labeling Topik LDA menggunakan KeyBERT
-Sumber label: top words dari model LDA (bukan dari judul dokumen)
-Model: paraphrase-multilingual-MiniLM-L12-v2 (CPU-compatible)
-"""
-
 import json
 import warnings
 import sys
+import argparse
+import pandas as pd
 from pathlib import Path
-from collections import Counter
 import numpy as np
-warnings.filterwarnings('ignore')
 
+warnings.filterwarnings('ignore')
 from gensim.models import LdaModel
 from indonesian_stopwords import get_all_stopwords
 
 LABEL_MAPPING = {
-    # Evaluasi & Pengukuran Sistem
-    "end user computing satisfaction" : "End User Computing Satisfaction (EUCS)",
-    "technology acceptance model"     : "Technology Acceptance Model (TAM)",
-    "importance performance analysis" : "Importance Performance Analysis (IPA)",
-    "delone mclean"                   : "Evaluasi Sistem DeLone & McLean",
-    "delone dan mclean"               : "Evaluasi Sistem DeLone & McLean",
-    "end user computing"              : "End User Computing Satisfaction (EUCS)",
-    "webqual"                         : "Analisis Kualitas Website (WebQual)",
-    "servqual"                        : "Analisis Kualitas Layanan (ServQual)",
-    "iso 25010"                       : "Evaluasi Kualitas ISO 25010",
-    "iso 9126"                        : "Evaluasi Kualitas ISO 9126",
-    "kepuasan pengguna"               : "Analisis Kepuasan Pengguna",
-    "kepuasan"                        : "Analisis Kepuasan Pengguna",
-    "kualitas layanan"                : "Analisis Kualitas Layanan",
-    # "usability" dihapus: terlalu generik, menyebabkan false positive duplikat
-
-    # Machine Learning & Data Mining
-    "k-nearest neighbor"              : "K-Nearest Neighbor (KNN)",
-    "nearest neighbor"                : "K-Nearest Neighbor (KNN)",
-    "naive bayes"                     : "Klasifikasi Naive Bayes",
-    "support vector machine"          : "Support Vector Machine (SVM)",
-    "support vector"                  : "Support Vector Machine (SVM)",
-    "decision tree"                   : "Decision Tree Classifier",
-    "random forest"                   : "Random Forest Classifier",
-    "neural network"                  : "Jaringan Syaraf Tiruan (ANN)",
-    "deep learning"                   : "Deep Learning",
-    "klasifikasi"                     : "Klasifikasi & Data Mining",
-    "prediksi"                        : "Prediksi & Forecasting",
-    "clustering"                      : "Clustering & Pengelompokan Data",
-    "sentimen"                        : "Analisis Sentimen",
-    "sentiment"                       : "Analisis Sentimen",
-    "text mining"                     : "Text Mining & NLP",
-    "data mining"                     : "Data Mining",
-
-    # Metode Pengembangan Sistem
-    "programming extreme"             : "Extreme Programming (XP)",
-    "extreme programming"             : "Extreme Programming (XP)",
-    "rapid application development"   : "Rapid Application Development (RAD)",
-    "rapid application"               : "Rapid Application Development (RAD)",
-    "prototyping"                     : "Metode Prototyping",
-    "agile scrum"                     : "Agile Scrum",
-    # "bangun", "mudah" dihapus: terlalu generik
-
-    # Sistem Pendukung Keputusan
-    "sistem pendukung keputusan"      : "Sistem Pendukung Keputusan (SPK)",
-    "decision support"                : "Sistem Pendukung Keputusan (SPK)",
-    "beasiswa"                        : "SPK Pemilihan Beasiswa",
-    "topsis"                          : "SPK Metode TOPSIS",
-    "ahp"                             : "SPK Metode AHP",
-    "saw"                             : "SPK Metode SAW",
-
-    # Domain Sistem Informasi Spesifik
-    "sistem informasi manajemen"      : "Sistem Informasi Manajemen",
-    "sistem informasi akademik"       : "Sistem Informasi Akademik",
-    "sistem informasi keuangan"       : "Sistem Informasi Keuangan",
-    "sistem informasi kepegawaian"    : "Sistem Informasi Kepegawaian",
-    "sistem informasi perpustakaan"   : "Sistem Informasi Perpustakaan",
-    "sistem informasi kesehatan"      : "Sistem Informasi Kesehatan",
-    "rekam medis"                     : "Sistem Rekam Medis",
-    "perpustakaan"                    : "Sistem Informasi Perpustakaan",
-    "pustaka"                         : "Sistem Informasi Perpustakaan & Digital Library",
-    "presensi"                        : "Sistem Presensi & Absensi",
-    "absensi"                         : "Sistem Presensi & Absensi",
-    "inventory"                       : "Sistem Manajemen Inventori",
-    "persediaan"                      : "Sistem Manajemen Inventori",
-    "penjualan"                       : "Sistem Informasi Penjualan",
-    "kepegawaian"                     : "Sistem Informasi Kepegawaian",
-    # "pegawai" dihapus: terlalu generik
-    "surat"                           : "Sistem Manajemen Surat",
-    "arsip"                           : "Sistem Manajemen Arsip",
-    "monitoring"                      : "Sistem Monitoring & Evaluasi",
-
-    # Audit & Keamanan
-    "audit sistem"                    : "Audit Sistem Informasi",
-    "cobit"                           : "Audit Sistem Informasi (COBIT)",
-    "keamanan"                        : "Keamanan Sistem & Jaringan",
-    "enkripsi"                        : "Kriptografi & Keamanan Data",
-    "kriptografi"                     : "Kriptografi & Keamanan Data",
-
-    # Teknologi Modern
-    "internet of things"              : "Internet of Things (IoT)",
-    "geographic information"          : "Geographic Information System (GIS)",
-    "android"                         : "Pengembangan Aplikasi Android",
-    # "mobile" dihapus: terlalu generik, false positive
-    "e-commerce"                      : "E-Commerce & Transaksi Online",
-    "ecommerce"                       : "E-Commerce & Transaksi Online",
-    "marketplace"                     : "E-Commerce & Marketplace",
-    "hukum"                           : "Sistem Informasi Hukum",
-    "syariah"                         : "Sistem Informasi Keuangan Syariah",
-    "akademik"                        : "Sistem Informasi Akademik",
-    "keuangan"                        : "Sistem Informasi Keuangan",
-    "risiko"                          : "Manajemen Risiko",
-    "jaringan"                        : "Jaringan Komputer",
+    "sistem informasi perpustakaan": "Sistem Informasi Perpustakaan & Digital Library",
+    "perpustakaan digital": "Sistem Informasi Perpustakaan & Digital Library",
+    "digital library": "Sistem Informasi Perpustakaan & Digital Library",
+    "programming extreme": "Extreme Programming (XP)",
+    "extreme programming": "Extreme Programming (XP)",
+    "sistem informasi akademik": "Sistem Informasi Akademik",
+    "sistem informasi keuangan": "Sistem Informasi Keuangan",
+    "manajemen risiko": "Manajemen Risiko",
+    "sistem informasi desa": "Sistem Informasi Desa (SID)",
+    "sistem informasi geografis": "Sistem Informasi Geografis (SIG)",
+    "sistem pendukung keputusan": "Sistem Pendukung Keputusan (SPK)",
+    "sistem informasi akuntansi": "Sistem Informasi Akuntansi",
+    "sistem informasi geografis sig": "Sistem Informasi Geografis (SIG)",
+    "pendukung keputusan": "Sistem Pendukung Keputusan (SPK)",
+    "sistem informasi": "Sistem Informasi Manajemen",
+    "penerimaan siswa": "Sistem Informasi Penerimaan Siswa",
+    "penerimaan mahasiswa": "Sistem Informasi Penerimaan Mahasiswa",
+    "informasi akademik": "Sistem Informasi Akademik",
+    "sistem informasi inventory": "Sistem Informasi Inventory",
+    "surat bas": "Sistem Informasi Surat & Arsip",
+    "surat terima": "Sistem Informasi Surat & Arsip",
+    "bas pilih": "Sistem Informasi Surat & Arsip",
+    "audit evaluation": "Audit & Evaluasi Sistem Informasi",
+    "audit siakad": "Audit & Evaluasi Sistem Informasi",
+    "siakad": "Sistem Informasi Akademik (SIAKAD)",
+    "service quality": "Service Quality & Kepuasan Pengguna",
+    "service satisfaction": "Service Quality & Kepuasan Pengguna",
+    "satisfaction akademik": "Kepuasan Pengguna SI Akademik",
+    "satisfaction puas": "Kepuasan Pengguna Sistem Informasi",
+    "technology akademik": "Teknologi Informasi Akademik",
+    "evaluation siakad": "Audit & Evaluasi SIAKAD",
+    "net success": "Kesuksesan Sistem Informasi",
+    "webqual usability": "Analisis Kualitas Website (WebQual)",
+    "usability webqual": "Analisis Kualitas Website (WebQual)",
+    "layan mobile": "Mobile Government & Layanan Publik",
+    "pusat layan": "Sistem Informasi Pelayanan Publik",
+    "bantu sentimen": "Analisis Sentimen & NLP",
+    "sentimen analis": "Analisis Sentimen & NLP",
 }
 
-
-def apply_label_mapping(label_auto: str, top_words: list) -> str:
-    search_text = (label_auto + " " + " ".join(top_words)).lower()
-    sorted_patterns = sorted(LABEL_MAPPING.keys(), key=len, reverse=True)
-    for pattern in sorted_patterns:
-        if pattern.lower() in search_text:
-            return LABEL_MAPPING[pattern]
-    return label_auto.strip().title()
-
-
-def deduplicate_labels(topic_labels: dict) -> dict:
-    labels = [v["label_final"] for v in topic_labels.values()]
-    if len(labels) == len(set(labels)):
-        return topic_labels
-    counts = Counter(labels)
-    seen = {}
-    for tid in list(topic_labels.keys()):
-        label = topic_labels[tid]["label_final"]
-        if counts[label] > 1:
-            seen[label] = seen.get(label, 0) + 1
-            words = " ".join(topic_labels[tid]["top_words_filtered"][:3])
-            topic_labels[tid]["label_final"] = f"{label} ({words})"
-    return topic_labels
-
-
-def label_topics_keybert(lda_model, all_stopwords: set) -> dict:
+def label_topics_keybert(lda_model, all_stopwords, topic_titles=None):
     print("\n" + "="*60)
     print("AUTO LABELING TOPIK LDA DENGAN KEYBERT")
     print("="*60)
@@ -145,24 +60,32 @@ def label_topics_keybert(lda_model, all_stopwords: set) -> dict:
     print("Estimasi waktu: 10-20 menit (CPU only)")
     print("="*60)
 
-    print("\n[1/3] Loading KeyBERT model...")
-    print("      Download ~500MB jika belum ada di cache...")
-    from keybert import KeyBERT
-    from sentence_transformers import SentenceTransformer
-    sentence_model = SentenceTransformer(
-        'paraphrase-multilingual-MiniLM-L12-v2'
-    )
-    kw_model = KeyBERT(model=sentence_model)
-    print("      KeyBERT model loaded.")
+    try:
+        print("\n[1/3] Loading KeyBERT model...")
+        from keybert import KeyBERT
+        from sentence_transformers import SentenceTransformer
+        sentence_model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+        kw_model = KeyBERT(model=sentence_model)
+        keybert_loaded = True
+        print("      KeyBERT model loaded.")
+    except Exception as e:
+        print(f"      Gagal meload KeyBERT (Mungkin isu memory): {e}")
+        print("      Menggunakan fallback (Top words).")
+        keybert_loaded = False
+        kw_model = None
 
     print("\n[2/3] Memproses setiap topik...")
     topic_labels = {}
 
+    is_1_indexed = False
+    if topic_titles and min(topic_titles.keys()) == 1:
+        is_1_indexed = True
+
     for topic_id in range(lda_model.num_topics):
-        print(f"\n  Topik {topic_id + 1}/{lda_model.num_topics}:")
+        tid = topic_id + 1
+        print(f"\n  Topik {tid}/{lda_model.num_topics}:")
 
-        raw_words = lda_model.show_topic(topic_id, topn=25)
-
+        raw_words = lda_model.show_topic(topic_id, topn=20)
         filtered_words = [
             word for word, weight in raw_words
             if word.lower() not in all_stopwords
@@ -171,103 +94,162 @@ def label_topics_keybert(lda_model, all_stopwords: set) -> dict:
             and word.isalpha()
         ]
 
-        print(f"  Raw words (top 10): {[w for w,_ in raw_words[:10]]}")
+        top_words_str = " ".join(filtered_words[:10])
+        print(f"  Raw words (top 10): {[w for w, _ in raw_words[:10]]}")
         print(f"  Filtered words: {filtered_words[:10]}")
 
-        if len(filtered_words) < 3:
-            print(f"  Filtered words < 3, gunakan fallback label")
-            topic_labels[str(topic_id)] = {
-                "label_auto"  : f"Topik {topic_id + 1}",
-                "score"       : 0.0,
-                "top_words"   : [w for w, _ in raw_words[:10]],
-                "top_words_filtered": filtered_words,
-                "label_final" : f"Topik Umum {topic_id + 1}"
-            }
-            continue
+        t_key = topic_id + 1 if is_1_indexed else topic_id
+        titles = topic_titles.get(t_key, []) if topic_titles else []
+        num_docs = len(titles)
 
-        doc = " ".join(filtered_words)
+        doc_text = top_words_str
+        if titles:
+            doc_text += " " + " ".join(titles)
 
-        try:
-            keywords = kw_model.extract_keywords(
-                doc,
-                keyphrase_ngram_range=(2, 4),
-                stop_words=list(all_stopwords),
-                use_mmr=True,
-                diversity=0.5,
-                top_n=5
-            )
+        best_label = ""
+        best_score = 0.0
+        keywords_extracted = []
 
-            if keywords:
-                best_label = keywords[0][0]
-                best_score = float(keywords[0][1])
-                print(f"  KeyBERT candidates: {[(k, round(s,3)) for k,s in keywords[:3]]}")
-            else:
-                best_label = " ".join(filtered_words[:3])
-                best_score = 0.0
-                print(f"  KeyBERT tidak menghasilkan kandidat")
+        if keybert_loaded:
+            try:
+                keywords = kw_model.extract_keywords(
+                    doc_text,
+                    keyphrase_ngram_range=(1, 2),
+                    stop_words=list(all_stopwords),
+                    use_mmr=True,
+                    diversity=0.5,
+                    top_n=5
+                )
 
-        except Exception as e:
-            print(f"  KeyBERT error: {e}")
-            best_label = " ".join(filtered_words[:3])
+                if keywords:
+                    best_label = keywords[0][0].title()
+                    best_score = float(keywords[0][1])
+                    keywords_extracted = [k[0] for k in keywords]
+                    print(f"  KeyBERT candidates: {[(k, round(s,3)) for k,s in keywords[:3]]}")
+                else:
+                    print(f"  KeyBERT tidak menghasilkan kandidat, fallback ke top words")
+            except Exception as e:
+                print(f"  KeyBERT error: {e}, fallback ke top words")
+
+        if not best_label:
+            best_label = " ".join(filtered_words[:3]).title()
             best_score = 0.0
+            keywords_extracted = filtered_words[:5]
 
-        label_final = apply_label_mapping(best_label, filtered_words)
+        # Apply LABEL_MAPPING
+        label_auto = best_label
+        combined = (label_auto + " " + " ".join(filtered_words)).lower()
+        matched_key = None
+        for pattern in sorted(LABEL_MAPPING.keys(), key=len, reverse=True):
+            if pattern in combined:
+                matched_key = pattern
+                break
+        if matched_key:
+            best_label = LABEL_MAPPING[matched_key]
+            print(f"  LABEL_MAPPING match: '{matched_key}' -> '{best_label}'")
 
-        print(f"  label_auto  : {best_label} (score: {best_score:.3f})")
-        print(f"  label_final : {label_final}")
+        print(f"  label_auto  : {label_auto} (score: {best_score:.3f})")
+        print(f"  label_final : {best_label}")
 
         topic_labels[str(topic_id)] = {
-            "label_auto"        : best_label,
-            "score"             : round(best_score, 4),
-            "top_words"         : [w for w, _ in raw_words[:10]],
+            "label_final": best_label,
+            "label_auto": label_auto,
+            "score": round(best_score, 4),
+            "top_words": filtered_words[:10],
             "top_words_filtered": filtered_words[:10],
-            "label_final"       : label_final
+            "num_docs": num_docs
         }
 
-    topic_labels = deduplicate_labels(topic_labels)
+    # Deduplicate: append suffix from top_words_filtered when label_final collides
+    seen_labels = {}
+    for tid_str, info in topic_labels.items():
+        base = info["label_final"]
+        if base in seen_labels:
+            suffix = info["top_words_filtered"][0] if info["top_words_filtered"] else str(int(tid_str)+1)
+            info["label_final"] = f"{base} ({suffix.title()})"
+        else:
+            seen_labels[base] = tid_str
+
     return topic_labels
 
 
-def save_topic_labels(topic_labels: dict, output_dir: str = "model") -> None:
-    topic_labels = deduplicate_labels(topic_labels)
+def save_topic_labels(topic_labels, output_dir):
     output_path = Path(output_dir) / "topic_labels.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
     with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(topic_labels, f, ensure_ascii=False, indent=4)
+        json.dump(topic_labels, f, indent=2, ensure_ascii=False)
+
     print(f"\n[3/3] Topic labels disimpan ke: {output_path}")
+    print("\n" + "="*60)
+    print("RINGKASAN HASIL LABELING")
+    print("="*60)
+    for tid_str, info in topic_labels.items():
+        print(f"  Topik {int(tid_str)+1:2d}: {info['label_final']}")
+    print("="*60)
 
 
 def run_auto_labeling():
-    base_path = Path(__file__).parent
+    parser = argparse.ArgumentParser(description="Auto Labeling Topik LDA menggunakan KeyBERT")
+    parser.add_argument("--model_path", type=str, default="model/lda_model.gensim", help="Path ke file model LDA")
+    parser.add_argument("--dist_path", type=str, default="model/topic_distribution.csv", help="Path ke topic distribution CSV")
+    parser.add_argument("--output", type=str, default="model/topic_labels.csv", help="Path untuk menyimpan hasil label (CSV)")
 
-    model_path = base_path / "model" / "lda_model.gensim"
+    args = parser.parse_args()
+
+    model_path = Path(args.model_path)
     if not model_path.exists():
-        raise FileNotFoundError(
-            f"LDA model tidak ditemukan: {model_path}\n"
-            "Pastikan sudah menjalankan training LDA terlebih dahulu."
-        )
+        raise FileNotFoundError(f"LDA model tidak ditemukan: {model_path}")
 
     print(f"Loading LDA model dari: {model_path}")
     lda_model = LdaModel.load(str(model_path))
-    print(f"Model loaded. Jumlah topik: {lda_model.num_topics}")
+
+    print(f"Loading document titles dari: {args.dist_path}")
+    topic_titles = load_document_titles(args.dist_path)
 
     all_stopwords = get_all_stopwords()
     print(f"Total stopwords: {len(all_stopwords)} kata")
 
-    topic_labels = label_topics_keybert(lda_model, all_stopwords)
+    topic_labels = label_topics_keybert(lda_model, all_stopwords, topic_titles)
 
-    save_topic_labels(topic_labels, str(base_path / "model"))
+    # Save via save_topic_labels (JSON)
+    save_topic_labels(topic_labels, args.model_path.rsplit('/', 1)[0] if '/' in args.model_path else 'model')
 
-    print("\n" + "="*60)
-    print("RINGKASAN HASIL LABELING")
-    print("="*60)
-    for tid, data in topic_labels.items():
-        print(f"Topik {int(tid)+1}: {data['label_final']}")
-        print(f"  Score: {data['score']:.4f}")
-        print(f"  Words: {', '.join(data['top_words_filtered'][:5])}")
-    print("="*60)
+    # Also save CSV
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    labels_rows = []
+    for tid_str, info in topic_labels.items():
+        tid = int(tid_str) + 1
+        labels_rows.append({
+            'topic_id': tid,
+            'label': info['label_final'],
+            'description': f"Topic with {info['num_docs']} documents",
+            'keywords': ';'.join(info['top_words'][:5]),
+            'label_score': info['score'],
+            'quality_coherence': ''
+        })
+    df_labels = pd.DataFrame(labels_rows)
+    df_labels.to_csv(output_path, index=False)
+    print(f"  CSV backup -> {output_path}")
 
-    return topic_labels
+
+def load_document_titles(dist_path: str) -> dict:
+    topic_titles = {}
+    try:
+        if Path(dist_path).exists():
+            df = pd.read_csv(dist_path)
+            if 'topik_dominan' in df.columns and 'Judul' in df.columns:
+                for idx, row in df.iterrows():
+                    t = int(row['topik_dominan'])
+                    if t not in topic_titles:
+                        topic_titles[t] = []
+                    title_clean = str(row['Judul']).replace('\r', ' ').replace('\n', ' ')
+                    topic_titles[t].append(title_clean)
+        return topic_titles
+    except Exception as e:
+        print(f"Warning: Gagal meload judul dokumen: {e}")
+        return {}
 
 
 if __name__ == "__main__":

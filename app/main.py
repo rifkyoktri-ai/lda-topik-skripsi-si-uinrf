@@ -8,6 +8,9 @@ import plotly.graph_objects as go
 from pathlib import Path
 import warnings
 from datetime import datetime
+from gensim.models import LdaModel
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 warnings.filterwarnings('ignore')
 
 # ── Color Palette ──
@@ -224,7 +227,7 @@ def load_topic_labels():
                     'description': f"Topik {tid}: {info['label_final']}",
                     'keywords': ';'.join(info.get('top_words_filtered', info.get('top_words', []))[:5]),
                     'label_score': info.get('score', ''),
-                    'quality_coherence': ''
+                    'quality_coherence': info.get('quality_coherence', '')
                 })
             return pd.DataFrame(rows).sort_values('topic_id').reset_index(drop=True)
         elif csv_path.exists():
@@ -281,6 +284,15 @@ def load_topic_trend():
         return pd.read_csv(trend_path)
     return None
 
+# Load LDA Model for Word Cloud
+@st.cache_resource
+def load_lda_model():
+    base_path = Path(__file__).parent.parent
+    model_path = base_path / "model" / "lda_model.gensim"
+    if model_path.exists():
+        return LdaModel.load(str(model_path))
+    return None
+
 # Display HTML with proper rendering
 def display_html(html_content):
     """Display HTML content safely"""
@@ -306,11 +318,46 @@ if metrics_df is None or topic_dist_df is None:
 
 # Sidebar
 with st.sidebar:
-    st.header("🎛️ Navigation")
+    st.header("🎛️ Navigasi")
     page = st.radio(
         "Pilih Halaman:",
         ["📈 Overview", "🔵 Visualisasi LDA", "📊 Model Metrics", "🏷️ Topic Analysis", "🔍 Document Search", "📖 Data Info", "⚙️ Manage Labels", "📈 Prediksi Tren"]
     )
+    
+    st.markdown("---")
+    st.header("ℹ️ Info Model")
+    metrics_dict = dict(zip(metrics_df['Metrik'], metrics_df['Nilai'])) if metrics_df is not None else {}
+    coherence = metrics_dict.get('Coherence Score (CV)', 0)
+    st.caption(f"**K (Jumlah Topik):** {int(metrics_dict.get('Jumlah Topik (K)', 0))}")
+    st.caption(f"**Coherence (C_V):** {coherence:.4f}")
+
+    import os, datetime
+    try:
+        metrics_path = Path(__file__).parent.parent / 'model' / 'evaluation_metrics.csv'
+        m_df = pd.read_csv(metrics_path)
+        if 'training_date' in m_df.columns:
+            training_date = m_df['training_date'].iloc[0]
+        elif 'date' in m_df.columns:
+            training_date = m_df['date'].iloc[0]
+        else:
+            mtime = os.path.getmtime(Path(__file__).parent.parent / 'model' / 'lda_model.gensim')
+            training_date = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
+        st.caption(f"**Tanggal Training:** {training_date}")
+    except Exception:
+        try:
+            mtime = os.path.getmtime(Path(__file__).parent.parent / 'model' / 'lda_model.gensim')
+            training_date = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
+            st.caption(f"**Tanggal Training:** {training_date}")
+        except Exception:
+            st.caption("**Tanggal Training:** Tidak tersedia")
+
+    st.caption(f"**Total Dokumen:** {len(topic_dist_df) if topic_dist_df is not None else 0}")
+    
+    st.markdown("---")
+    if st.button("🔄 Refresh Data", use_container_width=True):
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        st.rerun()
 
 # PAGE 1: OVERVIEW
 if page == "📈 Overview":
@@ -652,6 +699,27 @@ elif page == "🏷️ Topic Analysis":
             st.dataframe(display_df, use_container_width=True, hide_index=True)
         else:
             st.info("No documents found for this topic.")
+            
+        # Word Cloud
+        lda_model = load_lda_model()
+        if lda_model:
+            custom_divider()
+            section_header("☁️ Word Cloud Topik")
+            top_words = dict(lda_model.show_topic(selected_topic, topn=30))
+            freq_dict = {w: float(v * 1000) for w, v in top_words.items()}
+            
+            wc = WordCloud(
+                width=800, height=400, 
+                background_color='white', 
+                colormap='viridis',
+                max_words=30
+            ).generate_from_frequencies(freq_dict)
+            
+            fig, ax = plt.subplots(figsize=(10, 5))
+            ax.imshow(wc, interpolation='bilinear')
+            ax.axis('off')
+            st.pyplot(fig)
+            plt.close(fig)
             
     except Exception as e:
         st.error(f"Error in topic analysis: {e}")
