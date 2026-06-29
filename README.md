@@ -1,100 +1,150 @@
-# LDA Topic Modeling Dashboard
+# LDA Topic Modeling — Skripsi SI UIN Raden Fatah
 
-Dashboard Streamlit interaktif untuk visualisasi dan analisis hasil LDA Topic Modeling.
+Sistem analisis topik otomatis berbasis **Latent Dirichlet Allocation (LDA)**
+untuk memetakan tema penelitian skripsi Program Studi Sistem Informasi
+UIN Raden Fatah Palembang.
 
-## 📋 Prerequisites
-- Python 3.8+
-- Virtual Environment (recommended)
+## Hasil Model
 
-## 🚀 Installation & Setup
+| Metrik | Nilai |
+|--------|-------|
+| Jumlah topik (K) | 7 |
+| Coherence c_v | **0.5132** (kategori: Good >= 0.50) |
+| Coherence u_mass | -1.6518 |
+| Log Perplexity | -6.6562 |
+| Jumlah dokumen | 311 |
+| Vocabulary | 2396 kata |
+| Parameter alpha | symmetric |
+| Parameter eta | symmetric |
 
-### 1. Install Dependencies
+## 7 Topik yang Ditemukan
+
+| # | Topik | Coherence |
+|---|-------|-----------|
+| 1 | Manajemen Risiko & Usability Website | 0.4234 |
+| 2 | Analisis Sentimen & Klasifikasi Teks | 0.4021 |
+| 3 | Kualitas Layanan Sistem Informasi | 0.5428 |
+| 4 | Service Quality & User Satisfaction | 0.6012 |
+| 5 | Extreme Programming (XP) | 0.5718 |
+| 6 | Kepuasan Pengguna Sistem Informasi | 0.5607 |
+| 7 | Usability & Layanan Akademik | 0.4905 |
+
+## Prerequisites
+
+- Python 3.11.9
+- Windows 10/11
+- RAM minimal 4GB (untuk KeyBERT model loading ~500MB)
+- Virtual environment (wajib)
+
+## Installation & Setup
+
 ```bash
+# Clone repository
+git clone https://github.com/rifkyoktri-ai/tes.git
+cd tes
+
+# Buat virtual environment
+python -m venv .venv
+.venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Run Dashboard
+## Menjalankan Pipeline
+
+Preprocessing data:
+```bash
+python preprocess.py
+```
+
+Training model LDA K=7:
+```bash
+python pipeline.py --no-auto-tune --num-topics 7 --passes 10 --alpha symmetric --eta symmetric
+```
+
+Jalankan dashboard:
 ```bash
 streamlit run app/main.py
 ```
 
-Dashboard akan membuka di browser pada `http://localhost:8501`
+Dashboard tersedia di `http://localhost:8501`
 
-## 📊 Features
+## Fitur Dashboard (8 Tab)
 
-### 📈 Overview
-- Dashboard overview dengan statistik utama
-- Distribusi topik dominan
-- Distribusi probabilitas
-- Timeline skripsi per tahun
+| Tab | Fitur |
+|-----|-------|
+| Overview | Statistik utama, distribusi topik, timeline per tahun |
+| Visualisasi LDA | PyLDAvis interaktif (self-contained, tanpa CDN) |
+| Model Metrics | Coherence score, perplexity, jumlah topik |
+| Topic Analysis | Top words per topik, word cloud, daftar dokumen |
+| Document Search | Pencarian dokumen berdasarkan judul/tahun/topik |
+| Data Info | Statistik dataset, preview data |
+| Prediksi Tren | Tren topik per tahun, forecast WMA 2026-2027 |
+| Manage Labels | Edit label topik (tersimpan ke JSON + CSV) |
 
-### 📊 Model Metrics
-- Evaluation metrics (Coherence Score, Log Perplexity)
-- Number of Topics
-- Penjelasan setiap metric
+## Halaman Pendukung
 
-### 🏷️ Topic Analysis
-- Top topics berdasarkan jumlah documents
-- Average probability per topic
-- Detail analysis untuk setiap topic
-- Daftar documents per topic
+| Halaman | Akses | Fungsi |
+|---------|-------|--------|
+| Evaluasi Model | `streamlit run app/pages/4_evaluasi_model.py` | Grid search K + pyLDAvis + justifikasi K=7 |
+| Analisis Tren | `streamlit run app/pages/5_analisis_tren.py` | WMA forecast detail per topik |
 
-### 🔍 Document Search
-- Search by: Nama Penulis, Judul, Tahun, atau Topic ID
-- Filter documents berdasarkan criteria
-- Download results as CSV
+## Struktur Direktori
 
-### 📖 Data Info
-- Dataset statistics
-- Probability statistics
-- Data preview
-- Data description
-
-## 📁 Directory Structure
 ```
 tes/
 ├── app/
-│   └── main.py              (Dashboard main file)
+│   ├── main.py                          # Entry point dashboard (8 tab)
+│   ├── pages/
+│   │   ├── 4_evaluasi_model.py          # Grid search + pyLDAvis
+│   │   └── 5_analisis_tren.py           # WMA trend forecast
+│   └── __pycache__/
 ├── data/
-│   ├── raw/                 (Raw data)
-│   └── proses/
-│       ├── dataset_preprocessed.csv
-│       ├── dictionary.gensim
-│       └── ...
+│   ├── raw/                             # Data mentah (CSV hasil scraping)
+│   ├── processed/                       # thesis_for_pipeline.csv
+│   └── intermediate/
+│       ├── dataset_preprocessed.csv     # Output preprocessing
+│       └── dictionary.gensim            # Gensim dictionary
 ├── model/
-│   ├── evaluation_metrics.csv
-│   ├── topic_distribution.csv
-│   ├── lda_model.gensim
-│   └── lda_visualization.html
-├── notebook/                (Jupyter notebooks)
-└── requirements.txt         (Python dependencies)
+│   ├── lda_model.gensim                 # Model terlatih K=7
+│   ├── topic_labels.json                # Label 7 topik (KeyBERT + LABEL_MAPPING)
+│   ├── topic_labels.csv                 # Backup CSV
+│   ├── topic_distribution.csv           # Distribusi topik per dokumen
+│   ├── hyperparameter_results.csv       # Hasil grid search 156 konfigurasi
+│   ├── evaluation_metrics.csv           # Coherence, perplexity
+│   ├── lda_visualization.html           # PyLDAvis self-contained
+│   ├── pyldavis_lib.js                  # JS library untuk inlining
+│   ├── trend_prediction.csv             # WMA 2026-2027
+│   ├── top_words_per_topic.png          # Plot top words
+│   └── tren_topik_per_tahun.png         # Plot tren tahunan
+├── docs/
+│   ├── justifikasi_k7.md                # Justifikasi metodologis K=7
+│   ├── CHANGELOG.md                     # Riwayat perubahan
+│   └── evaluation_plots/                # Plot evaluasi + word clouds
+├── model/ (lengkap di atas)
+├── notebook/                            # Jupyter notebooks eksplorasi
+├── .streamlit/
+│   └── config.toml                      # Tema blue-gold
+├── auto_labeling.py                     # KeyBERT auto-labeling + LABEL_MAPPING
+├── hyperparameter_tuning.py             # Grid search K=3-15 (156 konfigurasi)
+├── indonesian_stopwords.py              # Stopwords (get_all + get_conservative)
+├── pipeline.py                          # Pipeline LDA: preprocessing → model → labeling
+├── preprocess.py                        # Text preprocessing (stemming, stopword removal)
+├── trend_analyzer.py                    # WMA forecast
+├── topic_optimization.py                # Optimal K search (coherence vs perplexity)
+├── lda_evaluation.py                    # Evaluasi model
+├── requirements.txt
+└── .gitignore
 ```
 
-## 🎨 Customization
+## Troubleshooting
 
-Anda dapat mengubah:
-- Colors dan styling di custom CSS section
-- Page layout
-- Visualization tipe dan parameter
-- Filter options
+**Error: components.v1.html not found**
+`import streamlit.components.v1 as components` — panggil `components.html()`, bukan `components.v1.html()`.
 
-## 📝 Notes
+**PyLDAvis tidak muncul**
+Pastikan `lda_visualization.html` sudah self-contained (pipeline otomatis meng-inline JS).
 
-- Dashboard menggunakan caching untuk performa optimal
-- Data diload dari CSV files
-- Plotly digunakan untuk interactive visualizations
-- Streamlit auto-reloads ketika ada perubahan kode
-
-## 🆘 Troubleshooting
-
-Jika ada error "No such file or directory":
-- Pastikan Anda menjalankan command dari root directory (tes/)
-- Periksa path ke data files
-
-Jika dashboard lambat:
-- Clear Streamlit cache: `streamlit cache clear`
-- Kurangi jumlah data yang ditampilkan
-
-## 📧 Support
-
-Untuk pertanyaan atau issues, silakan hubungi tim data science.
+**ModuleNotFoundError: tqdm**
+`pip install tqdm` — sudah ada di requirements.txt.
