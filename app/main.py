@@ -8,9 +8,6 @@ import plotly.graph_objects as go
 from pathlib import Path
 import warnings
 from datetime import datetime
-from gensim.models import LdaModel
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 warnings.filterwarnings('ignore')
 
 # ── Color Palette ──
@@ -290,6 +287,7 @@ def load_lda_model():
     base_path = Path(__file__).parent.parent
     model_path = base_path / "model" / "lda_model.gensim"
     if model_path.exists():
+        from gensim.models import LdaModel
         return LdaModel.load(str(model_path))
     return None
 
@@ -331,7 +329,7 @@ with st.sidebar:
     st.caption(f"**K (Jumlah Topik):** {int(metrics_dict.get('Jumlah Topik (K)', 0))}")
     st.caption(f"**Coherence (C_V):** {coherence:.4f}")
 
-    import os, datetime
+    import os
     try:
         metrics_path = Path(__file__).parent.parent / 'model' / 'evaluation_metrics.csv'
         m_df = pd.read_csv(metrics_path)
@@ -341,12 +339,12 @@ with st.sidebar:
             training_date = m_df['date'].iloc[0]
         else:
             mtime = os.path.getmtime(Path(__file__).parent.parent / 'model' / 'lda_model.gensim')
-            training_date = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
+            training_date = datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
         st.caption(f"**Tanggal Training:** {training_date}")
     except Exception:
         try:
             mtime = os.path.getmtime(Path(__file__).parent.parent / 'model' / 'lda_model.gensim')
-            training_date = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
+            training_date = datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
             st.caption(f"**Tanggal Training:** {training_date}")
         except Exception:
             st.caption("**Tanggal Training:** Tidak tersedia")
@@ -708,6 +706,8 @@ elif page == "🏷️ Topic Analysis":
             top_words = dict(lda_model.show_topic(selected_topic, topn=30))
             freq_dict = {w: float(v * 1000) for w, v in top_words.items()}
             
+            from wordcloud import WordCloud
+            import matplotlib.pyplot as plt
             wc = WordCloud(
                 width=800, height=400, 
                 background_color='white', 
