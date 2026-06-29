@@ -1,163 +1,174 @@
 {
   "0": {
-    "label_final": "Manajemen Risiko & Usability Website",
-    "label_auto": "Usability Quality",
-    "score": 0.7842,
+    "label_final": "Kepuasan Pengguna Sistem Informasi",
+    "label_auto": "Kepegawaian Informatika",
+    "score": 0.6758,
     "top_words": [
+      "puas",
       "layan",
-      "usability",
-      "quality",
-      "salah"
+      "kembang",
+      "tuju",
+      "laku"
     ],
     "top_words_filtered": [
+      "puas",
       "layan",
-      "usability",
-      "quality",
-      "salah"
+      "kembang",
+      "tuju",
+      "laku"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.4234
+    "num_docs": 84
   },
   "1": {
-    "label_final": "Analisis Sentimen & Klasifikasi Teks",
-    "label_auto": "Score Recall",
-    "score": 0.7044,
+    "label_final": "Sistem Informasi Akademik",
+    "label_auto": "Akademik Technology",
+    "score": 0.5763,
     "top_words": [
-      "sentimen",
-      "ulas",
-      "mobile",
-      "significant",
-      "score",
-      "recall",
-      "positif",
-      "negatif",
-      "precision",
-      "store"
+      "layan",
+      "laku",
+      "akademik",
+      "sukses",
+      "aman",
+      "sentimen"
     ],
     "top_words_filtered": [
-      "sentimen",
-      "ulas",
-      "mobile",
-      "significant",
-      "score",
-      "recall",
-      "positif",
-      "negatif",
-      "precision",
-      "store"
+      "layan",
+      "laku",
+      "akademik",
+      "sukses",
+      "aman",
+      "sentimen"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.4021
+    "num_docs": 59
   },
   "2": {
-    "label_final": "Kualitas Layanan Sistem Informasi",
-    "label_auto": "Sukses",
-    "score": 0.7529,
+    "label_final": "Analisis Kualitas Website (WebQual)",
+    "label_auto": "Performance Webqual",
+    "score": 0.7234,
     "top_words": [
-      "layan",
-      "laku",
-      "tuju",
-      "terima",
-      "sukses"
+      "usability",
+      "quality",
+      "service",
+      "performance",
+      "webqual",
+      "learning",
+      "layan"
     ],
     "top_words_filtered": [
-      "layan",
-      "laku",
-      "tuju",
-      "terima",
-      "sukses"
+      "usability",
+      "quality",
+      "service",
+      "performance",
+      "webqual",
+      "learning",
+      "layan"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.5428
+    "num_docs": 22
   },
   "3": {
-    "label_final": "Service Quality & User Satisfaction",
-    "label_auto": "Quality Satisfaction",
-    "score": 0.8273,
+    "label_final": "Sistem Informasi Penjualan & Inventory",
+    "label_auto": "Transaksi Minimarket",
+    "score": 0.524,
     "top_words": [
-      "quality",
-      "satisfaction",
-      "service",
-      "results",
-      "level",
-      "which",
-      "users"
+      "jual",
+      "barang",
+      "beli",
+      "sedia",
+      "stok",
+      "cpo",
+      "transaksi",
+      "growth",
+      "palm",
+      "startup"
     ],
     "top_words_filtered": [
-      "quality",
-      "satisfaction",
-      "service",
-      "results",
-      "level",
-      "which",
-      "users"
+      "jual",
+      "barang",
+      "beli",
+      "sedia",
+      "stok",
+      "cpo",
+      "transaksi",
+      "growth",
+      "palm",
+      "startup"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.6012
+    "num_docs": 18
   },
   "4": {
-    "label_final": "Extreme Programming (XP)",
-    "label_auto": "Programming Extreme",
-    "score": 0.5516,
+    "label_final": "Service Quality & User Satisfaction",
+    "label_auto": "Satisfaction Servqual",
+    "score": 0.6539,
     "top_words": [
-      "kembang",
-      "laku",
-      "programming",
-      "extreme",
-      "bantu",
-      "tuju",
-      "jual",
-      "mudah"
+      "satisfaction",
+      "results",
+      "not",
+      "quality",
+      "which",
+      "users",
+      "service"
     ],
     "top_words_filtered": [
-      "kembang",
-      "laku",
-      "programming",
-      "extreme",
-      "bantu",
-      "tuju",
-      "jual",
-      "mudah"
+      "satisfaction",
+      "results",
+      "not",
+      "quality",
+      "which",
+      "users",
+      "service"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.5718
+    "num_docs": 52
   },
   "5": {
-    "label_final": "Kepuasan Pengguna Sistem Informasi",
-    "label_auto": "Puas Satisfaction",
-    "score": 0.9327,
+    "label_final": "Sistem Informasi Konseling & Bimbingan",
+    "label_auto": "Disasterprone Areas",
+    "score": 0.5783,
     "top_words": [
-      "puas",
-      "satisfaction",
-      "tuju",
-      "laku"
+      "konseling",
+      "bimbing",
+      "pinjam",
+      "mohon",
+      "mining",
+      "nikah",
+      "disaster",
+      "langgar",
+      "algorithm",
+      "extreme"
     ],
     "top_words_filtered": [
-      "puas",
-      "satisfaction",
-      "tuju",
-      "laku"
+      "konseling",
+      "bimbing",
+      "pinjam",
+      "mohon",
+      "mining",
+      "nikah",
+      "disaster",
+      "langgar",
+      "algorithm",
+      "extreme"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.5607
+    "num_docs": 4
   },
   "6": {
-    "label_final": "Usability & Layanan Akademik",
-    "label_auto": "Usability Layan",
-    "score": 0.7877,
+    "label_final": "Manajemen Risiko & Adopsi TI",
+    "label_auto": "Sitem",
+    "score": 0.481,
     "top_words": [
-      "usability",
-      "layan",
-      "simak",
-      "tuju"
+      "kembang",
+      "laku",
+      "bantu",
+      "tuju",
+      "mudah",
+      "giat"
     ],
     "top_words_filtered": [
-      "usability",
-      "layan",
-      "simak",
-      "tuju"
+      "kembang",
+      "laku",
+      "bantu",
+      "tuju",
+      "mudah",
+      "giat"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.4905
+    "num_docs": 72
   }
 }

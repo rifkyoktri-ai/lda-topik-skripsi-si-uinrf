@@ -1,8 +1,8 @@
-﻿topic_id,Label,R2,Metode,Arah,2021,2022,2023,2024,2025,2026,2027,Linearitas
-0,Systems Technology Siswa Satisfaction,0.0045,Weighted Moving Average,Meningkat,9.68,7.87,8.33,15.69,6.52,9.72,9.75,Tidak Linier
-1,Manajemen Risiko,0.148,Weighted Moving Average,Meningkat,9.68,15.73,8.33,15.69,3.26,9.68,9.39,Tidak Linier
-2,Sistem Informasi Akademik,0.447,Weighted Moving Average,Stabil,25.81,22.47,12.5,17.65,17.39,17.72,17.24,Tidak Linier
-3,Sistem Manajemen Surat,0.7357,Weighted Moving Average,Stabil,6.45,10.11,10.42,13.73,11.96,11.51,11.83,Cukup Linier
-4,Extreme Programming (XP),0.3134,Weighted Moving Average,Menurun,35.48,16.85,25.0,5.88,21.74,18.43,17.57,Tidak Linier
-5,Analisis Kualitas Website (WebQual),0.959,Weighted Moving Average,Menurun,9.68,10.11,14.58,17.65,21.74,16.86,17.57,Sangat Linier
-6,Klasifikasi & Data Mining,0.3496,Weighted Moving Average,Menurun,3.23,16.85,20.83,13.73,17.39,16.09,16.65,Tidak Linier
+﻿topic_id,Label,R2,Metode,Arah,MAE_LOO,2021,2022,2023,2024,2025,2026,2027,pred_2027_reliability,Linearitas
+0,Puas,0.8816,Weighted Moving Average,Menurun,0.0734,16.13,20.22,27.08,35.29,32.61,29.47,30.54,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Sangat Linier
+1,Kualitas Layanan Sistem Informasi,0.6767,Weighted Moving Average,Menurun,0.0673,9.68,12.36,16.67,13.73,32.61,20.16,21.21,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Cukup Linier
+2,Analisis Kualitas Website (WebQual),0.2295,Weighted Moving Average,Stabil,0.03,3.23,8.99,4.17,7.84,7.61,6.87,7.04,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Tidak Linier
+3,Palm Startup,0.0009,Weighted Moving Average,Stabil,0.03,6.45,3.37,10.42,5.88,5.43,6.34,6.35,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Tidak Linier
+4,Satisfaction Results,0.5041,Weighted Moving Average,Meningkat,0.0772,19.35,26.97,12.5,17.65,7.61,14.63,13.9,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Cukup Linier
+5,Nikah Disaster,0.9034,Weighted Moving Average,Stabil,0.013,3.23,2.25,2.08,0.0,0.0,0.93,0.74,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Sangat Linier
+6,Bantu Tuju,0.8763,Weighted Moving Average,Meningkat,0.1024,41.94,25.84,27.08,19.61,14.13,21.6,20.22,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Sangat Linier

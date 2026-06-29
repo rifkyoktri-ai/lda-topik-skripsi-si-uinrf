@@ -18,14 +18,12 @@ LABEL_MAPPING = {
     "extreme programming": "Extreme Programming (XP)",
     "sistem informasi akademik": "Sistem Informasi Akademik",
     "sistem informasi keuangan": "Sistem Informasi Keuangan",
-    "manajemen risiko": "Manajemen Risiko",
     "sistem informasi desa": "Sistem Informasi Desa (SID)",
     "sistem informasi geografis": "Sistem Informasi Geografis (SIG)",
     "sistem pendukung keputusan": "Sistem Pendukung Keputusan (SPK)",
     "sistem informasi akuntansi": "Sistem Informasi Akuntansi",
     "sistem informasi geografis sig": "Sistem Informasi Geografis (SIG)",
     "pendukung keputusan": "Sistem Pendukung Keputusan (SPK)",
-    "sistem informasi": "Sistem Informasi Manajemen",
     "penerimaan siswa": "Sistem Informasi Penerimaan Siswa",
     "penerimaan mahasiswa": "Sistem Informasi Penerimaan Mahasiswa",
     "informasi akademik": "Sistem Informasi Akademik",
@@ -59,14 +57,13 @@ LABEL_MAPPING = {
     "layan mahasiswa": "Usability & Layanan Akademik",
     "layan akademik": "Usability & Layanan Akademik",
     "usability akademik": "Usability & Layanan Akademik",
-    "kualitas layan": "Kualitas Layanan Sistem Informasi",
-    "layan kualitas": "Kualitas Layanan Sistem Informasi",
-    "sukses layan": "Kualitas Layanan Sistem Informasi",
+    "manajemen risiko": "Manajemen Risiko & Usability Website",
     "risiko website": "Manajemen Risiko & Usability Website",
     "risiko usability": "Manajemen Risiko & Usability Website",
     "usability risiko": "Manajemen Risiko & Usability Website",
-    "kualitas sistem": "Kualitas Layanan Sistem Informasi",
-    "kualitas aplikasi": "Kualitas Layanan Sistem Informasi",
+    "usability quality": "Manajemen Risiko & Usability Website",
+    "kualitas layan": "Kualitas Layanan Sistem Informasi",
+    "sukses layan": "Kualitas Layanan Sistem Informasi",
     "monitoring kesuksesan": "Kualitas Layanan Sistem Informasi",
     "kesuksesan sistem": "Kualitas Layanan Sistem Informasi",
     "kesuksesan implementasi": "Kualitas Layanan Sistem Informasi",
@@ -74,8 +71,37 @@ LABEL_MAPPING = {
     "teknologi kepuasan": "Kepuasan Pengguna Sistem Informasi",
     "kepuasan teknologi": "Kepuasan Pengguna Sistem Informasi",
     "kepuasan pengguna sistem": "Kepuasan Pengguna Sistem Informasi",
-    "usability quality": "Manajemen Risiko & Usability Website",
+    "satisfaction quality": "Service Quality & User Satisfaction",
     "quality satisfaction": "Service Quality & User Satisfaction",
+    "satisfaction results": "Service Quality & User Satisfaction",
+    "puas layan": "Kepuasan Pengguna Sistem Informasi",
+    "jual barang": "Sistem Informasi Penjualan & Inventory",
+    "palm startup": "Sistem Informasi Penjualan & Inventory",
+    "konseling bimbing": "Sistem Informasi Konseling & Bimbingan",
+    "nikah disaster": "Sistem Informasi Konseling & Bimbingan",
+    "tuju bantu": "Usability & Layanan Akademik",
+    "bantu tuju": "Usability & Layanan Akademik",
+    "laku tuju": "Perilaku Pengguna & Adopsi TI",
+    "laku bantu": "Perilaku Pengguna & Adopsi TI",
+    "tuju akademik": "Sistem Informasi Akademik",
+    "stok laku": "Sistem Informasi Inventory",
+    "akademik technology": "Sistem Informasi Akademik",
+    "kembang laku": "Manajemen Risiko & Adopsi TI",
+    "mudah giat": "Usability & Kemudahan Pengguna",
+    "sentimen kasus": "Analisis Sentimen & Klasifikasi Teks",
+    "extreme programming": "Extreme Programming (XP)",
+    "disaster mining": "Data Mining & Disaster Management",
+    "mohon mining": "Data Mining & Klasifikasi",
+    "score machine": "Machine Learning & Klasifikasi",
+    "decision tree": "Decision Tree & Klasifikasi",
+    "angket survei": "Survei & Analisis Data",
+    "maturity capability": "Maturity & Capability Model",
+    "information system": "Sistem Informasi Manajemen",
+    "success model": "Kesuksesan Sistem Informasi",
+    "model success": "Kesuksesan Sistem Informasi",
+    "net benefits": "Kesuksesan Sistem Informasi",
+    "benefits user": "Kesuksesan Sistem Informasi",
+    "users satisfaction": "Kepuasan Pengguna Sistem Informasi",
 }
 
 def label_topics_keybert(lda_model, all_stopwords, topic_titles=None):
@@ -174,6 +200,11 @@ def label_topics_keybert(lda_model, all_stopwords, topic_titles=None):
         if matched_key:
             best_label = LABEL_MAPPING[matched_key]
             print(f"  LABEL_MAPPING match: '{matched_key}' -> '{best_label}'")
+        elif best_score < 0.25:
+            fallback = " ".join(filtered_words[:3]).title()
+            print(f"  KeyBERT score rendah ({best_score:.3f} < 0.25) "
+                  f"dan tidak ada mapping -> fallback: '{fallback}'")
+            best_label = fallback
 
         print(f"  label_auto  : {label_auto} (score: {best_score:.3f})")
         print(f"  label_final : {best_label}")
@@ -197,7 +228,39 @@ def label_topics_keybert(lda_model, all_stopwords, topic_titles=None):
         else:
             seen_labels[base] = tid_str
 
+    # Logging
+    print("\n[3/3] Labeling selesai.")
+    print("\n" + "=" * 60)
+    print("RINGKASAN HASIL LABELING")
+    print("=" * 60)
+    for tid_str, info in topic_labels.items():
+        print(f"  Topik {int(tid_str)+1:2d}: {info['label_final']}")
+    print("=" * 60)
+
     return topic_labels
+
+
+def validate_label_uniqueness(topic_labels):
+    """
+    Cek apakah ada 2+ topik dengan label_final identik setelah deduplication.
+    Jika ada, tampilkan top_words masing-masing untuk membantu user mengedit
+    label secara manual via dashboard.
+    """
+    from collections import Counter
+    label_counts = Counter(v['label_final'] for v in topic_labels.values())
+    duplicates = {lbl: cnt for lbl, cnt in label_counts.items() if cnt > 1}
+
+    if duplicates:
+        print("\n⚠️  DUPLIKASI LABEL TERDETEKSI:")
+        for lbl, cnt in duplicates.items():
+            topics = [tid for tid, v in topic_labels.items() if v['label_final'] == lbl]
+            for tid in topics:
+                info = topic_labels[tid]
+                print(f"  Topik {int(tid)+1}: label='{lbl}' | "
+                      f"top_words={info['top_words_filtered'][:5]}")
+        print("Gunakan menu 'Manage Labels' di dashboard untuk mengedit.\n")
+
+    return len(duplicates) == 0
 
 
 def save_topic_labels(topic_labels, output_dir):

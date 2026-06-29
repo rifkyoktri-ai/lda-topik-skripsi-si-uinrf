@@ -9,6 +9,12 @@ from datetime import datetime
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from indonesian_stopwords import get_conservative_stopwords
 
+DOMAIN_STOPWORDS_MINIMAL = {
+    'skripsi', 'mahasiswa', 'universitas', 'fakultas',
+    'program', 'studi', 'jurusan', 'uin', 'raden', 'fatah',
+    'palembang', 'negeri', 'islam'
+}
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -43,7 +49,7 @@ logger.info(f"\n[2/4] Membersihkan teks...")
 
 factory = StemmerFactory()
 stemmer = factory.create_stemmer()
-all_stopwords = get_conservative_stopwords()
+all_stopwords = get_conservative_stopwords() | DOMAIN_STOPWORDS_MINIMAL
 
 def bersihkan(teks):
     if not isinstance(teks, str):

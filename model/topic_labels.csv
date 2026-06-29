@@ -1,8 +1,8 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Manajemen Risiko & Usability Website,Topic with 27 documents,layan;usability;quality;salah,0.7842,0.4234
-2,Analisis Sentimen & Klasifikasi Teks,Topic with 7 documents,sentimen;ulas;mobile;significant;score,0.7044,0.4021
-3,Kualitas Layanan Sistem Informasi,Topic with 59 documents,layan;laku;tuju;terima;sukses,0.7529,0.5428
-4,Service Quality & User Satisfaction,Topic with 58 documents,quality;satisfaction;service;results;level,0.8273,0.6012
-5,Extreme Programming (XP),Topic with 82 documents,kembang;laku;programming;extreme;bantu,0.5516,0.5718
-6,Kepuasan Pengguna Sistem Informasi,Topic with 55 documents,puas;satisfaction;tuju;laku,0.9327,0.5607
-7,Usability & Layanan Akademik,Topic with 23 documents,usability;layan;simak;tuju,0.7877,0.4905
+1,Kepuasan Pengguna Sistem Informasi,Topic with 84 documents,puas;layan;kembang;tuju;laku,0.6758,
+2,Akademik Technology,Topic with 59 documents,layan;laku;akademik;sukses;aman,0.5763,
+3,Analisis Kualitas Website (WebQual),Topic with 22 documents,usability;quality;service;performance;webqual,0.7234,
+4,Sistem Informasi Penjualan & Inventory,Topic with 18 documents,jual;barang;beli;sedia;stok,0.524,
+5,Service Quality & User Satisfaction,Topic with 52 documents,satisfaction;results;not;quality;which,0.6539,
+6,Sistem Informasi Konseling & Bimbingan,Topic with 4 documents,konseling;bimbing;pinjam;mohon;mining,0.5783,
+7,Manajemen Risiko & Adopsi TI,Topic with 72 documents,kembang;laku;bantu;tuju;mudah,0.481,

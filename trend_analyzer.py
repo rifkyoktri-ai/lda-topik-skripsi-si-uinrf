@@ -1,7 +1,14 @@
 """
 Analisis Tren dan Prediksi menggunakan Weighted Moving Average (WMA)
-Dipilih karena: data time-series hanya 5 titik dan bersifat fluktuatif
-(tidak memiliki tren linear yang konsisten)
+
+Justifikasi Metodologis:
+- Data time-series hanya 5 titik (2021-2025) — terlalu sedikit untuk metode
+  ARIMA atau exponential smoothing yang membutuhkan minimal 10-15 observasi
+- WMA memberi bobot lebih besar pada data terbaru, relevan untuk tren
+  akademik yang berubah cepat (teknologi, minat riset)
+- Forecast hanya 1 tahun ke depan (2026) untuk meminimalkan error propagation
+- Forecast 2027 bersifat INDIKATIF saja, bukan prediksi statistik formal —
+  menggunakan data fiktif (pred_2026) sebagai input, bukan data aktual
 """
 
 import numpy as np
@@ -27,6 +34,26 @@ def compute_r_squared(values: list) -> float:
     y = np.array(values, dtype=float)
     slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
     return float(r_value ** 2)
+
+
+def compute_wma_loo_error(historical):
+    """
+    Leave-one-out validation WMA.
+    Prediksi setiap tahun menggunakan data tahun sebelumnya, hitung MAE.
+    Hanya valid jika len(historical) >= 3.
+    """
+    if len(historical) < 3:
+        return None
+
+    errors = []
+    for i in range(1, len(historical)):
+        train = historical[:i]
+        actual = historical[i]
+        weights = list(range(1, len(train) + 1))
+        pred = compute_wma(train, weights)
+        errors.append(abs(pred - actual))
+
+    return float(np.mean(errors)) if errors else None
 
 
 def determine_trend_direction(values: list, pred_2026: float) -> str:
@@ -81,6 +108,7 @@ def analyze_topic_trends(
         pred_2027 = max(0.0, min(1.0, pred_2027))
 
         trend = determine_trend_direction(historical, pred_2026)
+        mae_loo = compute_wma_loo_error(historical)
 
         label = topic_labels.get(
             topic_id,
@@ -93,6 +121,7 @@ def analyze_topic_trends(
             "R2"       : round(r2, 4),
             "Metode"   : "Weighted Moving Average",
             "Arah"     : trend,
+            "MAE_LOO"  : round(mae_loo, 4) if mae_loo is not None else None,
         }
 
         for year, val in zip(years, historical):
@@ -100,6 +129,9 @@ def analyze_topic_trends(
 
         row[str(pred_years[0])] = round(pred_2026 * 100, 2)
         row[str(pred_years[1])] = round(pred_2027 * 100, 2)
+        row['pred_2027_reliability'] = (
+            'Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)'
+        )
 
         results.append(row)
 
@@ -142,9 +174,10 @@ def run_trend_analysis():
     save_trend_results(result)
 
     print("\nHASIL PREDIKSI TREN:")
-    cols = ['Label', 'R2', 'Linearitas', 'Metode', 'Arah',
-            '2021', '2022', '2023', '2024', '2025', '2026', '2027']
+    cols = [c for c in result.columns if c != 'pred_2027_reliability']
     print(result[cols].to_string(index=False))
+    print("\nCatatan: Prediksi 2027 bersifat indikatif. "
+          "MAE_LOO = Mean Absolute Error (leave-one-out validation).")
 
 
 if __name__ == "__main__":

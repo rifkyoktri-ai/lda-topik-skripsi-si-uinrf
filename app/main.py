@@ -422,6 +422,50 @@ if page == "📈 Overview":
     st.plotly_chart(fig, use_container_width=True)
     card_end()
 
+    # Quality Alerts
+    card_start()
+    section_header("⚠️ Quality Alerts")
+    from lda_evaluation import evaluate_topic_overlap
+
+    alerts = []
+
+    # Alert 1: Per-topic coherence rendah
+    if topic_labels_df is not None and 'quality_coherence' in topic_labels_df.columns:
+        for _, row in topic_labels_df.iterrows():
+            try:
+                qc = float(row['quality_coherence'])
+                if qc > 0 and qc < 0.45:
+                    alerts.append(('warning', f"Topik {int(row['topic_id'])} ({row['label']}) memiliki coherence rendah ({qc:.4f} < 0.45)."))
+            except (ValueError, TypeError):
+                pass
+
+    # Alert 2: Topic overlap
+    try:
+        lda_model = load_lda_model()
+        if lda_model:
+            overlapping = evaluate_topic_overlap(lda_model, threshold=0.15)
+            for t1, t2, sim in overlapping:
+                alerts.append(('error', f"Topik {t1+1} dan {t2+1} memiliki kesamaan tinggi (cosine sim={sim:.3f}). Kemungkinan over-segmented."))
+    except Exception:
+        pass
+
+    # Alert 3: Distribusi tidak seimbang
+    if topic_dist_df is not None and 'topik_dominan' in topic_dist_df.columns:
+        topic_counts = topic_dist_df['topik_dominan'].value_counts()
+        if len(topic_counts) > 0:
+            ratio = topic_counts.max() / topic_counts.min()
+            if ratio > 5:
+                alerts.append(('info', f"Distribusi topik tidak seimbang (rasio max/min = {ratio:.1f}x). Topik {topic_counts.idxmax()} mendominasi."))
+
+    if alerts:
+        for level, msg in alerts:
+            icon = {'warning': '⚠️', 'error': '🚫', 'info': 'ℹ️'}.get(level, 'ℹ️')
+            st.markdown(f"**{icon} {level.upper()}:** {msg}")
+        st.caption(f"Total {len(alerts)} issue terdeteksi. Perbaiki untuk meningkatkan kualitas model.")
+    else:
+        st.success("✅ Tidak ada issue yang terdeteksi. Kualitas model dalam kondisi baik.")
+    card_end()
+
 
 # PAGE 2: VISUALISASI LDA
 elif page == "🔵 Visualisasi LDA":

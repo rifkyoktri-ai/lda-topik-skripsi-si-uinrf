@@ -9,25 +9,28 @@ UIN Raden Fatah Palembang.
 | Metrik | Nilai |
 |--------|-------|
 | Jumlah topik (K) | 7 |
-| Coherence c_v | **0.5132** (kategori: Good >= 0.50) |
+| Coherence c_v | **0.5124** (kategori: Good >= 0.50) |
 | Coherence u_mass | -1.6518 |
-| Log Perplexity | -6.6562 |
+| Log Perplexity | -6.5858 |
 | Jumlah dokumen | 311 |
-| Vocabulary | 2396 kata |
+| Vocabulary | 2385 kata |
 | Parameter alpha | symmetric |
 | Parameter eta | symmetric |
+| Passes | 30 |
+| Iterations | 500 |
+| Random state | 42 |
 
 ## 7 Topik yang Ditemukan
 
 | # | Topik | Coherence |
 |---|-------|-----------|
-| 1 | Manajemen Risiko & Usability Website | 0.4234 |
-| 2 | Analisis Sentimen & Klasifikasi Teks | 0.4021 |
-| 3 | Kualitas Layanan Sistem Informasi | 0.5428 |
-| 4 | Service Quality & User Satisfaction | 0.6012 |
-| 5 | Extreme Programming (XP) | 0.5718 |
-| 6 | Kepuasan Pengguna Sistem Informasi | 0.5607 |
-| 7 | Usability & Layanan Akademik | 0.4905 |
+| 1 | Kepuasan Pengguna Sistem Informasi | 0.5355 |
+| 2 | Sistem Informasi Akademik | 0.4788 |
+| 3 | Analisis Kualitas Website (WebQual) | 0.4343 |
+| 4 | Sistem Informasi Penjualan & Inventory | 0.3403 |
+| 5 | Service Quality & User Satisfaction | 0.7161 |
+| 6 | Sistem Informasi Konseling & Bimbingan | 0.4462 |
+| 7 | Manajemen Risiko & Adopsi TI | 0.6354 |
 
 ## Prerequisites
 
@@ -40,7 +43,7 @@ UIN Raden Fatah Palembang.
 
 ```bash
 # Clone repository
-git clone https://github.com/rifkyoktri-ai/tes.git
+git clone https://github.com/rifkyoktri-ai/lda-topik-skripsi-si-uinrf.git
 cd tes
 
 # Buat virtual environment

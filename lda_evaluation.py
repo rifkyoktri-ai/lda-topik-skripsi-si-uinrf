@@ -7,6 +7,41 @@ from gensim.models import LdaModel
 from wordcloud import WordCloud
 import ast
 
+def evaluate_topic_overlap(lda_model, threshold=0.15):
+    """
+    Deteksi topik yang terlalu mirip berdasarkan cosine similarity
+    distribusi kata antar topik.
+
+    Args:
+        lda_model: Gensim LdaModel yang sudah dilatih
+        threshold: Batas similarity (default: 0.15)
+
+    Returns:
+        list of (topic_i, topic_j, similarity) jika similarity > threshold
+    """
+    n_topics = lda_model.num_topics
+    n_words = lda_model.num_terms
+    topic_word_matrix = np.zeros((n_topics, n_words))
+
+    for t in range(n_topics):
+        words_probs = dict(lda_model.show_topic(t, topn=n_words))
+        for word_id in range(n_words):
+            word = lda_model.id2word[word_id]
+            topic_word_matrix[t, word_id] = words_probs.get(word, 0.0)
+
+    overlapping = []
+    for i in range(n_topics):
+        for j in range(i + 1, n_topics):
+            norm_i = np.linalg.norm(topic_word_matrix[i])
+            norm_j = np.linalg.norm(topic_word_matrix[j])
+            if norm_i > 0 and norm_j > 0:
+                sim = float(np.dot(topic_word_matrix[i], topic_word_matrix[j]) / (norm_i * norm_j))
+                if sim > threshold:
+                    overlapping.append((i, j, sim))
+
+    return overlapping
+
+
 def generate_evaluation_plots():
     print("="*60)
     print("MEMBUAT PLOT EVALUASI LDA")

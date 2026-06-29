@@ -53,8 +53,8 @@ def train_model(
     corpus,
     dictionary,
     num_topics: int,
-    passes: int = 20,
-    iterations: int = 400,
+    passes: int = 30,
+    iterations: int = 500,
     alpha=None,
     eta=None
 ) -> LdaModel:
@@ -192,10 +192,10 @@ def main():
     parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling')
     parser.add_argument('--num-topics', type=int, default=None,
                         help='Jumlah topik (default: auto-tune dari 4-12)')
-    parser.add_argument('--passes', type=int, default=20,
-                        help='Jumlah passes LDA (default: 20)')
-    parser.add_argument('--iterations', type=int, default=400,
-                        help='Jumlah iterasi LDA (default: 400)')
+    parser.add_argument('--passes', type=int, default=30,
+                        help='Jumlah passes LDA (default: 30)')
+    parser.add_argument('--iterations', type=int, default=500,
+                        help='Jumlah iterasi LDA (default: 500)')
     parser.add_argument('--alpha', type=str, default=None,
                         help='Alpha parameter (default: auto)')
     parser.add_argument('--eta', type=str, default=None,
