@@ -1,8 +1,8 @@
 ﻿topic_id,Label,R2,Metode,Arah,MAE_LOO,2021,2022,2023,2024,2025,2026,2027,pred_2027_reliability,Linearitas
-0,Puas,0.8816,Weighted Moving Average,Menurun,0.0734,16.13,20.22,27.08,35.29,32.61,29.47,30.54,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Sangat Linier
-1,Kualitas Layanan Sistem Informasi,0.6767,Weighted Moving Average,Menurun,0.0673,9.68,12.36,16.67,13.73,32.61,20.16,21.21,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Cukup Linier
-2,Analisis Kualitas Website (WebQual),0.2295,Weighted Moving Average,Stabil,0.03,3.23,8.99,4.17,7.84,7.61,6.87,7.04,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Tidak Linier
-3,Palm Startup,0.0009,Weighted Moving Average,Stabil,0.03,6.45,3.37,10.42,5.88,5.43,6.34,6.35,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Tidak Linier
-4,Satisfaction Results,0.5041,Weighted Moving Average,Meningkat,0.0772,19.35,26.97,12.5,17.65,7.61,14.63,13.9,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Cukup Linier
-5,Nikah Disaster,0.9034,Weighted Moving Average,Stabil,0.013,3.23,2.25,2.08,0.0,0.0,0.93,0.74,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Sangat Linier
-6,Bantu Tuju,0.8763,Weighted Moving Average,Meningkat,0.1024,41.94,25.84,27.08,19.61,14.13,21.6,20.22,"Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)",Sangat Linier
+0,Kepuasan Pengguna Sistem Informasi,0.8816,Weighted Moving Average,Meningkat,0.0734,16.13,20.22,27.08,35.29,32.61,29.47,30.54,Sedang,Sangat Linier
+1,Kualitas Layanan Sistem Informasi,0.6767,Weighted Moving Average,Meningkat,0.0673,9.68,12.36,16.67,13.73,32.61,20.16,21.21,Sedang,Cukup Linier
+2,Analisis Kualitas Website (WebQual),0.2295,Weighted Moving Average,Stabil,0.03,3.23,8.99,4.17,7.84,7.61,6.87,7.04,Tinggi,Tidak Linier
+3,Sistem Informasi Penjualan & Inventory,0.0009,Weighted Moving Average,Stabil,0.03,6.45,3.37,10.42,5.88,5.43,6.34,6.35,Tinggi,Tidak Linier
+4,Service Quality & User Satisfaction,0.5041,Weighted Moving Average,Menurun,0.0772,19.35,26.97,12.5,17.65,7.61,14.63,13.9,Sedang,Cukup Linier
+5,Sistem Informasi Konseling & Bimbingan,0.9034,Weighted Moving Average,Stabil,0.013,3.23,2.25,2.08,0.0,0.0,0.93,0.74,Tinggi,Sangat Linier
+6,Manajemen Risiko & Adopsi TI,0.8763,Weighted Moving Average,Menurun,0.1024,41.94,25.84,27.08,19.61,14.13,21.6,20.22,Rendah,Sangat Linier

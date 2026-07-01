@@ -1,8 +1,8 @@
 {
   "0": {
     "label_final": "Kepuasan Pengguna Sistem Informasi",
-    "label_auto": "Kepegawaian Informatika",
-    "score": 0.6758,
+    "label_auto": "Puas",
+    "score": 0.7957,
     "top_words": [
       "puas",
       "layan",
@@ -17,12 +17,13 @@
       "tuju",
       "laku"
     ],
-    "num_docs": 84
+    "num_docs": 0,
+    "quality_coherence": 0.5355
   },
   "1": {
-    "label_final": "Sistem Informasi Akademik",
-    "label_auto": "Akademik Technology",
-    "score": 0.5763,
+    "label_final": "Kualitas Layanan Sistem Informasi",
+    "label_auto": "Akademik Sukses",
+    "score": 0.8756,
     "top_words": [
       "layan",
       "laku",
@@ -39,12 +40,13 @@
       "aman",
       "sentimen"
     ],
-    "num_docs": 59
+    "num_docs": 0,
+    "quality_coherence": 0.4788
   },
   "2": {
     "label_final": "Analisis Kualitas Website (WebQual)",
     "label_auto": "Performance Webqual",
-    "score": 0.7234,
+    "score": 0.7581,
     "top_words": [
       "usability",
       "quality",
@@ -63,12 +65,13 @@
       "learning",
       "layan"
     ],
-    "num_docs": 22
+    "num_docs": 0,
+    "quality_coherence": 0.4343
   },
   "3": {
     "label_final": "Sistem Informasi Penjualan & Inventory",
-    "label_auto": "Transaksi Minimarket",
-    "score": 0.524,
+    "label_auto": "Palm Startup",
+    "score": 0.7603,
     "top_words": [
       "jual",
       "barang",
@@ -93,12 +96,13 @@
       "palm",
       "startup"
     ],
-    "num_docs": 18
+    "num_docs": 0,
+    "quality_coherence": 0.3403
   },
   "4": {
     "label_final": "Service Quality & User Satisfaction",
-    "label_auto": "Satisfaction Servqual",
-    "score": 0.6539,
+    "label_auto": "Satisfaction Results",
+    "score": 0.7495,
     "top_words": [
       "satisfaction",
       "results",
@@ -117,12 +121,13 @@
       "users",
       "service"
     ],
-    "num_docs": 52
+    "num_docs": 0,
+    "quality_coherence": 0.7161
   },
   "5": {
     "label_final": "Sistem Informasi Konseling & Bimbingan",
-    "label_auto": "Disasterprone Areas",
-    "score": 0.5783,
+    "label_auto": "Nikah Disaster",
+    "score": 0.6031,
     "top_words": [
       "konseling",
       "bimbing",
@@ -147,12 +152,13 @@
       "algorithm",
       "extreme"
     ],
-    "num_docs": 4
+    "num_docs": 0,
+    "quality_coherence": 0.4462
   },
   "6": {
     "label_final": "Manajemen Risiko & Adopsi TI",
-    "label_auto": "Sitem",
-    "score": 0.481,
+    "label_auto": "Bantu Tuju",
+    "score": 0.845,
     "top_words": [
       "kembang",
       "laku",
@@ -169,6 +175,7 @@
       "mudah",
       "giat"
     ],
-    "num_docs": 72
+    "num_docs": 0,
+    "quality_coherence": 0.6354
   }
 }

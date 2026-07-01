@@ -1,8 +1,8 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Kepuasan Pengguna Sistem Informasi,Topic with 84 documents,puas;layan;kembang;tuju;laku,0.6758,
-2,Akademik Technology,Topic with 59 documents,layan;laku;akademik;sukses;aman,0.5763,
-3,Analisis Kualitas Website (WebQual),Topic with 22 documents,usability;quality;service;performance;webqual,0.7234,
-4,Sistem Informasi Penjualan & Inventory,Topic with 18 documents,jual;barang;beli;sedia;stok,0.524,
-5,Service Quality & User Satisfaction,Topic with 52 documents,satisfaction;results;not;quality;which,0.6539,
-6,Sistem Informasi Konseling & Bimbingan,Topic with 4 documents,konseling;bimbing;pinjam;mohon;mining,0.5783,
-7,Manajemen Risiko & Adopsi TI,Topic with 72 documents,kembang;laku;bantu;tuju;mudah,0.481,
+1,Kepuasan Pengguna Sistem Informasi,Topic with 84 documents,puas;layan;kembang;tuju;laku,0.7957,0.5355
+2,Kualitas Layanan Sistem Informasi,Topic with 59 documents,layan;laku;akademik;sukses;aman,0.8756,0.4788
+3,Analisis Kualitas Website (WebQual),Topic with 22 documents,usability;quality;service;performance;webqual,0.7581,0.4343
+4,Sistem Informasi Penjualan & Inventory,Topic with 18 documents,jual;barang;beli;sedia;stok,0.7603,0.3403
+5,Service Quality & User Satisfaction,Topic with 52 documents,satisfaction;results;not;quality;which,0.7495,0.7161
+6,Sistem Informasi Konseling & Bimbingan,Topic with 4 documents,konseling;bimbing;pinjam;mohon;mining,0.6031,0.4462
+7,Manajemen Risiko & Adopsi TI,Topic with 72 documents,kembang;laku;bantu;tuju;mudah,0.845,0.6354

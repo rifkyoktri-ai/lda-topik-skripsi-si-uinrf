@@ -63,7 +63,7 @@ python preprocess.py
 
 Training model LDA K=7:
 ```bash
-python pipeline.py --no-auto-tune --num-topics 7 --passes 10 --alpha symmetric --eta symmetric
+python pipeline.py --no-auto-tune --num-topics 7 --passes 30 --iterations 500 --alpha symmetric --eta symmetric
 ```
 
 Jalankan dashboard:
@@ -140,6 +140,24 @@ tes/
 ├── requirements.txt
 └── .gitignore
 ```
+
+## Metodologi Analisis Tren
+
+Prediksi tren topik menggunakan **Weighted Moving Average (WMA)** dengan justifikasi:
+- Data time-series hanya 5 titik (2021–2025) — terlalu sedikit untuk ARIMA atau exponential smoothing
+- WMA memberi bobot linier lebih besar pada tahun terbaru, sesuai asumsi tren akademik yang berubah cepat
+- Prediksi hanya 1 tahun ke depan (2026) untuk meminimalkan *error propagation*
+- Prediksi 2027 bersifat **indikatif** (menggunakan data prediksi 2026 sebagai input, bukan data aktual)
+
+**Kolom Arah** ditentukan berdasarkan slope regresi linier data historis 2021–2025, bukan perbandingan titik terakhir dengan prediksi. Ini memastikan arah mencerminkan tren jangka panjang, bukan fluktuasi tahun terakhir.
+
+**Reliabilitas prediksi** (`pred_2027_reliability`) dikategorikan berdasarkan MAE_LOO (*leave-one-out* validation error):
+
+| MAE_LOO | Reliabilitas | Arti |
+|---------|-------------|------|
+| < 0.05 | Tinggi | Error prediksi rendah — model WMA konsisten |
+| 0.05–0.10 | Sedang | Error moderat — prediksi perlu interpretasi hati-hati |
+| > 0.10 | Rendah | Error tinggi — prediksi tidak stabil |
 
 ## Troubleshooting
 

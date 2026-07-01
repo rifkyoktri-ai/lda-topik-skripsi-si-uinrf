@@ -56,14 +56,16 @@ def compute_wma_loo_error(historical):
     return float(np.mean(errors)) if errors else None
 
 
-def determine_trend_direction(values: list, pred_2026: float) -> str:
-    last_value = values[-1]
-    diff = pred_2026 - last_value
+def determine_trend_direction(values: list) -> str:
+    n = len(values)
+    x = np.arange(n)
+    y = np.array(values, dtype=float)
+    slope, _, _, _, _ = stats.linregress(x, y)
     threshold = 0.01
 
-    if diff > threshold:
+    if slope > threshold:
         return "Meningkat"
-    elif diff < -threshold:
+    elif slope < -threshold:
         return "Menurun"
     else:
         return "Stabil"
@@ -107,13 +109,23 @@ def analyze_topic_trends(
         pred_2026 = max(0.0, min(1.0, pred_2026))
         pred_2027 = max(0.0, min(1.0, pred_2027))
 
-        trend = determine_trend_direction(historical, pred_2026)
+        trend = determine_trend_direction(historical)
         mae_loo = compute_wma_loo_error(historical)
 
         label = topic_labels.get(
             topic_id,
             topic_labels.get(str(topic_id), f"Topik {topic_id + 1}")
         )
+
+        if mae_loo is not None:
+            if mae_loo < 0.05:
+                reliability = "Tinggi"
+            elif mae_loo < 0.10:
+                reliability = "Sedang"
+            else:
+                reliability = "Rendah"
+        else:
+            reliability = "Tidak dapat dihitung"
 
         row = {
             "topic_id" : topic_id,
@@ -129,9 +141,7 @@ def analyze_topic_trends(
 
         row[str(pred_years[0])] = round(pred_2026 * 100, 2)
         row[str(pred_years[1])] = round(pred_2027 * 100, 2)
-        row['pred_2027_reliability'] = (
-            'Rendah (ekstrapolasi dari prediksi WMA 2026, bukan data aktual)'
-        )
+        row['pred_2027_reliability'] = reliability
 
         results.append(row)
 
