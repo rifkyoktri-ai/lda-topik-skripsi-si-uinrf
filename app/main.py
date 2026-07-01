@@ -6,9 +6,12 @@ import json
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
+import sys
 import warnings
 from datetime import datetime
 warnings.filterwarnings('ignore')
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # ── Color Palette ──
 PRIMARY = "#1E3A5F"
