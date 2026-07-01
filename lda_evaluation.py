@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-from gensim.models import LdaModel
-from wordcloud import WordCloud
 import ast
 
 def evaluate_topic_overlap(lda_model, threshold=0.15):
@@ -132,6 +130,8 @@ def generate_evaluation_plots():
     if model_path.exists():
         print(f"\nMembuat Word Cloud dari model {model_path}...")
         try:
+            from gensim.models import LdaModel
+            from wordcloud import WordCloud
             model = LdaModel.load(str(model_path))
             wc_dir = docs_dir / "wordclouds"
             wc_dir.mkdir(parents=True, exist_ok=True)
