@@ -322,7 +322,7 @@ with st.sidebar:
     st.header("🎛️ Navigasi")
     page = st.radio(
         "Pilih Halaman:",
-        ["📈 Overview", "🔵 Visualisasi LDA", "📊 Model Metrics", "🏷️ Topic Analysis", "🔍 Document Search", "📖 Data Info", "⚙️ Manage Labels", "📈 Prediksi Tren"]
+        ["📈 Overview", "🔵 Visualisasi LDA", "📊 Model Metrics", "🏷️ Topic Analysis", "🔍 Document Search", "📖 Data Info", "📈 Prediksi Tren"]
     )
     
     st.markdown("---")
@@ -963,109 +963,6 @@ elif page == "📈 Prediksi Tren":
         card_end()
 
 
-# PAGE 7: MANAGE LABELS
-elif page == "⚙️ Manage Labels":
-    card_start()
-    section_header("⚙️ Kelola Label Topik")
-    st.markdown("Edit dan simpan label interpretasi untuk setiap topik. Label akan ditampilkan di seluruh dashboard.")
-    card_end()
-    
-    if 'labels_edited' not in st.session_state:
-        st.session_state.labels_edited = topic_labels_df.copy()
-        for col in ['label_score', 'quality_coherence']:
-            if col not in st.session_state.labels_edited.columns:
-                st.session_state.labels_edited[col] = ''
-    
-    card_start()
-    section_header("📝 Edit Topic Labels")
-    
-    topic_ids = sorted(topic_labels_df['topic_id'].unique())
-    num_topics = len(topic_ids)
-    num_cols = 4
-    num_tabs = (num_topics + num_cols - 1) // num_cols
-    
-    tab_list = [f"Topics {topic_ids[i*num_cols]}-{topic_ids[min((i+1)*num_cols-1, num_topics-1)]}" for i in range(num_tabs)]
-    tabs = st.tabs(tab_list)
-    
-    for tab_idx, tab in enumerate(tabs):
-        with tab:
-            start_idx = tab_idx * num_cols
-            end_idx = min((tab_idx + 1) * num_cols, num_topics)
-            
-            for idx in range(start_idx, end_idx):
-                actual_topic_id = topic_ids[idx]
-                topic_row = topic_labels_df[topic_labels_df['topic_id'] == actual_topic_id]
-                if len(topic_row) == 0:
-                    continue
-                
-                col1, col2 = st.columns([0.3, 0.7])
-                with col1:
-                    st.markdown(f"<h3 style='color:{PRIMARY};'>Topic {actual_topic_id}</h3>", unsafe_allow_html=True)
-                    topic_doc_count = len(topic_dist_df[topic_dist_df['topik_dominan'] == actual_topic_id])
-                    st.caption(f"📊 {topic_doc_count} documents")
-                with col2:
-                    label = st.text_input("Label:", value=topic_row['label'].values[0], key=f"label_{actual_topic_id}")
-                    description = st.text_area("Deskripsi:", value=topic_row['description'].values[0], height=60, key=f"desc_{actual_topic_id}")
-                    keywords = st.text_input("Keywords (pisahkan dengan `;`):", value=topic_row['keywords'].values[0], key=f"keywords_{actual_topic_id}")
-
-                    qc_val = topic_row['quality_coherence'].values[0] if 'quality_coherence' in topic_row.columns else ''
-                    ls_val = topic_row['label_score'].values[0] if 'label_score' in topic_row.columns else ''
-                    if qc_val != '' and pd.notna(qc_val) and str(qc_val).strip():
-                        qc_float = float(qc_val)
-                        if qc_float < 0.4:
-                            st.warning(f"⚠️ Quality Coherence: {qc_float:.3f}")
-                        else:
-                            st.info(f"✅ Quality Coherence: {qc_float:.3f}")
-                    if ls_val != '' and pd.notna(ls_val) and str(ls_val).strip():
-                        st.caption(f"Label Score: {float(ls_val):.4f}")
-                    
-                    st.session_state.labels_edited.loc[st.session_state.labels_edited['topic_id'] == actual_topic_id, 'label'] = label
-                    st.session_state.labels_edited.loc[st.session_state.labels_edited['topic_id'] == actual_topic_id, 'description'] = description
-                    st.session_state.labels_edited.loc[st.session_state.labels_edited['topic_id'] == actual_topic_id, 'keywords'] = keywords
-                
-                st.divider()
-    
-    custom_divider()
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        if st.button("💾 Simpan Semua Label", use_container_width=True):
-            try:
-                base_path = Path(__file__).parent.parent
-                labels_json = {}
-                for _, row in st.session_state.labels_edited.iterrows():
-                    tid = row['topic_id']
-                    labels_json[str(tid - 1)] = {
-                        'label_final': row['label'],
-                        'label_auto': row['label'],
-                        'score': row.get('label_score', ''),
-                        'top_words': [],
-                        'top_words_filtered': []
-                    }
-                json_path = base_path / "model" / "topic_labels.json"
-                with open(json_path, 'w', encoding='utf-8') as f:
-                    json.dump(labels_json, f, ensure_ascii=False, indent=4)
-                csv_path = base_path / "model" / "topic_labels.csv"
-                st.session_state.labels_edited.to_csv(csv_path, index=False)
-                st.success("✅ Label berhasil disimpan ke JSON + CSV!")
-                st.cache_data.clear()
-                st.rerun()
-            except Exception as e:
-                st.error(f"❌ Error saat menyimpan: {e}")
-    with col2:
-        if st.button("🔄 Reset ke Label Awal", use_container_width=True):
-            st.session_state.labels_edited = topic_labels_df.copy()
-            st.success("Label direset ke kondisi awal")
-            st.rerun()
-    with col3:
-        csv_data = st.session_state.labels_edited.to_csv(index=False)
-        st.download_button(label="📥 Download Labels CSV", data=csv_data, file_name="topic_labels.csv", mime="text/csv", use_container_width=True)
-    card_end()
-    
-    card_start()
-    section_header("📋 Preview Semua Label")
-    st.dataframe(st.session_state.labels_edited, use_container_width=True, hide_index=True)
-    card_end()
 
 # Footer
 now = datetime.now().strftime("%Y-%m-%d %H:%M")
