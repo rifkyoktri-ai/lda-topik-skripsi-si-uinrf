@@ -20,7 +20,9 @@ def preprocess_text_for_coherence(df, text_col='abstract'):
     """
     texts = []
     # If the dataset already has a preprocessed column (list of words as string), parse it
-    if 'preprocessed' in df.columns:
+    if 'tokens' in df.columns:
+        text_col = 'tokens'
+    elif 'preprocessed' in df.columns:
         text_col = 'preprocessed'
     
     for text in df[text_col].fillna(''):
@@ -45,9 +47,11 @@ def run_grid_search(args):
     print("="*60)
     
     # 1. Load Data
-    dict_path = Path("model/lda_model.gensim.id2word")
+    dict_path = Path("data/intermediate/dictionary.gensim")
     if not dict_path.exists():
-        raise FileNotFoundError(f"Dictionary tidak ditemukan: {dict_path}")
+        dict_path = Path("model/lda_model.gensim.id2word")
+    if not dict_path.exists():
+        raise FileNotFoundError(f"Dictionary tidak ditemukan di data/intermediate/dictionary.gensim maupun model/lda_model.gensim.id2word")
     
     print(f"Loading dictionary dari {dict_path}...")
     dictionary = Dictionary.load(str(dict_path))
@@ -172,7 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_k", type=int, default=15, help="Maximum jumlah topik")
     parser.add_argument("--passes", type=int, default=10, help="Jumlah passes training LDA")
     parser.add_argument("--workers", type=int, default=1, help="Jumlah workers (CPU)")
-    parser.add_argument("--data_path", type=str, default="data/processed/thesis_for_pipeline.csv", help="Path ke dataset")
+    parser.add_argument("--data_path", type=str, default="data/intermediate/dataset_preprocessed.csv", help="Path ke dataset")
     
     args = parser.parse_args()
     run_grid_search(args)

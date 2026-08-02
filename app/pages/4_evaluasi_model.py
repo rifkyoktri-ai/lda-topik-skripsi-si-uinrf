@@ -101,16 +101,18 @@ with st.expander("📖 Penjelasan Metrik"):
 card_end()
 
 # 2. PyLDAvis
-card_start()
+st.markdown("<br>", unsafe_allow_html=True)
 section_header("📍 Visualisasi Interaktif Model (PyLDAvis)")
 if viz_path.exists():
     with open(viz_path, 'r', encoding='utf-8') as f:
         html_string = f.read()
     st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
-    components.html(html_string, height=800, scrolling=True)
+    
+    # Bungkus dalam container kosong agar lifecycle React tidak konflik dengan DOM PyLDAvis
+    with st.container():
+        components.html(html_string, width=1300, height=800, scrolling=True)
 else:
     st.warning("File lda_visualization.html tidak ditemukan. Pastikan model telah dilatih dengan benar.")
-card_end()
 
 # 3. Grid Search per K
 st.markdown("---")
