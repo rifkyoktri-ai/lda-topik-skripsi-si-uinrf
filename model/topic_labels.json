@@ -1,181 +1,127 @@
 {
   "0": {
     "label_final": "Kepuasan Pengguna Sistem Informasi",
-    "label_auto": "Puas",
-    "score": 0.7957,
+    "label_auto": "Laku Bantu",
+    "score": 0.7259,
     "top_words": [
+      "kembang",
       "puas",
       "layan",
-      "kembang",
       "tuju",
-      "laku"
+      "laku",
+      "bantu",
+      "mudah",
+      "terima"
     ],
     "top_words_filtered": [
+      "kembang",
       "puas",
       "layan",
-      "kembang",
       "tuju",
-      "laku"
+      "laku",
+      "bantu",
+      "mudah",
+      "terima"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.5355
+    "quality_coherence": 0.5686
   },
   "1": {
-    "label_final": "Kualitas Layanan Sistem Informasi",
-    "label_auto": "Akademik Sukses",
-    "score": 0.8756,
+    "label_final": "Sistem Informasi Akademik",
+    "label_auto": "Tuju Akademik",
+    "score": 0.8738,
     "top_words": [
-      "layan",
       "laku",
-      "akademik",
-      "sukses",
-      "aman",
-      "sentimen"
+      "layan",
+      "tuju",
+      "akademik"
     ],
     "top_words_filtered": [
-      "layan",
       "laku",
-      "akademik",
-      "sukses",
-      "aman",
-      "sentimen"
+      "layan",
+      "tuju",
+      "akademik"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.4788
+    "quality_coherence": 0.5749
   },
   "2": {
-    "label_final": "Analisis Kualitas Website (WebQual)",
-    "label_auto": "Performance Webqual",
-    "score": 0.7581,
+    "label_final": "Manajemen Risiko & Usability Website",
+    "label_auto": "Quality Layan",
+    "score": 0.7939,
     "top_words": [
       "usability",
       "quality",
+      "layan",
       "service",
-      "performance",
-      "webqual",
-      "learning",
-      "layan"
+      "level"
     ],
     "top_words_filtered": [
       "usability",
       "quality",
+      "layan",
       "service",
-      "performance",
-      "webqual",
-      "learning",
-      "layan"
+      "level"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.4343
+    "quality_coherence": 0.414
   },
   "3": {
     "label_final": "Sistem Informasi Penjualan & Inventory",
-    "label_auto": "Palm Startup",
-    "score": 0.7603,
+    "label_auto": "Stok Laku",
+    "score": 0.6828,
     "top_words": [
       "jual",
       "barang",
       "beli",
-      "sedia",
-      "stok",
-      "cpo",
+      "langgan",
       "transaksi",
-      "growth",
-      "palm",
-      "startup"
+      "stok",
+      "laku",
+      "cpo",
+      "sedia",
+      "growth"
     ],
     "top_words_filtered": [
       "jual",
       "barang",
       "beli",
-      "sedia",
-      "stok",
-      "cpo",
+      "langgan",
       "transaksi",
-      "growth",
-      "palm",
-      "startup"
+      "stok",
+      "laku",
+      "cpo",
+      "sedia",
+      "growth"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.3403
+    "quality_coherence": 0.3017
   },
   "4": {
     "label_final": "Service Quality & User Satisfaction",
     "label_auto": "Satisfaction Results",
-    "score": 0.7495,
+    "score": 0.7768,
     "top_words": [
       "satisfaction",
       "results",
-      "not",
-      "quality",
       "which",
+      "not",
       "users",
-      "service"
+      "quality",
+      "nkeywords",
+      "one"
     ],
     "top_words_filtered": [
       "satisfaction",
       "results",
-      "not",
-      "quality",
       "which",
+      "not",
       "users",
-      "service"
+      "quality",
+      "nkeywords",
+      "one"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.7161
-  },
-  "5": {
-    "label_final": "Sistem Informasi Konseling & Bimbingan",
-    "label_auto": "Nikah Disaster",
-    "score": 0.6031,
-    "top_words": [
-      "konseling",
-      "bimbing",
-      "pinjam",
-      "mohon",
-      "mining",
-      "nikah",
-      "disaster",
-      "langgar",
-      "algorithm",
-      "extreme"
-    ],
-    "top_words_filtered": [
-      "konseling",
-      "bimbing",
-      "pinjam",
-      "mohon",
-      "mining",
-      "nikah",
-      "disaster",
-      "langgar",
-      "algorithm",
-      "extreme"
-    ],
-    "num_docs": 0,
-    "quality_coherence": 0.4462
-  },
-  "6": {
-    "label_final": "Manajemen Risiko & Adopsi TI",
-    "label_auto": "Bantu Tuju",
-    "score": 0.845,
-    "top_words": [
-      "kembang",
-      "laku",
-      "bantu",
-      "tuju",
-      "mudah",
-      "giat"
-    ],
-    "top_words_filtered": [
-      "kembang",
-      "laku",
-      "bantu",
-      "tuju",
-      "mudah",
-      "giat"
-    ],
-    "num_docs": 0,
-    "quality_coherence": 0.6354
+    "quality_coherence": 0.7715
   }
 }

@@ -34,6 +34,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+st.markdown('<meta name="google" content="notranslate">', unsafe_allow_html=True)
+
 # ── Custom CSS ──
 st.markdown(f"""
     <style>
@@ -298,7 +300,7 @@ def load_lda_model():
 def display_html(html_content):
     """Display HTML content safely"""
     try:
-        components.html(html_content, height=900, scrolling=True)
+        components.html(html_content, height=900, scrolling=True, key="pyldavis_safe_html")
     except Exception as e:
         st.error(f"Error: {e}")
         st.write("💡 Untuk melihat visualisasi, silakan buka file HTML langsung: `model/lda_visualization.html`")
@@ -561,7 +563,7 @@ elif page == "🔵 Visualisasi LDA":
         card_start()
         section_header("📍 PyLDAvis Interactive Visualization")
         st.caption("Klik pada topik untuk melihat top terms")
-        components.html(lda_viz_html, height=900, scrolling=True)
+        components.html(lda_viz_html, height=900, scrolling=True, key="pyldavis_main_dashboard")
         with st.expander("📚 Tentang PyLDAvis"):
             st.markdown("""
             **PyLDAvis** menampilkan:

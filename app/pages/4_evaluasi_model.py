@@ -110,7 +110,7 @@ if viz_path.exists():
     
     # Bungkus dalam container kosong agar lifecycle React tidak konflik dengan DOM PyLDAvis
     with st.container():
-        components.html(html_string, width=1300, height=800, scrolling=True)
+        components.html(html_string, width=1300, height=800, scrolling=True, key="pyldavis_eval_page")
 else:
     st.warning("File lda_visualization.html tidak ditemukan. Pastikan model telah dilatih dengan benar.")
 
