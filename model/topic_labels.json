@@ -1,127 +1,69 @@
 {
   "0": {
-    "label_final": "Kepuasan Pengguna Sistem Informasi",
-    "label_auto": "Laku Bantu",
-    "score": 0.7259,
+    "label_final": "Manual Audit",
+    "label_auto": "Manual Audit",
+    "score": 0.812,
     "top_words": [
-      "kembang",
-      "puas",
-      "layan",
-      "tuju",
-      "laku",
-      "bantu",
-      "mudah",
-      "terima"
+      "fitur",
+      "manual",
+      "audit",
+      "pilih",
+      "lapor",
+      "didik",
+      "ajar"
     ],
     "top_words_filtered": [
-      "kembang",
-      "puas",
-      "layan",
-      "tuju",
-      "laku",
-      "bantu",
-      "mudah",
-      "terima"
+      "fitur",
+      "manual",
+      "audit",
+      "pilih",
+      "lapor",
+      "didik",
+      "ajar"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.5686
+    "quality_coherence": 0.3206
   },
   "1": {
-    "label_final": "Sistem Informasi Akademik",
-    "label_auto": "Tuju Akademik",
-    "score": 0.8738,
+    "label_final": "Usaha Analis",
+    "label_auto": "Usaha Analis",
+    "score": 0.773,
     "top_words": [
-      "laku",
-      "layan",
-      "tuju",
-      "akademik"
+      "aman",
+      "identifikasi",
+      "usaha",
+      "analis",
+      "ancam"
     ],
     "top_words_filtered": [
-      "laku",
-      "layan",
-      "tuju",
-      "akademik"
+      "aman",
+      "identifikasi",
+      "usaha",
+      "analis",
+      "ancam"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.5749
+    "quality_coherence": 0.3216
   },
   "2": {
-    "label_final": "Manajemen Risiko & Usability Website",
-    "label_auto": "Quality Layan",
-    "score": 0.7939,
+    "label_final": "Usability Kembang",
+    "label_auto": "Usability Kembang",
+    "score": 0.6983,
     "top_words": [
       "usability",
-      "quality",
-      "layan",
-      "service",
-      "level"
+      "kembang",
+      "bimbing",
+      "catat",
+      "lapor"
     ],
     "top_words_filtered": [
       "usability",
-      "quality",
-      "layan",
-      "service",
-      "level"
+      "kembang",
+      "bimbing",
+      "catat",
+      "lapor"
     ],
     "num_docs": 0,
-    "quality_coherence": 0.414
-  },
-  "3": {
-    "label_final": "Sistem Informasi Penjualan & Inventory",
-    "label_auto": "Stok Laku",
-    "score": 0.6828,
-    "top_words": [
-      "jual",
-      "barang",
-      "beli",
-      "langgan",
-      "transaksi",
-      "stok",
-      "laku",
-      "cpo",
-      "sedia",
-      "growth"
-    ],
-    "top_words_filtered": [
-      "jual",
-      "barang",
-      "beli",
-      "langgan",
-      "transaksi",
-      "stok",
-      "laku",
-      "cpo",
-      "sedia",
-      "growth"
-    ],
-    "num_docs": 0,
-    "quality_coherence": 0.3017
-  },
-  "4": {
-    "label_final": "Service Quality & User Satisfaction",
-    "label_auto": "Satisfaction Results",
-    "score": 0.7768,
-    "top_words": [
-      "satisfaction",
-      "results",
-      "which",
-      "not",
-      "users",
-      "quality",
-      "nkeywords",
-      "one"
-    ],
-    "top_words_filtered": [
-      "satisfaction",
-      "results",
-      "which",
-      "not",
-      "users",
-      "quality",
-      "nkeywords",
-      "one"
-    ],
-    "num_docs": 0,
-    "quality_coherence": 0.7715
+    "quality_coherence": 0.3348
   }
 }

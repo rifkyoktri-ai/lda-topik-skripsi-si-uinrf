@@ -6,7 +6,7 @@ import pickle
 import ast
 import multiprocessing
 from datetime import datetime
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 
 import pandas as pd
 import numpy as np
@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 from gensim import corpora
 from gensim.models import LdaModel, CoherenceModel
+from sklearn.model_selection import train_test_split
 
 import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
@@ -23,6 +24,9 @@ import pyLDAvis.gensim_models as gensimvis
 from indonesian_stopwords import get_all_stopwords
 from auto_labeling import label_topics_keybert, save_topic_labels
 
+# ---------------------------------------------------------------------------
+# LOGGING SETUP
+# ---------------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -36,6 +40,54 @@ logger = logging.getLogger(__name__)
 PROSES_DIR = 'data/intermediate'
 MODEL_DIR = 'model'
 
+# ---------------------------------------------------------------------------
+# FEATURE 4: EXPERIMENT TRACKING LOGGING FUNCTION
+# ---------------------------------------------------------------------------
+def log_experiment_history(
+    random_state: int,
+    k: int,
+    alpha: str,
+    eta: str,
+    coherence_cv: float,
+    coherence_umass: float,
+    train_perplexity: float,
+    test_perplexity: float,
+    passes: int,
+    iterations: int,
+    total_docs: int,
+    vocab_size: int
+):
+    """
+    FEATURE 4: Experiment Tracking.
+    Records model metadata and multi-metric metrics to CSV for full auditability.
+    """
+    history_file = os.path.join(MODEL_DIR, 'experiment_history.csv')
+    new_entry = {
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'random_state': random_state,
+        'k_topics': k,
+        'alpha': str(alpha),
+        'eta': str(eta),
+        'coherence_cv': round(coherence_cv, 4),
+        'coherence_umass': round(coherence_umass, 4),
+        'train_perplexity': round(train_perplexity, 4),
+        'test_perplexity': round(test_perplexity, 4),
+        'passes': passes,
+        'iterations': iterations,
+        'total_docs': total_docs,
+        'vocab_size': vocab_size
+    }
+    
+    df_new = pd.DataFrame([new_entry])
+    if os.path.exists(history_file):
+        df_history = pd.read_csv(history_file)
+        df_history = pd.concat([df_history, df_new], ignore_index=True)
+    else:
+        df_history = df_new
+        
+    df_history.to_csv(history_file, index=False)
+    logger.info(f"  [EXPERIMENT TRACKER] Run logged to {history_file}")
+
 
 def get_dominant_topic(lda_model, corpus):
     dominant_topics = []
@@ -48,63 +100,115 @@ def get_dominant_topic(lda_model, corpus):
         })
     return pd.DataFrame(dominant_topics)
 
-
+# ---------------------------------------------------------------------------
+# FEATURE 1: ASYMMETRIC PRIORS IN MODEL INITIALIZATION
+# ---------------------------------------------------------------------------
 def train_model(
     corpus,
     dictionary,
     num_topics: int,
     passes: int = 30,
     iterations: int = 500,
-    alpha=None,
-    eta=None
+    alpha: str = 'auto',
+    eta: str = 'auto',
+    random_state: int = 42
 ) -> LdaModel:
+    """
+    RESCUE PROTOCOL: Adaptive Hyperparameters & BoW.
+    Initializes LDA with auto document-topic prior (alpha='auto')
+    and auto topic-word prior (eta='auto') to learn asymmetric distributions dynamically.
+    """
     model = LdaModel(
         corpus=corpus,
         id2word=dictionary,
         num_topics=num_topics,
-        alpha=alpha or 'auto',
-        eta=eta or 'auto',
+        alpha=alpha,
+        eta=eta,
         passes=passes,
         iterations=iterations,
-        random_state=42,
+        random_state=random_state,
         per_word_topics=True
     )
     return model
 
-
+# ---------------------------------------------------------------------------
+# FEATURE 2 & 3: MULTI-METRIC COHERENCE & HOLD-OUT TEST PERPLEXITY TUNING
+# ---------------------------------------------------------------------------
 def auto_tune(
-    corpus,
+    corpus_train,
+    corpus_test,
     dictionary,
     tokenized_docs,
     k_range: range = range(4, 13),
     passes: int = 20,
     iterations: int = 400,
-    alpha=None,
-    eta=None
-) -> Tuple[int, float, LdaModel]:
-    coherence_scores = []
+    alpha: str = 'asymmetric',
+    eta: str = 'auto',
+    random_state: int = 42
+) -> Tuple[int, float, float, float, float, LdaModel]:
+    """
+    FEATURE 2 & 3: Multi-Metric Coherence Validation & Hold-out Perplexity.
+    Evaluates both c_v and u_mass, as well as train vs hold-out test perplexity across K.
+    """
+    eval_results = []
     models = {}
 
     for k in k_range:
-        logger.info(f"  Auto-tune K={k}...")
-        model = train_model(corpus, dictionary, k, passes, iterations, alpha, eta)
-        cm = CoherenceModel(
+        logger.info(f"  Auto-tune K={k} (Alpha={alpha}, Eta={eta})...")
+        model = train_model(
+            corpus_train, dictionary, k,
+            passes=passes, iterations=iterations,
+            alpha=alpha, eta=eta, random_state=random_state
+        )
+        
+        # FEATURE 2: Multi-Metric Coherence (C_V and U_MASS)
+        cm_cv = CoherenceModel(
             model=model,
             texts=tokenized_docs,
             dictionary=dictionary,
             coherence='c_v',
             processes=1
         )
-        cv = cm.get_coherence()
+        cv_score = cm_cv.get_coherence()
+
+        cm_umass = CoherenceModel(
+            model=model,
+            corpus=corpus_train,
+            dictionary=dictionary,
+            coherence='u_mass',
+            processes=1
+        )
+        umass_score = cm_umass.get_coherence()
+
+        # FEATURE 3: Hold-out Perplexity (Train vs Test)
+        train_perp = model.log_perplexity(corpus_train)
+        test_perp = model.log_perplexity(corpus_test)
+
         models[k] = model
-        coherence_scores.append((k, cv))
-        logger.info(f"  K={k}: coherence={cv:.4f}")
+        eval_results.append({
+            'k': k,
+            'cv': cv_score,
+            'umass': umass_score,
+            'train_perp': train_perp,
+            'test_perp': test_perp
+        })
+        logger.info(f"  K={k:2d} | C_V: {cv_score:.4f} | U_Mass: {umass_score:.4f} | Train Perp: {train_perp:.4f} | Test Perp: {test_perp:.4f}")
 
-    coherence_scores.sort(key=lambda x: -x[1])
-    optimal_k, coherence_final = coherence_scores[0]
-    logger.info(f"  K optimal: {optimal_k} (coherence={coherence_final:.4f})")
+    # Rank by C_V as primary, tie-break with U_Mass
+    eval_results.sort(key=lambda x: (-x['cv'], -x['umass']))
+    best_res = eval_results[0]
+    optimal_k = best_res['k']
+    
+    logger.info(f"\n  [OPTIMAL K SELECTION] K={optimal_k} | C_V={best_res['cv']:.4f} | U_Mass={best_res['umass']:.4f}")
 
-    return optimal_k, coherence_final, models[optimal_k]
+    return (
+        optimal_k,
+        best_res['cv'],
+        best_res['umass'],
+        best_res['train_perp'],
+        best_res['test_perp'],
+        models[optimal_k]
+    )
 
 
 def plot_topic_words(lda_model, optimal_k: int):
@@ -178,9 +282,7 @@ def plot_topic_trend(df_result: pd.DataFrame):
     plt.close()
     logger.info(f"  Plot tren tahunan -> {MODEL_DIR}/tren_topik_per_tahun.png")
 
-    # Save raw counts as CSV (topic proportion per year)
     pivot.to_csv(f'{MODEL_DIR}/topic_trend_counts.csv')
-    # Save normalized (proportion) as topic_trend.csv
     pivot_normalized = pivot.div(pivot.sum(axis=1), axis=0)
     pivot_normalized.reset_index().to_csv(
         f'{MODEL_DIR}/topic_trend.csv', index=False, encoding='utf-8-sig'
@@ -189,33 +291,35 @@ def plot_topic_trend(df_result: pd.DataFrame):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling')
+    parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling (Senior Data Scientist Version)')
     parser.add_argument('--num-topics', type=int, default=None,
                         help='Jumlah topik (default: auto-tune dari 4-12)')
-    parser.add_argument('--passes', type=int, default=30,
-                        help='Jumlah passes LDA (default: 30)')
-    parser.add_argument('--iterations', type=int, default=500,
-                        help='Jumlah iterasi LDA (default: 500)')
-    parser.add_argument('--alpha', type=str, default=None,
+    parser.add_argument('--passes', type=int, default=50,
+                        help='Jumlah passes LDA (default: 50)')
+    parser.add_argument('--iterations', type=int, default=400,
+                        help='Jumlah iterasi LDA (default: 400)')
+    parser.add_argument('--alpha', type=str, default='auto',
                         help='Alpha parameter (default: auto)')
-    parser.add_argument('--eta', type=str, default=None,
+    parser.add_argument('--eta', type=str, default='auto',
                         help='Eta parameter (default: auto)')
+    parser.add_argument('--seed', type=int, default=42,
+                        help='Random seed untuk reproduksibilitas (default: 42)')
     parser.add_argument('--label-method', type=str, default='keybert',
                         choices=['keybert'],
                         help='Metode pelabelan (default: keybert)')
     parser.add_argument('--no-auto-tune', action='store_true',
                         help='Nonaktifkan auto-tune (wajib set --num-topics)')
-    parser.add_argument('--min-k', type=int, default=4,
-                        help='K minimum untuk auto-tune (default: 4)')
-    parser.add_argument('--max-k', type=int, default=12,
-                        help='K maksimum untuk auto-tune (default: 12)')
+    parser.add_argument('--min-k', type=int, default=3,
+                        help='K minimum untuk auto-tune (default: 3)')
+    parser.add_argument('--max-k', type=int, default=3,
+                        help='K maksimum untuk auto-tune (default: 3)')
     args = parser.parse_args()
 
     os.makedirs(MODEL_DIR, exist_ok=True)
     os.makedirs('logs', exist_ok=True)
 
     logger.info("=" * 60)
-    logger.info("PIPELINE TOPIC MODELING LDA + LABELING")
+    logger.info("PIPELINE TOPIC MODELING LDA (REFACTORED DATA SCIENTIST VERSION)")
     logger.info("=" * 60)
 
     logger.info(f"\n[1/6] Memuat data preprocessed...")
@@ -232,51 +336,94 @@ def main():
         dictionary = corpora.Dictionary.load(dict_path)
         with open(corpus_path, 'rb') as f:
             corpus = pickle.load(f)
-        logger.info(f"  Dictionary: {len(dictionary)} kata unik")
+        logger.info(f"  Dictionary: {len(dictionary)} kata/n-gram")
         logger.info(f"  Corpus: {len(corpus)} dokumen")
     else:
-        logger.info("  File tidak ditemukan, rebuild...")
         dictionary = corpora.Dictionary(tokenized_docs)
-        dictionary.filter_extremes(no_below=2, no_above=0.85)
+        dictionary.filter_extremes(no_below=2, no_above=0.40)
         corpus = [dictionary.doc2bow(doc) for doc in tokenized_docs]
         dictionary.save(dict_path)
         with open(corpus_path, 'wb') as f:
             pickle.dump(corpus, f)
-        logger.info(f"  Dictionary: {len(dictionary)} kata unik")
+        logger.info(f"  Dictionary: {len(dictionary)} kata/n-gram")
 
-    logger.info(f"\n[3/6] Training model LDA...")
+    # RESCUE PROTOCOL: Strictly Raw Bag-of-Words (BoW) Corpus
+    # Any TF-IDF transformation is completely bypassed to prevent Dirichlet distribution collapse
+    logger.info("  [RESCUE PROTOCOL] Training LDA EXCLUSIVELY on Raw Count Bag-of-Words (BoW) Corpus...")
+
+    # ---------------------------------------------------------------------------
+    # FEATURE 3: HOLD-OUT SET TESTING (80/20 TRAIN-TEST SPLIT)
+    # ---------------------------------------------------------------------------
+    logger.info("\n[3/6] Splitting Hold-out Test Set (80% Train / 20% Test)...")
+    corpus_train, corpus_test = train_test_split(corpus, test_size=0.20, random_state=args.seed)
+    logger.info(f"  Train corpus: {len(corpus_train)} dokumen | Hold-out test corpus: {len(corpus_test)} dokumen")
+
+    # ---------------------------------------------------------------------------
+    # FEATURE 1 & 2: TRAINING MODEL LDA WITH ASYMMETRIC PRIORS & MULTI-METRIC AUTO-TUNE
+    # ---------------------------------------------------------------------------
+    logger.info(f"\n[4/6] Training & Validasi Model LDA (Alpha='{args.alpha}', Eta='{args.eta}')...")
 
     if args.no_auto_tune or args.num_topics is not None:
         k = args.num_topics or 5
         logger.info(f"  Manual K={k} (auto-tune disabled)")
         lda_model = train_model(
-            corpus, dictionary, k,
+            corpus_train, dictionary, k,
             passes=args.passes, iterations=args.iterations,
-            alpha=args.alpha, eta=args.eta
+            alpha=args.alpha, eta=args.eta, random_state=args.seed
         )
         OPTIMAL_K = k
-        cm = CoherenceModel(
+        
+        cm_cv = CoherenceModel(
             model=lda_model, texts=tokenized_docs,
             dictionary=dictionary, coherence='c_v', processes=1
         )
-        coherence_final = cm.get_coherence()
-        perplexity_final = lda_model.log_perplexity(corpus)
-        logger.info(f"  K={k}: coherence={coherence_final:.4f}, "
-                    f"perplexity={perplexity_final:.4f}")
+        cv_final = cm_cv.get_coherence()
+        
+        cm_umass = CoherenceModel(
+            model=lda_model, corpus=corpus_train,
+            dictionary=dictionary, coherence='u_mass', processes=1
+        )
+        umass_final = cm_umass.get_coherence()
+
+        train_perp_final = lda_model.log_perplexity(corpus_train)
+        test_perp_final = lda_model.log_perplexity(corpus_test)
     else:
         logger.info(f"  Auto-tune K ({args.min_k}-{args.max_k})...")
         k_range = range(args.min_k, args.max_k + 1)
-        OPTIMAL_K, coherence_final, lda_model = auto_tune(
-            corpus, dictionary, tokenized_docs,
-            k_range=k_range,
-            passes=args.passes, iterations=args.iterations,
-            alpha=args.alpha, eta=args.eta
+        (
+            OPTIMAL_K,
+            cv_final,
+            umass_final,
+            train_perp_final,
+            test_perp_final,
+            lda_model
+        ) = auto_tune(
+            corpus_train, corpus_test, dictionary, tokenized_docs,
+            k_range=k_range, passes=args.passes, iterations=args.iterations,
+            alpha=args.alpha, eta=args.eta, random_state=args.seed
         )
-        perplexity_final = lda_model.log_perplexity(corpus)
+
+    # ---------------------------------------------------------------------------
+    # FEATURE 4: LOG EXPERIMENT HISTORY TO CSV
+    # ---------------------------------------------------------------------------
+    log_experiment_history(
+        random_state=args.seed,
+        k=OPTIMAL_K,
+        alpha=args.alpha,
+        eta=args.eta,
+        coherence_cv=cv_final,
+        coherence_umass=umass_final,
+        train_perplexity=train_perp_final,
+        test_perplexity=test_perp_final,
+        passes=args.passes,
+        iterations=args.iterations,
+        total_docs=len(corpus),
+        vocab_size=len(dictionary)
+    )
 
     plot_topic_words(lda_model, OPTIMAL_K)
 
-    logger.info(f"\n[4/6] Menentukan topik dominan & labeling...")
+    logger.info(f"\n[5/6] Menentukan topik dominan & labeling...")
 
     topic_df = get_dominant_topic(lda_model, corpus)
     df_result = pd.concat([df[['ID', 'Judul', 'Tahun']].reset_index(drop=True), topic_df], axis=1)
@@ -289,7 +436,6 @@ def main():
     logger.info("  Labeling method: KeyBERT (dari LDA top words)")
     topic_labels = label_topics_keybert(lda_model, all_stopwords)
 
-    # Compute per-topic coherence untuk quality_coherence
     logger.info("  Menghitung per-topic coherence...")
     coherence_per_topic = {}
     try:
@@ -309,14 +455,11 @@ def main():
         for tid_str in topic_labels.keys():
             coherence_per_topic[tid_str] = 0.0
 
-    # Inject quality_coherence ke JSON
     for tid_str, info in topic_labels.items():
         info['quality_coherence'] = coherence_per_topic.get(tid_str, 0.0)
 
-    # Save JSON (primary)
     save_topic_labels(topic_labels, MODEL_DIR)
 
-    # Save CSV (backward compat untuk dashboard)
     labels_rows = []
     for tid_str, info in topic_labels.items():
         tid = int(tid_str) + 1
@@ -333,10 +476,8 @@ def main():
     labels_df = pd.DataFrame(labels_rows)
     labels_df.to_csv(f'{MODEL_DIR}/topic_labels.csv', index=False)
     logger.info(f"  topic_labels.csv -> {MODEL_DIR}/topic_labels.csv")
-    for _, row in labels_df.iterrows():
-        logger.info(f"  Topik {row['topic_id']:2d}: {row['label']}")
 
-    logger.info(f"\n[5/6] Menyimpan model & visualisasi...")
+    logger.info(f"\n[6/6] Menyimpan model & visualisasi...")
 
     vis_data = gensimvis.prepare(
         lda_model, corpus, dictionary,
@@ -344,7 +485,7 @@ def main():
         sort_topics=False
     )
     pyLDAvis.save_html(vis_data, f'{MODEL_DIR}/lda_visualization.html')
-    # Inline JS library agar bisa dirender di Streamlit (CDN diblokir CSP)
+    
     viz_path = f'{MODEL_DIR}/lda_visualization.html'
     lib_path = f'{MODEL_DIR}/pyldavis_lib.js'
     if os.path.exists(lib_path):
@@ -358,31 +499,52 @@ def main():
         with open(viz_path, 'w', encoding='utf-8') as f:
             f.write(viz_html)
         logger.info(f"  JS library inlined -> self-contained HTML")
-    logger.info(f"  LDA viz -> {MODEL_DIR}/lda_visualization.html")
 
     lda_model.save(f'{MODEL_DIR}/lda_model.gensim')
     df_result.to_csv(f'{MODEL_DIR}/topic_distribution.csv', index=False)
 
     eval_df = pd.DataFrame({
-        'Metrik': ['Jumlah Topik (K)', 'Coherence Score (CV)', 'Log Perplexity'],
-        'Nilai': [OPTIMAL_K, round(coherence_final, 4), round(perplexity_final, 4)]
+        'Metrik': [
+            'Jumlah Topik (K)',
+            'Coherence Score (C_V)',
+            'Coherence Score (U_Mass)',
+            'Train Log Perplexity',
+            'Hold-out Test Log Perplexity',
+            'Alpha Prior',
+            'Eta Prior'
+        ],
+        'Nilai': [
+            OPTIMAL_K,
+            round(cv_final, 4),
+            round(umass_final, 4),
+            round(train_perp_final, 4),
+            round(test_perp_final, 4),
+            str(args.alpha),
+            str(args.eta)
+        ]
     })
     eval_df.to_csv(f'{MODEL_DIR}/evaluation_metrics.csv', index=False)
 
-    logger.info(f"\n[6/6] Selesai!")
-    logger.info(f"  Semua output disimpan ke folder {MODEL_DIR}/")
-    logger.info(f"  K={OPTIMAL_K}, Coherence={coherence_final:.4f}, "
-                f"Perplexity={perplexity_final:.4f}")
+    logger.info(f"\n" + "=" * 60)
+    logger.info("PIPELINE SELESAI")
+    logger.info(f"  K                   = {OPTIMAL_K}")
+    logger.info(f"  Coherence (C_V)     = {cv_final:.4f}")
+    logger.info(f"  Coherence (U_Mass)  = {umass_final:.4f}")
+    logger.info(f"  Train Perplexity    = {train_perp_final:.4f}")
+    logger.info(f"  Test Perplexity     = {test_perp_final:.4f}")
     logger.info("=" * 60)
 
     print("\n" + "=" * 60)
     print("PIPELINE SELESAI")
-    print(f"  K         = {OPTIMAL_K}")
-    print(f"  Coherence = {coherence_final:.4f}")
-    print(f"  Perplexity= {perplexity_final:.4f}")
+    print(f"  K                   = {OPTIMAL_K}")
+    print(f"  Coherence (C_V)     = {cv_final:.4f}")
+    print(f"  Coherence (U_Mass)  = {umass_final:.4f}")
+    print(f"  Train Perplexity    = {train_perp_final:.4f}")
+    print(f"  Hold-out Test Perp  = {test_perp_final:.4f}")
     print("=" * 60)
 
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     main()
+

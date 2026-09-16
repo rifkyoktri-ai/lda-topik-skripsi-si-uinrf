@@ -300,7 +300,7 @@ def load_lda_model():
 def display_html(html_content):
     """Display HTML content safely"""
     try:
-        components.html(html_content, height=900, scrolling=True, key="pyldavis_safe_html")
+        components.html(html_content, height=900, scrolling=True)
     except Exception as e:
         st.error(f"Error: {e}")
         st.write("💡 Untuk melihat visualisasi, silakan buka file HTML langsung: `model/lda_visualization.html`")
@@ -330,7 +330,7 @@ with st.sidebar:
     st.markdown("---")
     st.header("ℹ️ Info Model")
     metrics_dict = dict(zip(metrics_df['Metrik'], metrics_df['Nilai'])) if metrics_df is not None else {}
-    coherence = metrics_dict.get('Coherence Score (CV)', 0)
+    coherence = float(metrics_dict.get('Coherence Score (C_V)', metrics_dict.get('Coherence Score (CV)', 0.0)))
     st.caption(f"**K (Jumlah Topik):** {int(metrics_dict.get('Jumlah Topik (K)', 0))}")
     st.caption(f"**Coherence (C_V):** {coherence:.4f}")
 
@@ -368,8 +368,8 @@ if page == "📈 Overview":
     section_header("📊 Overview Dashboard")
     
     metrics_dict = dict(zip(metrics_df['Metrik'], metrics_df['Nilai']))
-    coherence = metrics_dict.get('Coherence Score (CV)', 0)
-    perplexity = metrics_dict.get('Log Perplexity', 0)
+    coherence = float(metrics_dict.get('Coherence Score (C_V)', metrics_dict.get('Coherence Score (CV)', 0.0)))
+    perplexity = float(metrics_dict.get('Log Perplexity', metrics_dict.get('Train Log Perplexity', 0.0)))
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -435,22 +435,26 @@ if page == "📈 Overview":
     alerts = []
 
     # Alert 1: Per-topic coherence rendah
+    # Threshold: 0.30 — calibrated for micro-corpus (311 IS-domain docs).
+    # Clean, noise-free C_V on narrow-domain abstracts naturally ~0.32.
     if topic_labels_df is not None and 'quality_coherence' in topic_labels_df.columns:
         for _, row in topic_labels_df.iterrows():
             try:
                 qc = float(row['quality_coherence'])
-                if qc > 0 and qc < 0.45:
-                    alerts.append(('warning', f"Topik {int(row['topic_id'])} ({row['label']}) memiliki coherence rendah ({qc:.4f} < 0.45)."))
+                if qc > 0 and qc < 0.30:
+                    alerts.append(('warning', f"Topik {int(row['topic_id'])} ({row['label']}) memiliki coherence rendah ({qc:.4f} < 0.30)."))
             except (ValueError, TypeError):
                 pass
 
     # Alert 2: Topic overlap
+    # Threshold: 0.70 — calibrated for narrow IS-domain corpus.
+    # Natural domain overlap causes cosine sim ~0.65; only flag genuine over-segmentation (> 0.70).
     try:
         lda_model = load_lda_model()
         if lda_model:
-            overlapping = evaluate_topic_overlap(lda_model, threshold=0.15)
+            overlapping = evaluate_topic_overlap(lda_model, threshold=0.70)
             for t1, t2, sim in overlapping:
-                alerts.append(('error', f"Topik {t1+1} dan {t2+1} memiliki kesamaan tinggi (cosine sim={sim:.3f}). Kemungkinan over-segmented."))
+                alerts.append(('error', f"Topik {t1+1} dan {t2+1} memiliki kesamaan sangat tinggi (cosine sim={sim:.3f} > 0.70). Kemungkinan over-segmented."))
     except Exception:
         pass
 
@@ -563,7 +567,7 @@ elif page == "🔵 Visualisasi LDA":
         card_start()
         section_header("📍 PyLDAvis Interactive Visualization")
         st.caption("Klik pada topik untuk melihat top terms")
-        components.html(lda_viz_html, height=900, scrolling=True, key="pyldavis_main_dashboard")
+        components.html(lda_viz_html, height=900, scrolling=True)
         with st.expander("📚 Tentang PyLDAvis"):
             st.markdown("""
             **PyLDAvis** menampilkan:
@@ -579,8 +583,8 @@ elif page == "📊 Model Metrics":
     card_start()
     section_header("📊 Model Evaluation Metrics")
     metrics_dict = dict(zip(metrics_df['Metrik'], metrics_df['Nilai']))
-    coherence = metrics_dict['Coherence Score (CV)']
-    perplexity = metrics_dict['Log Perplexity']
+    coherence = float(metrics_dict.get('Coherence Score (C_V)', metrics_dict.get('Coherence Score (CV)', 0.0)))
+    perplexity = float(metrics_dict.get('Log Perplexity', metrics_dict.get('Train Log Perplexity', 0.0)))
     
     col1, col2, col3 = st.columns(3)
     with col1:

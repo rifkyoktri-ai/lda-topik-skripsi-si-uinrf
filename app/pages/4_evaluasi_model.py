@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import streamlit.components.v1 as components
 from pathlib import Path
 
-# ── Color Palette (Same as main) ──
+# ── Color Palette ──
 PRIMARY = "#1E3A5F"
 SECONDARY = "#2E86AB"
 ACCENT = "#F39C12"
@@ -52,19 +52,45 @@ def card_end():
 def section_header(title: str):
     st.markdown(f'<div class="section-header"><h3>{title}</h3></div>', unsafe_allow_html=True)
 
-st.title("📈 Evaluasi Model LDA")
-st.markdown("Halaman ini menyajikan metrik performa model dan hasil hyperparameter tuning untuk pemilihan jumlah topik (K) yang optimal.")
+# ---------------------------------------------------------------------------
+# DECOUPLED ARCHITECTURE: STREAMLIT CACHING FOR OFFLINE ARTIFACTS
+# ---------------------------------------------------------------------------
+@st.cache_data(ttl=3600)
+def load_hyperparameter_results(csv_path: str) -> pd.DataFrame:
+    """Read-only cached loading of hyperparameter tuning results."""
+    return pd.read_csv(csv_path)
+
+@st.cache_data(ttl=3600)
+def load_evaluation_metrics(csv_path: str) -> pd.DataFrame:
+    """Read-only cached loading of evaluation metrics."""
+    return pd.read_csv(csv_path)
+
+@st.cache_data(ttl=3600)
+def load_human_validation_csv(csv_path: str) -> pd.DataFrame:
+    """Read-only cached loading of human expert validation dataset."""
+    return pd.read_csv(csv_path)
+
+@st.cache_data(ttl=3600)
+def load_viz_html(html_path: str) -> str:
+    """Read-only cached loading of PyLDAvis self-contained HTML."""
+    with open(html_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+st.title("📈 Evaluasi Model LDA (Decoupled UI Architecture)")
+st.markdown("Halaman ini menyajikan metrik performa model, validasi pakar (*Human Intrusion Test*), dan hasil hyperparameter tuning.")
 
 base_path = Path(__file__).parent.parent.parent
 results_path = base_path / "model" / "hyperparameter_results.csv"
 metrics_path = base_path / "model" / "evaluation_metrics.csv"
 viz_path = base_path / "model" / "lda_visualization.html"
+human_val_path = base_path / "model" / "human_topic_validation.csv"
 
 # 1. Load Tuning Results
 card_start()
-section_header("📊 Hasil Hyperparameter Tuning")
+section_header("📊 Hasil Hyperparameter Tuning & Metrics")
 if results_path.exists():
-    df = pd.read_csv(results_path)
+    df = load_hyperparameter_results(str(results_path))
     
     col1, col2 = st.columns([1, 2])
     with col1:
@@ -84,9 +110,9 @@ if results_path.exists():
         st.plotly_chart(fig, use_container_width=True)
         
 else:
-    st.warning("Data hyperparameter_results.csv tidak ditemukan. Tampilkan metrik evaluasi dasar saja.")
+    st.warning("Data hyperparameter_results.csv tidak ditemukan. Menampilkan metrik evaluasi dasar model utama:")
     if metrics_path.exists():
-        metrics_df = pd.read_csv(metrics_path)
+        metrics_df = load_evaluation_metrics(str(metrics_path))
         st.dataframe(metrics_df, hide_index=True)
     else:
         st.error("Tidak ada data metrik model yang ditemukan.")
@@ -104,23 +130,45 @@ card_end()
 st.markdown("<br>", unsafe_allow_html=True)
 section_header("📍 Visualisasi Interaktif Model (PyLDAvis)")
 if viz_path.exists():
-    with open(viz_path, 'r', encoding='utf-8') as f:
-        html_string = f.read()
+    html_string = load_viz_html(str(viz_path))
     st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
     
-    # Bungkus dalam container kosong agar lifecycle React tidak konflik dengan DOM PyLDAvis
     with st.container():
-        components.html(html_string, width=1300, height=800, scrolling=True, key="pyldavis_eval_page")
+        components.html(html_string, width=1300, height=800, scrolling=True)
 else:
     st.warning("File lda_visualization.html tidak ditemukan. Pastikan model telah dilatih dengan benar.")
 
-# 3. Grid Search per K
+# 3. Human-in-the-Loop Expert Validation Export Section
+st.markdown("<br>", unsafe_allow_html=True)
+card_start()
+section_header("👩‍🏫 Human-in-the-loop: Export Dataset Validasi Pakar")
+st.markdown("""
+Sistem menyediakan dataset khusus yang telah diformat untuk pengujian kualitatif/intrusi topik oleh pakar (*Human Topic Intrusion Test*).
+Dosen penguji atau pakar domain dapat menilai relevansi dokumen (skala 1-5) dan memberikan umpan balik pada setiap topik yang dihasilkan LDA.
+""")
+
+if human_val_path.exists():
+    val_df = load_human_validation_csv(str(human_val_path))
+    st.dataframe(val_df.head(10), hide_index=True)
+    
+    csv_bytes = val_df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="📥 Unduh Dataset Validasi Pakar (human_topic_validation.csv)",
+        data=csv_bytes,
+        file_name="human_topic_validation.csv",
+        mime="text/csv"
+    )
+else:
+    st.info("Jalankan `python auto_labeling.py` untuk mengekspor dataset validasi pakar.")
+card_end()
+
+# 4. Grid Search per K
 st.markdown("---")
 card_start()
-section_header("📊 Hasil Grid Search Hyperparameter")
+section_header("📊 Hasil Grid Search Hyperparameter per K")
 
 if results_path.exists():
-    hp_df = pd.read_csv(results_path)
+    hp_df = load_hyperparameter_results(str(results_path))
 
     best_per_k = hp_df.loc[hp_df.groupby('k')['coherence_cv'].idxmax()].reset_index(drop=True)
     display_cols = best_per_k[['k', 'coherence_cv', 'coherence_umass', 'log_perplexity', 'alpha', 'eta']].copy()
@@ -137,17 +185,4 @@ if results_path.exists():
         use_container_width=True,
         hide_index=True
     )
-
-    with st.expander("📖 Mengapa K=7 dipilih meskipun bukan yang tertinggi secara metrik?"):
-        st.markdown("""
-        **Coherence score tertinggi tidak selalu berarti model terbaik** untuk analisis domain.
-
-        K=7 dipilih berdasarkan pertimbangan:
-        1. **Interpretabilitas** — K kecil (K=3) menghasilkan topik terlalu luas dan tidak informatif  
-        2. **Relevansi domain** — Terdapat 6-8 area penelitian SI yang berbeda secara konseptual  
-        3. **Konsistensi literatur** — Penelitian LDA pada dokumen akademik umumnya K=5-10  
-        4. **Selisih tidak signifikan** — Perbedaan coherence K=3 dan K=7 (0.036) masih dalam margin variabilitas normal  
-        """)
-else:
-    st.warning("File hyperparameter_results.csv tidak ditemukan. Jalankan hyperparameter_tuning.py terlebih dahulu.")
 card_end()

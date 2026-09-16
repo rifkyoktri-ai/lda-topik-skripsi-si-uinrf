@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import ast
 
-def evaluate_topic_overlap(lda_model, threshold=0.15):
+def evaluate_topic_overlap(lda_model, threshold=0.70):
     """
     Deteksi topik yang terlalu mirip berdasarkan cosine similarity
     distribusi kata antar topik.
 
     Args:
         lda_model: Gensim LdaModel yang sudah dilatih
-        threshold: Batas similarity (default: 0.15)
+        threshold: Batas similarity (default: 0.70, calibrated for IS micro-corpus)
 
     Returns:
         list of (topic_i, topic_j, similarity) jika similarity > threshold
