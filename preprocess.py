@@ -24,19 +24,18 @@ DOMAIN_STOPWORDS_INSTITUTIONAL = {
 }
 
 DOMAIN_STOPWORDS_ACADEMIC = {
-    'sistem', 'informasi', 'berbasis', 'metode', 'analisis', 'pengaruh',
-    'implementasi', 'studi', 'kasus', 'aplikasi', 'rancang', 'bangun',
-    'website', 'web', 'program', 'tugas', 'akhir', 'menggunakan',
-    'penelitian', 'hasil', 'berdasarkan', 'tujuan', 'dilakukan', 'membuat',
-    'dirancang', 'diperoleh', 'pengembangan', 'mengembangkan', 'tersebut',
-    'dapat', 'pada', 'dengan', 'guna', 'serta', 'dalam', 'secara', 'yaitu',
-    'prosedur', 'tahapan', 'penerapan', 'uji', 'pengujian', 'proses', 'dibuat',
-    'pembahasan', 'peneliti', 'penulisan', 'disusun', 'dibangun', 'ditulis',
-    'bertujuan', 'ditinjau', 'diukur', 'diuraikan',
-    # --- Surgical Fix: Administrative & Domain Noise Ablation ---
-    'bantu', 'layan', 'pelayanan', 'giat', 'kegiatan', 'legalisir',
-    'dimensi', 'akademik', 'kampus', 'universitas', 'mahasiswa', 'dosen',
-    'fakultas', 'nilai', 'data'
+    'sistem', 'informasi', 'berbasis', 'metode',
+    'aplikasi', 'website', 'web', 'program',
+    'tugas', 'akhir', 'menggunakan', 'penelitian',
+    'hasil', 'berdasarkan', 'tujuan', 'dilakukan',
+    'membuat', 'dirancang', 'diperoleh', 'pengembangan',
+    'mengembangkan', 'tersebut', 'dapat', 'pada',
+    'dengan', 'guna', 'serta', 'dalam', 'secara',
+    'yaitu', 'prosedur', 'tahapan', 'penerapan',
+    'pengujian', 'proses', 'dibuat', 'pembahasan',
+    'peneliti', 'penulisan', 'disusun', 'dibangun',
+    'bertujuan', 'bantu', 'layan', 'pelayanan',
+    'kegiatan', 'akademik', 'kampus', 'dosen', 'nilai'
 }
 
 # ---------------------------------------------------------------------------
@@ -44,16 +43,10 @@ DOMAIN_STOPWORDS_ACADEMIC = {
 # pre-stem filter. Apply this set AFTER stemming (double-pass fix).
 # ---------------------------------------------------------------------------
 POST_STEM_STOPWORDS = {
-    # Stemmed administrative / service words
     'layan', 'bantu', 'kelola', 'tunjuk', 'dukung', 'sedia', 'terima',
-    # Stemmed quantitative-research jargon
-    'variabel', 'tingkat', 'nilai', 'hasil', 'pengaruh',
-    'faktor', 'indikator', 'dimensi', 'uji', 'ukur', 'hitung', 'atur',
-    # NOTE: 'kualitas' and 'analis' RESTORED — vital IS-domain co-occurrence anchors
-    # Stemmed generic adjectives / adverbs
+    'tingkat', 'hasil',
     'baik', 'besar', 'perlu', 'mudah', 'tinggi', 'rendah', 'banyak',
     'dapat', 'ada', 'salah', 'laku', 'beri',
-    # Stemmed institutional / educational words
     'sekolah', 'kerja', 'guna', 'pakai', 'tugas', 'akhir',
 }
 

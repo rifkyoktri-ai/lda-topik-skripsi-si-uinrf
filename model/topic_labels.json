@@ -1,66 +1,65 @@
 {
   "0": {
-    "label_final": "Audit Npengelolaan",
-    "label_auto": "Audit Npengelolaan",
-    "score": 0.6645,
+    "label_final": "Implementation Mining",
+    "label_auto": "Implementation Mining",
+    "score": 0.5562,
     "top_words": [
-      "fitur",
-      "manual",
-      "audit",
+      "dimensi",
       "pilih",
-      "lapor",
-      "didik",
-      "ajar"
+      "aman",
+      "kembang",
+      "ukur"
     ],
     "top_words_filtered": [
-      "fitur",
-      "manual",
-      "audit",
+      "dimensi",
       "pilih",
-      "lapor",
-      "didik",
-      "ajar"
+      "aman",
+      "kembang",
+      "ukur"
     ],
-    "num_docs": 102
+    "num_docs": 113,
+    "quality_coherence": 0.2834
   },
   "1": {
-    "label_final": "Identifikasi Usaha",
-    "label_auto": "Identifikasi Usaha",
-    "score": 0.4777,
+    "label_final": "Technology Net",
+    "label_auto": "Technology Net",
+    "score": 0.5341,
     "top_words": [
-      "aman",
-      "identifikasi",
-      "usaha",
-      "analis",
-      "ancam"
+      "fitur",
+      "ukur",
+      "capai",
+      "legalisir"
     ],
     "top_words_filtered": [
-      "aman",
-      "identifikasi",
-      "usaha",
-      "analis",
-      "ancam"
+      "fitur",
+      "ukur",
+      "capai",
+      "legalisir"
     ],
-    "num_docs": 106
+    "num_docs": 81,
+    "quality_coherence": 0.5005
   },
   "2": {
-    "label_final": "Usability Bakti",
-    "label_auto": "Usability Bakti",
-    "score": 0.6388,
+    "label_final": "Technologies",
+    "label_auto": "Technologies",
+    "score": 0.5312,
     "top_words": [
-      "usability",
-      "kembang",
+      "usaha",
+      "jual",
       "bimbing",
-      "catat",
-      "lapor"
+      "manual",
+      "pegawai",
+      "kembang"
     ],
     "top_words_filtered": [
-      "usability",
-      "kembang",
+      "usaha",
+      "jual",
       "bimbing",
-      "catat",
-      "lapor"
+      "manual",
+      "pegawai",
+      "kembang"
     ],
-    "num_docs": 103
+    "num_docs": 117,
+    "quality_coherence": 0.3644
   }
 }

@@ -1,4 +1,4 @@
 ﻿topic_id,Label,R2,Metode,Arah,MAE_LOO,2021,2022,2023,2024,2025,2026,2027,pred_2027_reliability,Linearitas
-1,Usaha Analis,0.101,Weighted Moving Average,Stabil,0.0441,35.48,32.58,35.42,25.49,34.78,32.19,32.0,Tinggi,Tidak Linier
-2,Usability Kembang,0.5285,Weighted Moving Average,Meningkat,0.0387,29.03,30.34,31.25,43.14,35.87,35.69,36.28,Tinggi,Cukup Linier
-3,Usability Kembang,0.8421,Weighted Moving Average,Menurun,0.0314,35.48,37.08,33.33,31.37,29.35,32.12,31.73,Tinggi,Sangat Linier
+1,Identifikasi Usaha,0.101,Weighted Moving Average,Stabil,0.0441,35.48,32.58,35.42,25.49,34.78,32.19,32.0,Tinggi,Tidak Linier
+2,Usability Bakti,0.5285,Weighted Moving Average,Meningkat,0.0387,29.03,30.34,31.25,43.14,35.87,35.69,36.28,Tinggi,Cukup Linier
+3,Usability Bakti,0.8421,Weighted Moving Average,Menurun,0.0314,35.48,37.08,33.33,31.37,29.35,32.12,31.73,Tinggi,Sangat Linier

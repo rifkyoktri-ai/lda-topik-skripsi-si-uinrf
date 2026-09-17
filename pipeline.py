@@ -311,8 +311,8 @@ def main():
                         help='Nonaktifkan auto-tune (wajib set --num-topics)')
     parser.add_argument('--min-k', type=int, default=3,
                         help='K minimum untuk auto-tune (default: 3)')
-    parser.add_argument('--max-k', type=int, default=3,
-                        help='K maksimum untuk auto-tune (default: 3)')
+    parser.add_argument('--max-k', type=int, default=10,
+                        help='K maksimum untuk auto-tune (default: 10)')
     args = parser.parse_args()
 
     os.makedirs(MODEL_DIR, exist_ok=True)
@@ -433,8 +433,16 @@ def main():
 
     all_stopwords = get_all_stopwords()
 
-    logger.info("  Labeling method: KeyBERT (dari LDA top words)")
-    topic_labels = label_topics_keybert(lda_model, all_stopwords)
+    # Pass judul dokumen per topik ke KeyBERT
+    topic_titles_dict = {}
+    for _, row in df_result.iterrows():
+        tid = int(row['topik_dominan'])
+        if tid not in topic_titles_dict:
+            topic_titles_dict[tid] = []
+        topic_titles_dict[tid].append(str(row['Judul']))
+
+    logger.info("  Labeling method: KeyBERT (dari judul skripsi per topik)")
+    topic_labels = label_topics_keybert(lda_model, all_stopwords, topic_titles=topic_titles_dict)
 
     logger.info("  Menghitung per-topic coherence...")
     coherence_per_topic = {}
@@ -460,7 +468,7 @@ def main():
 
     save_topic_labels(topic_labels, MODEL_DIR)
 
-from data_manager import to_one_indexed, to_zero_indexed
+    from data_manager import to_one_indexed, to_zero_indexed
 
     labels_rows = []
     for tid_str, info in topic_labels.items():

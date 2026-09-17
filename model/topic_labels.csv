@@ -1,4 +1,4 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Audit Npengelolaan,Topic with 102 documents,fitur;manual;audit;pilih;lapor,0.6645,
-2,Identifikasi Usaha,Topic with 106 documents,aman;identifikasi;usaha;analis;ancam,0.4777,
-3,Usability Bakti,Topic with 103 documents,usability;kembang;bimbing;catat;lapor,0.6388,
+1,Implementation Mining,Topic with 113 documents,dimensi;pilih;aman;kembang;ukur,0.5562,0.2834
+2,Technology Net,Topic with 81 documents,fitur;ukur;capai;legalisir,0.5341,0.5005
+3,Technologies,Topic with 117 documents,usaha;jual;bimbing;manual;pegawai,0.5312,0.3644

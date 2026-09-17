@@ -162,123 +162,114 @@ def label_topics_keybert(
     all_stopwords: set,
     topic_titles: Optional[dict] = None
 ) -> dict:
+    """
+    Labeling topik LDA menggunakan KeyBERT.
+    Input utama: judul skripsi per topik (bukan top words mentah).
+    Fallback: top 3 kata jika KeyBERT gagal atau score rendah.
+    """
     print("\n" + "="*60)
-    print("AUTO LABELING TOPIK LDA (KEYBERT LOCAL)")
+    print("AUTO LABELING TOPIK LDA")
     print("="*60)
-    print(f"Jumlah topik: {lda_model.num_topics}")
 
+    # Load KeyBERT
+    keybert_loaded = False
+    kw_model = None
     try:
-        print("\n[1/3] Loading KeyBERT model...")
+        print("[1/3] Loading KeyBERT...")
         from keybert import KeyBERT
         from sentence_transformers import SentenceTransformer
         sentence_model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
         kw_model = KeyBERT(model=sentence_model)
         keybert_loaded = True
-        print("      KeyBERT model loaded.")
+        print("      KeyBERT loaded.")
     except Exception as e:
-        print(f"      Gagal meload KeyBERT: {e}")
-        print("      Menggunakan fallback (Top words).")
-        keybert_loaded = False
-        kw_model = None
+        print(f"      KeyBERT gagal: {e}. Menggunakan fallback top words.")
 
     print("\n[2/3] Memproses setiap topik...")
     topic_labels = {}
 
-    is_1_indexed = False
-    if topic_titles and min(topic_titles.keys()) == 1:
-        is_1_indexed = True
-
     for topic_id in range(lda_model.num_topics):
-        tid = topic_id + 1
-        print(f"\n  Topik {tid}/{lda_model.num_topics}:")
+        tid_display = topic_id + 1
+        print(f"\n  --- Topik {tid_display} ---")
 
+        # Ambil top words dari LDA (untuk fallback dan konteks tambahan)
         raw_words = lda_model.show_topic(topic_id, topn=20)
-        filtered_words = [
-            word for word, weight in raw_words
-            if word.lower() not in all_stopwords
-            and len(word) > 2
-            and not word.isdigit()
-            and word.isalpha()
+        top_words = [
+            w for w, _ in raw_words
+            if w.lower() not in all_stopwords
+            and len(w) > 2
+            and not w.isdigit()
+            and '_' not in w  # buang n-gram untuk label
         ]
 
-        t_key = topic_id + 1 if is_1_indexed else topic_id
-        titles = topic_titles.get(t_key, []) if topic_titles else []
-        num_docs = len(titles)
+        # Ambil judul dokumen untuk topik ini (input utama KeyBERT)
+        titles = topic_titles.get(tid_display, []) if topic_titles else []
+        print(f"  Jumlah dokumen: {len(titles)}")
+        print(f"  Top words LDA : {top_words[:7]}")
 
         best_label = ""
         best_score = 0.0
 
-        # KeyBERT extraction
-        top_words_str = " ".join(filtered_words[:10])
-        doc_text = top_words_str
-        if titles:
-            doc_text += " " + " ".join(titles)
-
-        if keybert_loaded:
+        if keybert_loaded and kw_model:
             try:
+                # INPUT KEYBERT: gabungan judul dokumen (konteks natural)
+                # Ambil maks 30 judul untuk efisiensi
+                titles_text = " . ".join(titles[:30]) if titles else ""
+                
+                # Fallback ke top words kalau tidak ada judul
+                if not titles_text.strip():
+                    titles_text = " ".join(top_words[:10])
+
                 keywords = kw_model.extract_keywords(
-                    doc_text,
+                    titles_text,
                     keyphrase_ngram_range=(1, 2),
                     stop_words=list(all_stopwords),
                     use_mmr=True,
-                    diversity=0.5,
+                    diversity=0.4,
                     top_n=5
                 )
-                if keywords:
+
+                print(f"  KeyBERT hasil : {[(k, round(s,3)) for k,s in keywords[:3]]}")
+
+                if keywords and keywords[0][1] >= 0.25:
                     best_label = keywords[0][0].title()
                     best_score = float(keywords[0][1])
-                    print(f"  KeyBERT candidates: {[(k, round(s,3)) for k,s in keywords[:3]]}")
+
             except Exception as e:
                 print(f"  KeyBERT error: {e}")
 
+        # Fallback: gunakan 3 kata pertama dari top words LDA
         if not best_label:
-            best_label = " ".join(filtered_words[:3]).title()
+            best_label = " ".join(top_words[:3]).title()
             best_score = 0.0
+            print(f"  Fallback label: {best_label}")
 
-        # Apply LABEL_MAPPING
-        label_auto = best_label
-        combined = (label_auto + " " + " ".join(filtered_words)).lower()
-        matched_key = None
-        for pattern in sorted(LABEL_MAPPING.keys(), key=len, reverse=True):
-            if pattern in combined:
-                matched_key = pattern
-                break
-        if matched_key:
-            best_label = LABEL_MAPPING[matched_key]
-            print(f"  LABEL_MAPPING match: '{matched_key}' -> '{best_label}'")
-        elif best_score < 0.25:
-            fallback = " ".join(filtered_words[:3]).title()
-            best_label = fallback
-
-        print(f"  label_auto  : {label_auto} (score: {best_score:.3f})")
-        print(f"  label_final : {best_label}")
+        print(f"  Label final   : {best_label} (score: {best_score:.3f})")
 
         topic_labels[str(topic_id)] = {
             "label_final": best_label,
-            "label_auto": label_auto,
+            "label_auto": best_label,
             "score": round(best_score, 4),
-            "top_words": filtered_words[:10],
-            "top_words_filtered": filtered_words[:10],
-            "num_docs": num_docs
+            "top_words": top_words[:10],
+            "top_words_filtered": top_words[:10],
+            "num_docs": len(titles)
         }
 
-    # Deduplicate labels
-    seen_labels = {}
+    # Deduplikasi label jika ada yang sama
+    seen = {}
     for tid_str, info in topic_labels.items():
         base = info["label_final"]
-        if base in seen_labels:
-            suffix = info["top_words_filtered"][0] if info["top_words_filtered"] else str(int(tid_str)+1)
-            info["label_final"] = f"{base} ({suffix.title()})"
+        if base in seen:
+            suffix = info["top_words"][0].title() if info["top_words"] else tid_str
+            info["label_final"] = f"{base} ({suffix})"
         else:
-            seen_labels[base] = tid_str
+            seen[base] = tid_str
 
     print("\n[3/3] Labeling selesai.")
-    print("\n" + "=" * 60)
-    print("RINGKASAN HASIL LABELING")
-    print("=" * 60)
+    print("="*60)
     for tid_str, info in topic_labels.items():
-        print(f"  Topik {int(tid_str)+1:2d}: {info['label_final']}")
-    print("=" * 60)
+        print(f"  Topik {int(tid_str)+1}: {info['label_final']}")
+    print("="*60)
 
     return topic_labels
 
