@@ -1,4 +1,4 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Keamanan & Manajemen Risiko Sistem,Topic with 78 documents,pegawai;aman;pribadi;ancam;mohon,1.0,0.3259
-2,Evaluasi Kepuasan Pengguna Sistem,Topic with 92 documents,bimbing;kembang;hitung;sewa;puas,1.0,0.4192
-3,Pengembangan Sistem Informasi Manajemen,Topic with 139 documents,usaha;jual;ukur;manual;lapor,1.0,0.3274
+1,Keamanan & Manajemen Risiko Sistem,Topic with 78 documents,bimbing_konseling;pegawai;aman;pribadi;ancam,1.0,
+2,Evaluasi Kepuasan Pengguna Sistem,Topic with 92 documents,puas_guna;bimbing;user_satisfaction;kembang;hitung,1.0,
+3,Pengembangan Sistem Informasi Manajemen,Topic with 139 documents,extreme_programming;usaha;jual;kelola_data;ukur,1.0,

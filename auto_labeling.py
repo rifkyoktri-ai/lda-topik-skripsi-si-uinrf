@@ -205,7 +205,6 @@ def label_topics_keybert(
             if w.lower() not in all_stopwords
             and len(w) > 2
             and not w.isdigit()
-            and '_' not in w  # buang n-gram untuk label
         ]
 
         # Ambil judul dokumen untuk topik ini (input utama KeyBERT)

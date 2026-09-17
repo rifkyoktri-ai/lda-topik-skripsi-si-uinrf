@@ -4,66 +4,77 @@
     "label_auto": "Keamanan & Manajemen Risiko Sistem",
     "score": 1.0,
     "top_words": [
+      "bimbing_konseling",
       "pegawai",
       "aman",
       "pribadi",
       "ancam",
+      "dukung_putus",
       "mohon",
       "usability"
     ],
     "top_words_filtered": [
+      "bimbing_konseling",
       "pegawai",
       "aman",
       "pribadi",
       "ancam",
+      "dukung_putus",
       "mohon",
       "usability"
     ],
-    "num_docs": 78,
-    "quality_coherence": 0.3259
+    "num_docs": 78
   },
   "1": {
     "label_final": "Evaluasi Kepuasan Pengguna Sistem",
     "label_auto": "Evaluasi Kepuasan Pengguna Sistem",
     "score": 1.0,
     "top_words": [
+      "puas_guna",
       "bimbing",
+      "user_satisfaction",
       "kembang",
       "hitung",
+      "kualitas_layan",
       "sewa",
       "puas",
       "analis"
     ],
     "top_words_filtered": [
+      "puas_guna",
       "bimbing",
+      "user_satisfaction",
       "kembang",
       "hitung",
+      "kualitas_layan",
       "sewa",
       "puas",
       "analis"
     ],
-    "num_docs": 92,
-    "quality_coherence": 0.4192
+    "num_docs": 92
   },
   "2": {
     "label_final": "Pengembangan Sistem Informasi Manajemen",
     "label_auto": "Pengembangan Sistem Informasi Manajemen",
     "score": 1.0,
     "top_words": [
+      "extreme_programming",
       "usaha",
       "jual",
+      "kelola_data",
       "ukur",
       "manual",
       "lapor"
     ],
     "top_words_filtered": [
+      "extreme_programming",
       "usaha",
       "jual",
+      "kelola_data",
       "ukur",
       "manual",
       "lapor"
     ],
-    "num_docs": 139,
-    "quality_coherence": 0.3274
+    "num_docs": 139
   }
 }
