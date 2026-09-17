@@ -171,6 +171,12 @@ def label_topics_keybert(
     print("AUTO LABELING TOPIK LDA")
     print("="*60)
 
+    MANUAL_LABEL_OVERRIDE = {
+        1: "Keamanan & Manajemen Risiko Sistem",
+        2: "Evaluasi Kepuasan Pengguna Sistem",
+        3: "Pengembangan Sistem Informasi Manajemen",
+    }
+
     # Load KeyBERT
     keybert_loaded = False
     kw_model = None
@@ -204,6 +210,7 @@ def label_topics_keybert(
 
         # Ambil judul dokumen untuk topik ini (input utama KeyBERT)
         titles = topic_titles.get(tid_display, []) if topic_titles else []
+        titles = [t.replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').strip() for t in titles]
         print(f"  Jumlah dokumen: {len(titles)}")
         print(f"  Top words LDA : {top_words[:7]}")
 
@@ -243,6 +250,11 @@ def label_topics_keybert(
             best_label = " ".join(top_words[:3]).title()
             best_score = 0.0
             print(f"  Fallback label: {best_label}")
+
+        # Override dengan label manual jika tersedia
+        if tid_display in MANUAL_LABEL_OVERRIDE:
+            best_label = MANUAL_LABEL_OVERRIDE[tid_display]
+            best_score = 1.0  # manual = confidence penuh
 
         print(f"  Label final   : {best_label} (score: {best_score:.3f})")
 

@@ -309,8 +309,8 @@ def main():
                         help='Metode pelabelan (default: keybert)')
     parser.add_argument('--no-auto-tune', action='store_true',
                         help='Nonaktifkan auto-tune (wajib set --num-topics)')
-    parser.add_argument('--min-k', type=int, default=3,
-                        help='K minimum untuk auto-tune (default: 3)')
+    parser.add_argument('--min-k', type=int, default=5,
+                        help='K minimum untuk auto-tune (default: 5)')
     parser.add_argument('--max-k', type=int, default=10,
                         help='K maksimum untuk auto-tune (default: 10)')
     args = parser.parse_args()

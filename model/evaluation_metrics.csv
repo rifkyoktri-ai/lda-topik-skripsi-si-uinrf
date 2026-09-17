@@ -1,8 +1,8 @@
 Metrik,Nilai
 Jumlah Topik (K),3
-Coherence Score (C_V),0.3828
-Coherence Score (U_Mass),-4.3638
-Train Log Perplexity,-7.2651
-Hold-out Test Log Perplexity,-8.6694
+Coherence Score (C_V),0.3575
+Coherence Score (U_Mass),-5.6618
+Train Log Perplexity,-7.2401
+Hold-out Test Log Perplexity,-8.5822
 Alpha Prior,auto
 Eta Prior,auto

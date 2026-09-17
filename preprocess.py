@@ -48,6 +48,8 @@ POST_STEM_STOPWORDS = {
     'baik', 'besar', 'perlu', 'mudah', 'tinggi', 'rendah', 'banyak',
     'dapat', 'ada', 'salah', 'laku', 'beri',
     'sekolah', 'kerja', 'guna', 'pakai', 'tugas', 'akhir',
+    'nkata', 'kunci', 'nkata_kunci', 'mana', 'namun', 'utama', 'dekat', 'kota',
+    'catat', 'butuh', 'tampil', 'capai',
 }
 
 ENGLISH_INDICATOR_WORDS = {
@@ -94,10 +96,11 @@ def is_english_abstract(text: str, threshold: float = 0.12) -> bool:
     return ratio >= threshold
 
 def bersihkan(teks: str) -> str:
-    """Basic lowercasing and character regex cleaning."""
+    """Basic lowercasing, newline replacement, and character regex cleaning."""
     if not isinstance(teks, str):
         return ''
     teks = teks.lower()
+    teks = teks.replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ')
     teks = re.sub(r'[^a-zA-Z\s]', ' ', teks)
     teks = re.sub(r'\s+', ' ', teks).strip()
     return teks

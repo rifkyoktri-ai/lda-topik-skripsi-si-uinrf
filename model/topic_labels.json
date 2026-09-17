@@ -1,65 +1,69 @@
 {
   "0": {
-    "label_final": "Implementation Mining",
-    "label_auto": "Implementation Mining",
-    "score": 0.5562,
+    "label_final": "Keamanan & Manajemen Risiko Sistem",
+    "label_auto": "Keamanan & Manajemen Risiko Sistem",
+    "score": 1.0,
     "top_words": [
-      "dimensi",
-      "pilih",
+      "pegawai",
       "aman",
-      "kembang",
-      "ukur"
+      "pribadi",
+      "ancam",
+      "mohon",
+      "usability"
     ],
     "top_words_filtered": [
-      "dimensi",
-      "pilih",
+      "pegawai",
       "aman",
-      "kembang",
-      "ukur"
+      "pribadi",
+      "ancam",
+      "mohon",
+      "usability"
     ],
-    "num_docs": 113,
-    "quality_coherence": 0.2834
+    "num_docs": 78,
+    "quality_coherence": 0.3259
   },
   "1": {
-    "label_final": "Technology Net",
-    "label_auto": "Technology Net",
-    "score": 0.5341,
+    "label_final": "Evaluasi Kepuasan Pengguna Sistem",
+    "label_auto": "Evaluasi Kepuasan Pengguna Sistem",
+    "score": 1.0,
     "top_words": [
-      "fitur",
-      "ukur",
-      "capai",
-      "legalisir"
+      "bimbing",
+      "kembang",
+      "hitung",
+      "sewa",
+      "puas",
+      "analis"
     ],
     "top_words_filtered": [
-      "fitur",
-      "ukur",
-      "capai",
-      "legalisir"
+      "bimbing",
+      "kembang",
+      "hitung",
+      "sewa",
+      "puas",
+      "analis"
     ],
-    "num_docs": 81,
-    "quality_coherence": 0.5005
+    "num_docs": 92,
+    "quality_coherence": 0.4192
   },
   "2": {
-    "label_final": "Technologies",
-    "label_auto": "Technologies",
-    "score": 0.5312,
+    "label_final": "Pengembangan Sistem Informasi Manajemen",
+    "label_auto": "Pengembangan Sistem Informasi Manajemen",
+    "score": 1.0,
     "top_words": [
       "usaha",
       "jual",
-      "bimbing",
+      "ukur",
       "manual",
-      "pegawai",
-      "kembang"
+      "lapor"
     ],
     "top_words_filtered": [
       "usaha",
       "jual",
-      "bimbing",
+      "ukur",
       "manual",
-      "pegawai",
-      "kembang"
+      "lapor"
     ],
-    "num_docs": 117,
-    "quality_coherence": 0.3644
+    "num_docs": 139,
+    "quality_coherence": 0.3274
   }
 }

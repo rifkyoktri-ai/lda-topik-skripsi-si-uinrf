@@ -120,10 +120,10 @@ def analyze_topic_trends(
 
         # Lookup label using 1-indexed topic_id, fallback to 0-indexed or string key
         label = topic_labels.get(
-            topic_id_1,
+            topic_id_0,
             topic_labels.get(
-                topic_id_0,
-                topic_labels.get(str(topic_id_1), topic_labels.get(str(topic_id_0), f"Topik {topic_id_1}"))
+                str(topic_id_0),
+                topic_labels.get(topic_id_1, topic_labels.get(str(topic_id_1), f"Topik {topic_id_1}"))
             )
         )
 

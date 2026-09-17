@@ -37,6 +37,9 @@ st.markdown(f"""
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3) !important;
         border: 1px solid {BORDER} !important;
     }}
+    .card:empty {{
+        display: none !important;
+    }}
 
     .section-header {{
         border-bottom: 2px solid {BORDER} !important;
@@ -184,7 +187,7 @@ card_start()
 section_header("📊 Hasil Grid Search Hyperparameter per K")
 
 if results_path.exists():
-    hp_df = load_hyperparameter_results(str(results_path))
+    hp_df = load_hyperparameter_results(str(results_path), get_file_hash(results_path))
 
     best_per_k = hp_df.loc[hp_df.groupby('k')['coherence_cv'].idxmax()].reset_index(drop=True)
     display_cols = best_per_k[['k', 'coherence_cv', 'coherence_umass', 'log_perplexity', 'alpha', 'eta']].copy()
@@ -192,12 +195,14 @@ if results_path.exists():
     display_cols['Coherence CV'] = display_cols['Coherence CV'].round(4)
     display_cols['Log Perplexity'] = display_cols['Log Perplexity'].round(2)
 
-    def highlight_k7(row):
-        return ['background-color: #fff3cd' if row['K Topik'] == 7 else '' for _ in row]
+    max_cv_k = display_cols.loc[display_cols['Coherence CV'].idxmax()]['K Topik']
 
-    st.markdown("Tabel di bawah menunjukkan konfigurasi **terbaik per jumlah topik (K)** berdasarkan metrik Coherence C_V:")
+    def highlight_best(row):
+        return ['background-color: rgba(59, 130, 246, 0.25); font-weight: bold;' if row['K Topik'] == max_cv_k else '' for _ in row]
+
+    st.markdown("Tabel di bawah menunjukkan konfigurasi **terbaik per jumlah topik (K)** berdasarkan metrik Coherence C_V (baris terbaik di-highlight):")
     st.dataframe(
-        display_cols.style.apply(highlight_k7, axis=1),
+        display_cols.style.apply(highlight_best, axis=1),
         use_container_width=True,
         hide_index=True
     )

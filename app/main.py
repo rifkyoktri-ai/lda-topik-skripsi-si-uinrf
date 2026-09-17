@@ -124,6 +124,9 @@ st.markdown(f"""
         border-color: #4B5563 !important;
         box-shadow: 0 6px 12px -2px rgba(0,0,0,0.4) !important;
     }}
+    .card:empty {{
+        display: none !important;
+    }}
 
     /* ── Metric Cards ── */
     .metric-card {{
@@ -624,9 +627,7 @@ elif page == "📊 Model Metrics":
 
 # PAGE 4: TOPIC ANALYSIS
 elif page == "🏷️ Topic Analysis":
-    card_start()
     section_header("🏷️ Topic Analysis")
-    card_end()
     
     card_start()
     col1, col2 = st.columns([2, 1])
@@ -645,7 +646,7 @@ elif page == "🏷️ Topic Analysis":
             title="",
             labels={'count': 'Number of Documents', 'label': ''},
             color='count',
-            color_continuous_scale=[BG_LIGHT, SECONDARY, PRIMARY]
+            color_continuous_scale=["#f0f2f6", "#4a90d9", "#1f4e79"]
         )
         fig.update_layout(height=400, showlegend=False, yaxis={'categoryorder':'total ascending'}, margin=dict(l=20,r=20,t=20,b=20))
         st.plotly_chart(fig, use_container_width=True)
@@ -711,7 +712,7 @@ elif page == "🏷️ Topic Analysis":
         title="",
         labels={'label': '', 'avg_probability': 'Average Probability'},
         color='avg_probability',
-        color_continuous_scale=[BG_LIGHT, SECONDARY, PRIMARY]
+        color_continuous_scale=["#f0f2f6", "#4a90d9", "#1f4e79"]
     )
     fig.update_layout(height=400, showlegend=False, margin=dict(l=20,r=20,t=20,b=40))
     st.plotly_chart(fig, use_container_width=True)
@@ -794,10 +795,8 @@ elif page == "🏷️ Topic Analysis":
 
 # PAGE 5: DOCUMENT SEARCH
 elif page == "🔍 Document Search":
-    card_start()
     section_header("🔍 Document Search & Filter")
-    card_end()
-    
+
     card_start()
     section_header("🔎 Pencarian")
     col1, col2, col3 = st.columns([2, 2, 1])
@@ -860,10 +859,8 @@ elif page == "🔍 Document Search":
 
 # PAGE 6: DATA INFO
 elif page == "📖 Data Info":
-    card_start()
     section_header("📖 Data Information")
-    card_end()
-    
+
     card_start()
     col1, col2 = st.columns(2)
     with col1:
@@ -904,8 +901,10 @@ elif page == "📈 Prediksi Tren":
     st.markdown("Prediksi proporsi topik 2026–2027 berdasarkan Weighted Moving Average dari data historis 2021–2025.")
     card_end()
 
-    trend_df = load_trend_prediction()
-    topic_trend_df = load_topic_trend()
+    _trend_hash = str(Path(__file__).parent.parent / "model" / "trend_prediction.csv").replace('\\', '/') + str(int((Path(__file__).parent.parent / "model" / "trend_prediction.csv").stat().st_mtime) if (Path(__file__).parent.parent / "model" / "trend_prediction.csv").exists() else 0)
+    _topic_trend_hash = str(Path(__file__).parent.parent / "model" / "topic_trend.csv").replace('\\', '/') + str(int((Path(__file__).parent.parent / "model" / "topic_trend.csv").stat().st_mtime) if (Path(__file__).parent.parent / "model" / "topic_trend.csv").exists() else 0)
+    trend_df = load_trend_prediction(_trend_hash)
+    topic_trend_df = load_topic_trend(_topic_trend_hash)
 
     if trend_df is not None and not trend_df.empty:
         card_start()

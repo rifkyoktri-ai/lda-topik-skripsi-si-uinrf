@@ -46,6 +46,9 @@ st.markdown(f"""
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3) !important;
         border: 1px solid {BORDER} !important;
     }}
+    .card:empty {{
+        display: none !important;
+    }}
 
     .section-header {{
         border-bottom: 2px solid {BORDER} !important;
