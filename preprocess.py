@@ -14,9 +14,9 @@ from gensim.models.phrases import Phrases, Phraser
 from gensim.models import TfidfModel
 
 # ---------------------------------------------------------------------------
-# 1. DOMAIN-SPECIFIC STOPWORDS & BOILERPLATE ACADEMIC TERMS
+# STOPWORD KHUSUS DOMAIN AKADEMIK & INSTITUSI
 # ---------------------------------------------------------------------------
-# Additional academic boilerplate words commonly found in thesis abstracts
+# Kata-kata akademis yang sering muncul pada abstrak skripsi
 DOMAIN_STOPWORDS_INSTITUTIONAL = {
     'skripsi', 'mahasiswa', 'universitas', 'fakultas',
     'program', 'studi', 'jurusan', 'uin', 'raden', 'fatah',
@@ -39,8 +39,8 @@ DOMAIN_STOPWORDS_ACADEMIC = {
 }
 
 # ---------------------------------------------------------------------------
-# POST-STEM STOPWORDS: root forms produced BY Sastrawi that bypass the
-# pre-stem filter. Apply this set AFTER stemming (double-pass fix).
+# STOPWORD SETELAH STEMMING (POST-STEMMING)
+# Kata dasar hasil stemming Sastrawi yang perlu difilter kembali.
 # ---------------------------------------------------------------------------
 POST_STEM_STOPWORDS = {
     'layan', 'bantu', 'kelola', 'tunjuk', 'dukung', 'sedia', 'terima',
@@ -81,10 +81,8 @@ os.makedirs('logs', exist_ok=True)
 # ---------------------------------------------------------------------------
 def is_english_abstract(text: str, threshold: float = 0.12) -> bool:
     """
-    FEATURE 3: Bilingual Filtering.
-    Heuristic filter to detect if an abstract is predominantly English
-    (e.g., duplicate English abstract), ensuring Sastrawi stemmer only
-    processes Indonesian text.
+    Mendeteksi apakah abstrak menggunakan bahasa Inggris,
+    agar pemprosesan Sastrawi hanya dilakukan pada teks bahasa Indonesia.
     """
     if not isinstance(text, str) or not text.strip():
         return False
@@ -96,7 +94,7 @@ def is_english_abstract(text: str, threshold: float = 0.12) -> bool:
     return ratio >= threshold
 
 def bersihkan(teks: str) -> str:
-    """Basic lowercasing, newline replacement, and character regex cleaning."""
+    """Pembersihan teks dasar (lowercasing, newline, dan karakter non-huruf)."""
     if not isinstance(teks, str):
         return ''
     teks = teks.lower()
@@ -106,13 +104,13 @@ def bersihkan(teks: str) -> str:
     return teks
 
 def tokenize_basic(teks: str, stopwords_set: set) -> list:
-    """Initial tokenization filtering out short words and domain stopwords."""
+    """Tokenisasi awal dengan membuang kata pendek dan stopword."""
     return [w for w in teks.split() if w not in stopwords_set and len(w) > 2]
 
 def stem_token_or_compound(token: str, stemmer) -> str:
     """
-    Safely stems unigrams or compounds (e.g., 'sistem_informasi' -> 'sistem_informasi')
-    without breaking the compound structure.
+    Melakukan stemming pada unigram maupun frase kata majemuk (contoh: 'sistem_informasi')
+    tanpa merusak struktur kata majemuk.
     """
     if '_' in token:
         parts = token.split('_')
@@ -125,7 +123,7 @@ def stem_token_or_compound(token: str, stemmer) -> str:
 # ---------------------------------------------------------------------------
 def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2):
     logger.info("=" * 60)
-    logger.info("PREPROCESSING PIPELINE (REFACTORED ML ENGINEER VERSION)")
+    logger.info("PREPROCESSING PIPELINE")
     logger.info("=" * 60)
 
     logger.info("\n[1/5] Memuat data...")
@@ -145,9 +143,9 @@ def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2):
     )
 
     # ---------------------------------------------------------------------------
-    # FEATURE 3: BILINGUAL FILTERING / TEXT SELECTION
+    # FILTER TEKS & BAHASA
     # ---------------------------------------------------------------------------
-    logger.info("\n[2/5] Handling Text & Bilingual Filtering (Detecting English Abstracts)...")
+    logger.info("\n[2/5] Deteksi & Filter Teks (Abstrak Bahasa Inggris)...")
     
     clean_texts = []
     dropped_en_count = 0
@@ -174,41 +172,40 @@ def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2):
     tokens_raw = [tokenize_basic(t, all_stopwords) for t in df['teks_bersih']]
 
     # ---------------------------------------------------------------------------
-    # FEATURE 2: N-GRAM EXTRACTION (GENSIM BIGRAM & TRIGRAM PHRASER)
+    # EKSTRAKSI N-GRAM (GENSIM BIGRAM & TRIGRAM PHRASER)
     # ---------------------------------------------------------------------------
-    logger.info("\n[3/5] Building Gensim N-Gram Phrase Models (Bigram & Trigram)...")
+    logger.info("\n[3/5] Membentuk Model N-Gram (Bigram & Trigram)...")
     
-    # Train Bigram model
+    # Latih model Bigram
     bigram_phrases = Phrases(tokens_raw, min_count=min_ngram_count, threshold=7.0, delimiter='_')
     bigram_phraser = Phraser(bigram_phrases)
 
     tokens_bigram = [bigram_phraser[doc] for doc in tokens_raw]
 
-    # Train Trigram model on top of bigrams
+    # Latih model Trigram di atas bigram
     trigram_phrases = Phrases(tokens_bigram, min_count=min_ngram_count, threshold=7.0, delimiter='_')
     trigram_phraser = Phraser(trigram_phrases)
 
     tokens_ngram = [trigram_phraser[doc] for doc in tokens_bigram]
 
-    # Save Phrase Models for inference
+    # Simpan model Phraser untuk inferensi
     bigram_phraser.save(f'{PROSES_DIR}/phraser_bigram.pkl')
     trigram_phraser.save(f'{PROSES_DIR}/phraser_trigram.pkl')
     logger.info(f"  Phraser Bigram & Trigram saved to {PROSES_DIR}/")
 
     # ---------------------------------------------------------------------------
-    # SASTRAWI STEMMING & FILTERING
+    # STEMMING SASTRAWI & FILTERING STOPWORD
     # ---------------------------------------------------------------------------
-    logger.info("\n[4/5] Stemming & Filtering Stopwords...")
+    logger.info("\n[4/5] Stemming & Filtering Stopword...")
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
 
-    # Combined post-stem filter: union of all_stopwords + POST_STEM_STOPWORDS
-    # This performs the SECOND PASS — catching root forms produced by Sastrawi
+    # Gabungan filter post-stemming (menyaring kata dasar hasil stemming Sastrawi)
     post_stem_filter = all_stopwords | POST_STEM_STOPWORDS
 
     stemmed_tokens_list = []
     for doc in tokens_ngram:
-        # Pass 1 guard: filter pre-stem stopwords before feeding to stemmer
+        # Filter stopword sebelum stemming
         pre_filtered = [t for t in doc if t not in all_stopwords and len(t) > 2]
 
         # Stemming
@@ -228,9 +225,9 @@ def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2):
     logger.info(f"  Total Dokumen setelah filter: {len(df)}")
 
     # ---------------------------------------------------------------------------
-    # FEATURE 4: DICTIONARY, CORPUS & TF-IDF SPARSITY HANDLING
+    # PEMBUATAN DICTIONARY & CORPUS
     # ---------------------------------------------------------------------------
-    logger.info("\n[5/5] Building Dictionary & Vectorization Corpus (BoW vs TF-IDF)...")
+    logger.info("\n[5/5] Membuat Dictionary & Vektorisasi Corpus (BoW / TF-IDF)...")
     
     dictionary = corpora.Dictionary(df['tokens'].tolist())
     dictionary.filter_extremes(no_below=2, no_above=0.40)
@@ -242,12 +239,12 @@ def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2):
     bow_corpus = [dictionary.doc2bow(doc) for doc in df['tokens'].tolist()]
 
     if use_tfidf:
-        logger.info("  [SPARSITY TOGGLE] Mengaplikasikan TF-IDF Vectorization untuk meredam kata berfrekuensi tinggi...")
+        logger.info("  Mengaplikasikan TF-IDF Vectorization...")
         tfidf_model = TfidfModel(bow_corpus)
         corpus = tfidf_model[bow_corpus]
         tfidf_model.save(f'{PROSES_DIR}/tfidf_model.gensim')
     else:
-        logger.info("  [SPARSITY TOGGLE] Menggunakan Standard Bag-of-Words (BoW) Corpus...")
+        logger.info("  Menggunakan Standard Bag-of-Words (BoW) Corpus...")
         corpus = bow_corpus
 
     with open(CORPUS_PATH, 'wb') as f:
@@ -283,8 +280,8 @@ def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2):
         logger.info(f"    {w:30s}: {f} dokumen")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Refactored Preprocessing Pipeline")
-    parser.add_argument('--use-tfidf', action='store_true', help="Aktifkan TF-IDF vectorizationalih-alih standard BoW")
+    parser = argparse.ArgumentParser(description="Pipeline Preprocessing Data Teks")
+    parser.add_argument('--use-tfidf', action='store_true', help="Aktifkan TF-IDF vectorization alih-alih standard BoW")
     parser.add_argument('--min-ngram-count', type=int, default=2, help="Minimum frekuensi untuk membentuk N-gram Phraser")
     args = parser.parse_args()
 

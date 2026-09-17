@@ -13,7 +13,7 @@ from indonesian_stopwords import get_all_stopwords
 from data_manager import to_one_indexed, to_zero_indexed
 
 # ---------------------------------------------------------------------------
-# FEATURE 1: HUMAN-IN-THE-LOOP EXPORT FOR EXPERT VALIDATION
+# EKSPOR DATASET UNTUK VALIDASI PAKAR
 # ---------------------------------------------------------------------------
 def export_human_validation_dataset(
     lda_model: LdaModel,
@@ -22,9 +22,8 @@ def export_human_validation_dataset(
     output_path: str = "model/human_topic_validation.csv"
 ) -> pd.DataFrame:
     """
-    FEATURE 1: Human-in-the-loop Export.
-    Exports document-topic distribution along with top 15 words per topic into a clean
-    CSV specifically formatted for "Expert Validation" (Human Topic Intrusion Test / Qualitative Audit).
+    Mengekspor distribusi dokumen-topik beserta 15 kata teratas per topik
+    ke file CSV untuk keperluan validasi pakar.
     """
     print(f"\n[EXPERT VALIDATION EXPORTER] Exporting Human Validation Dataset...")
     rows = []
@@ -177,7 +176,7 @@ def label_topics_keybert(
         3: "Pengembangan Sistem Informasi Manajemen",
     }
 
-    # Load KeyBERT
+    # Muat KeyBERT
     keybert_loaded = False
     kw_model = None
     try:
@@ -318,7 +317,7 @@ def run_auto_labeling():
 
     save_topic_labels(topic_labels, args.model_path.rsplit('/', 1)[0] if '/' in args.model_path else 'model')
 
-    # FEATURE 2: EXPORT HUMAN-IN-THE-LOOP VALIDATION DATASET
+    # Ekspor dataset validasi pakar
     if Path(args.dist_path).exists():
         dist_df = pd.read_csv(args.dist_path)
         export_human_validation_dataset(lda_model, [], dist_df, output_path="model/human_topic_validation.csv")

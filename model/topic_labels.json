@@ -23,7 +23,8 @@
       "mohon",
       "usability"
     ],
-    "num_docs": 78
+    "num_docs": 78,
+    "quality_coherence": 0.3259
   },
   "1": {
     "label_final": "Evaluasi Kepuasan Pengguna Sistem",
@@ -51,7 +52,8 @@
       "puas",
       "analis"
     ],
-    "num_docs": 92
+    "num_docs": 92,
+    "quality_coherence": 0.4192
   },
   "2": {
     "label_final": "Pengembangan Sistem Informasi Manajemen",
@@ -75,6 +77,7 @@
       "manual",
       "lapor"
     ],
-    "num_docs": 139
+    "num_docs": 139,
+    "quality_coherence": 0.3274
   }
 }

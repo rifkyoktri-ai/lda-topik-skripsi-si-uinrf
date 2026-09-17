@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import streamlit.components.v1 as components
 from pathlib import Path
 
-# ── Color Palette (Enterprise Dark Mode) ──
+# ── Skema Warna ──
 PRIMARY = "#3B82F6"
 SECONDARY = "#60A5FA"
 ACCENT = "#F59E0B"
@@ -136,26 +136,26 @@ sys.path.insert(0, str(base_path))
 from data_manager import get_file_hash
 
 # ---------------------------------------------------------------------------
-# DECOUPLED ARCHITECTURE: STREAMLIT CACHING FOR OFFLINE ARTIFACTS
+# PEMUATAN DATA DENGAN CACHE STREAMLIT
 # ---------------------------------------------------------------------------
 @st.cache_data
 def load_hyperparameter_results(csv_path: str, file_hash: str) -> pd.DataFrame:
-    """Read-only cached loading of hyperparameter tuning results."""
+    """Memuat hasil hyperparameter tuning."""
     return pd.read_csv(csv_path)
 
 @st.cache_data
 def load_evaluation_metrics(csv_path: str, file_hash: str) -> pd.DataFrame:
-    """Read-only cached loading of evaluation metrics."""
+    """Memuat metrik evaluasi model."""
     return pd.read_csv(csv_path)
 
 @st.cache_data
 def load_human_validation_csv(csv_path: str, file_hash: str) -> pd.DataFrame:
-    """Read-only cached loading of human expert validation dataset."""
+    """Memuat dataset validasi pakar."""
     return pd.read_csv(csv_path)
 
 @st.cache_data
 def load_viz_html(html_path: str, file_hash: str) -> str:
-    """Read-only cached loading of PyLDAvis self-contained HTML."""
+    """Memuat file HTML visualisasi PyLDAvis."""
     with open(html_path, 'r', encoding='utf-8') as f:
         return f.read()
 

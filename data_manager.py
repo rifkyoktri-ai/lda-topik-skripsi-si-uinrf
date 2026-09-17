@@ -1,12 +1,11 @@
 """
-Centralized Data Contract & Index Normalization Module (Single Source of Truth)
+Modul Manajemen Data & Normalisasi Indeks Topik
 
-This module eliminates decoupled state issues between:
-- Gensim LdaModel (0-indexed topic IDs)
-- topic_distribution.csv (1-indexed topik_dominan)
-- topic_labels.json / topic_labels.csv (0-indexed or 1-indexed representations)
-- evaluation_metrics.csv
-- Streamlit application state & caches
+Modul ini menyelaraskan data antara:
+- Model LDA Gensim (indeks 0-indexed)
+- Distribusi topik (indeks 1-indexed)
+- Label topik (JSON & CSV)
+- Metrik evaluasi model
 """
 
 import hashlib
@@ -22,23 +21,23 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# 1. STRICT INDEX NORMALIZATION (0-INDEXED VS 1-INDEXED)
+# NORMALISASI INDEKS TOPIK (0-INDEXED VS 1-INDEXED)
 # ---------------------------------------------------------------------------
 def to_one_indexed(topic_id_0_based: int) -> int:
-    """Convert 0-based Gensim topic ID to 1-based human/UI topic ID."""
+    """Mengonversi ID topik berbasis 0 (Gensim) ke ID berbasis 1 (UI/Manusia)."""
     return int(topic_id_0_based) + 1
 
 
 def to_zero_indexed(topic_id_1_based: int) -> int:
-    """Convert 1-based human/UI topic ID to 0-based Gensim topic ID."""
+    """Mengonversi ID topik berbasis 1 (UI/Manusia) ke ID berbasis 0 (Gensim)."""
     return int(topic_id_1_based) - 1
 
 
 # ---------------------------------------------------------------------------
-# 2. FILE HASHING FOR STREAMLIT CACHE INVALIDATION
+# HASHING FILE UNTUK CACHE STREAMLIT
 # ---------------------------------------------------------------------------
 def get_file_hash(filepath: Path) -> str:
-    """Calculate MD5 hash of a file to invalidate Streamlit caches when file content changes."""
+    """Menghitung nilai hash MD5 file untuk pembaruan cache Streamlit."""
     filepath = Path(filepath)
     if not filepath.exists():
         return "NON_EXISTENT"
@@ -50,7 +49,7 @@ def get_file_hash(filepath: Path) -> str:
 
 
 def get_model_artifacts_hash(base_path: Path) -> str:
-    """Generate a combined hash string for all model artifact files."""
+    """Menghitung kombinasi hash dari seluruh berkas artifact model."""
     base_path = Path(base_path)
     files = [
         base_path / "model" / "lda_model.gensim",
@@ -64,22 +63,11 @@ def get_model_artifacts_hash(base_path: Path) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 3. UNIFIED DATA CONTRACT (SINGLE SOURCE OF TRUTH)
+# PENYELARASAN DATA MODEL
 # ---------------------------------------------------------------------------
 def load_unified_model_data(base_path: Path) -> Dict[str, Any]:
     """
-    Loads, validates, and synchronizes all LDA model artifacts.
-
-    Returns dictionary containing:
-    - 'lda_model': Gensim LdaModel instance (or None if missing)
-    - 'num_topics': int
-    - 'topic_distribution': DataFrame with normalized 1-indexed 'topik_dominan'
-    - 'topic_labels': DataFrame with synchronized 1-indexed 'topic_id', 'label', etc.
-    - 'evaluation_metrics': DataFrame
-    - 'metrics_dict': Dict of metric name -> value
-    - 'topic_counts': Series of document counts per 1-based topic_id
-    - 'is_valid': bool indicating contract integrity
-    - 'contract_messages': List of warning/info messages
+    Memuat dan menyelaraskan seluruh artifact model LDA.
     """
     base_path = Path(base_path)
     model_dir = base_path / "model"
@@ -88,7 +76,7 @@ def load_unified_model_data(base_path: Path) -> Dict[str, Any]:
     lda_model = None
     num_topics = 0
 
-    # 1. Load Gensim Model
+    # 1. Muat Model Gensim
     model_path = model_dir / "lda_model.gensim"
     if model_path.exists():
         try:
@@ -100,7 +88,7 @@ def load_unified_model_data(base_path: Path) -> Dict[str, Any]:
     else:
         messages.append("LDA model file not found.")
 
-    # 2. Load Evaluation Metrics
+    # 2. Muat Metrik Evaluasi
     metrics_df = pd.DataFrame()
     metrics_dict = {}
     metrics_path = model_dir / "evaluation_metrics.csv"
@@ -113,11 +101,11 @@ def load_unified_model_data(base_path: Path) -> Dict[str, Any]:
         except Exception as e:
             messages.append(f"Error loading evaluation metrics: {e}")
 
-    # Fallback default if model not loaded
+    # Fallback default jika model belum dimuat
     if num_topics == 0:
         num_topics = 3
 
-    # 3. Load & Normalize Topic Distribution
+    # 3. Muat & Normalisasi Distribusi Topik
     topic_dist_df = pd.DataFrame()
     dist_path = model_dir / "topic_distribution.csv"
     if dist_path.exists():
@@ -132,7 +120,7 @@ def load_unified_model_data(base_path: Path) -> Dict[str, Any]:
         except Exception as e:
             messages.append(f"Error loading topic distribution: {e}")
 
-    # Compute actual document counts per topic_id (1-based: 1..num_topics)
+    # Hitung jumlah dokumen aktual per topic_id (1-based: 1..num_topics)
     topic_counts = pd.Series(0, index=range(1, num_topics + 1), dtype=int)
     if not topic_dist_df.empty and "topik_dominan" in topic_dist_df.columns:
         actual_counts = topic_dist_df["topik_dominan"].value_counts()
@@ -142,12 +130,12 @@ def load_unified_model_data(base_path: Path) -> Dict[str, Any]:
             else:
                 messages.append(f"Warning: Found document assigned to invalid topic ID {tid} (outside 1..{num_topics}).")
 
-    # Check for zero-document topics
+    # Cek jika ada topik tanpa dokumen
     zero_doc_topics = [tid for tid, cnt in topic_counts.items() if cnt == 0]
     if zero_doc_topics:
         messages.append(f"Graceful handling: Topic(s) {zero_doc_topics} have zero assigned documents in current corpus.")
 
-    # 4. Load & Synchronize Topic Labels
+    # 4. Muat & Selaraskan Label Topik
     json_path = model_dir / "topic_labels.json"
     csv_path = model_dir / "topic_labels.csv"
 

@@ -83,7 +83,7 @@ def analyze_topic_trends(
     topic_cols = [c for c in topic_trend_df.columns if c != 'Tahun']
 
     for col in topic_cols:
-        # Resolve topic_id: column names are 1-indexed human topic numbers (e.g. '1', '2', '3')
+        # Identifikasi topic_id dari nama kolom
         try:
             raw_digit = int(''.join(filter(str.isdigit, col)))
             topic_id_1 = raw_digit if raw_digit > 0 else to_one_indexed(raw_digit)
@@ -118,7 +118,7 @@ def analyze_topic_trends(
         trend = determine_trend_direction(historical)
         mae_loo = compute_wma_loo_error(historical)
 
-        # Lookup label using 1-indexed topic_id, fallback to 0-indexed or string key
+        # Cari label berdasarkan topic_id berbasis 0, dengan fallback ke berbasis 1 atau string
         label = topic_labels.get(
             topic_id_0,
             topic_labels.get(
