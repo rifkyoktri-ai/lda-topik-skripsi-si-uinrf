@@ -5,42 +5,53 @@ import plotly.graph_objects as go
 import streamlit.components.v1 as components
 from pathlib import Path
 
-# ── Color Palette ──
-PRIMARY = "#1E3A5F"
-SECONDARY = "#2E86AB"
-ACCENT = "#F39C12"
-BG_LIGHT = "#F4F6F9"
-TEXT = "#1A1A2E"
-MUTED = "#7F8C8D"
-SUCCESS = "#27AE60"
-DANGER = "#E74C3C"
-CARD_BG = "#FFFFFF"
+# ── Color Palette (Enterprise Dark Mode) ──
+PRIMARY = "#3B82F6"
+SECONDARY = "#60A5FA"
+ACCENT = "#F59E0B"
+BG_DARK = "#0B0F19"
+TEXT = "#F3F4F6"
+MUTED = "#9CA3AF"
+SUCCESS = "#10B981"
+DANGER = "#EF4444"
+CARD_BG = "#1F2937"
+BORDER = "#374151"
 
 st.set_page_config(page_title="Evaluasi Model", page_icon="📈", layout="wide")
 
 st.markdown(f"""
     <style>
-    .card {{
-        background: {CARD_BG};
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 2px 12px rgba(0,0,0,0.04);
-        border: 1px solid rgba(0,0,0,0.04);
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    html, body, .stApp {{
+        background-color: {BG_DARK} !important;
+        color: {TEXT} !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
     }}
+
+    .card {{
+        background: {CARD_BG} !important;
+        border-radius: 10px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3) !important;
+        border: 1px solid {BORDER} !important;
+    }}
+
     .section-header {{
-        border-bottom: 3px solid {ACCENT};
-        padding-bottom: 0.5rem;
-        margin-bottom: 1.2rem;
+        border-bottom: 2px solid {BORDER} !important;
+        padding-bottom: 0.5rem !important;
+        margin-bottom: 1.2rem !important;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }}
+
     .section-header h3 {{
         margin: 0;
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 600;
-        color: {TEXT};
+        color: #FFFFFF !important;
     }}
     </style>
 """, unsafe_allow_html=True)

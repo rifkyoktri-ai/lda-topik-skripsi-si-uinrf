@@ -12,87 +12,7 @@ from gensim.models import LdaModel
 from indonesian_stopwords import get_all_stopwords
 
 # ---------------------------------------------------------------------------
-# 1. LLM PROMPT ENGINEERING TEMPLATE FOR CONTEXTUAL AUTO-LABELING
-# ---------------------------------------------------------------------------
-DEFAULT_LLM_PROMPT_TEMPLATE = """
-Anda adalah seorang Pakar/Ahli Domain Sistem Informasi & NLP.
-Tugas Anda adalah memberikan nama label topik yang ringkas, presisi, dan kontekstual (2-4 kata Bahasa Indonesia) untuk sebuah topik hasil Latent Dirichlet Allocation (LDA) dari himpunan abstrak skripsi mahasiswa Sistem Informasi.
-
-Berikut adalah data teratas untuk Topik ini:
-1. Kata Kunci Utama & Probabilitas P(w|z):
-{top_words_formatted}
-
-2. Sampel Judul Skripsi Dominan pada Topik Ini:
-{sample_titles_formatted}
-
-Instruksi Pelabelan:
-- Hasilkan label nama topik dalam 2 s.d. 4 kata Bahasa Indonesia (misal: "Sistem Informasi Penjualan", "Analisis Usability Website", "Metode Simple Additive Weighting").
-- Jangan menambahkan kata pengantar seperti "Berikut adalah labelnya:". Cukup keluarkan frasa label nama topik saja.
-
-Nama Label Topik:
-""".strip()
-
-# ---------------------------------------------------------------------------
-# FEATURE 1: CONTEXTUAL AUTO-LABELING LLM HOOK (PLACEHOLDER FOR GEMINI/OPENAI)
-# ---------------------------------------------------------------------------
-def get_llm_label(
-    top_words_with_weights: List[Tuple[str, float]],
-    sample_titles: Optional[List[str]] = None,
-    api_key: Optional[str] = None,
-    provider: str = 'gemini',
-    prompt_template: str = DEFAULT_LLM_PROMPT_TEMPLATE
-) -> Optional[str]:
-    """
-    FEATURE 1: Contextual Auto-Labeling Hook.
-    Extracts top 10 words with probabilities P(w|z) and sample titles, formats
-    a structured prompt, and provides an extensible hook for LLM APIs (Gemini/OpenAI).
-    If no API key or connection error occurs, returns None for graceful fallback.
-    """
-    # Format top 10 words with weights
-    words_fmt = "\n".join([f"  - {word}: {weight:.4f}" for word, weight in top_words_with_weights[:10]])
-    
-    # Format sample titles
-    titles_fmt = "\n".join([f"  - {t}" for t in (sample_titles[:5] if sample_titles else ["(Tidak ada sampel judul)"])])
-    
-    formatted_prompt = prompt_template.format(
-        top_words_formatted=words_fmt,
-        sample_titles_formatted=titles_fmt
-    )
-    
-    # LLM API Hook Execution
-    if api_key and provider.lower() == 'gemini':
-        try:
-            import google.generativeai as genai
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(formatted_prompt)
-            label = response.text.strip()
-            return label
-        except Exception as e:
-            print(f"  [LLM HOOK WARNING] Gemini API call failed: {e}. Falling back...")
-            return None
-    elif api_key and provider.lower() == 'openai':
-        try:
-            import openai
-            client = openai.OpenAI(api_key=api_key)
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": formatted_prompt}],
-                temperature=0.3
-            )
-            label = response.choices[0].message.content.strip()
-            return label
-        except Exception as e:
-            print(f"  [LLM HOOK WARNING] OpenAI API call failed: {e}. Falling back...")
-            return None
-
-    # Placeholder notice when API key is not supplied
-    # System falls back smoothly to KeyBERT / Top-words
-    return None
-
-
-# ---------------------------------------------------------------------------
-# FEATURE 2: HUMAN-IN-THE-LOOP EXPORT FOR EXPERT VALIDATION
+# FEATURE 1: HUMAN-IN-THE-LOOP EXPORT FOR EXPERT VALIDATION
 # ---------------------------------------------------------------------------
 def export_human_validation_dataset(
     lda_model: LdaModel,
@@ -101,7 +21,7 @@ def export_human_validation_dataset(
     output_path: str = "model/human_topic_validation.csv"
 ) -> pd.DataFrame:
     """
-    FEATURE 2: Human-in-the-loop Export.
+    FEATURE 1: Human-in-the-loop Export.
     Exports document-topic distribution along with top 15 words per topic into a clean
     CSV specifically formatted for "Expert Validation" (Human Topic Intrusion Test / Qualitative Audit).
     """
@@ -239,11 +159,10 @@ LABEL_MAPPING = {
 def label_topics_keybert(
     lda_model: LdaModel,
     all_stopwords: set,
-    topic_titles: Optional[dict] = None,
-    llm_api_key: Optional[str] = None
+    topic_titles: Optional[dict] = None
 ) -> dict:
     print("\n" + "="*60)
-    print("AUTO LABELING TOPIK LDA (KEYBERT + CONTEXTUAL LLM HOOK)")
+    print("AUTO LABELING TOPIK LDA (KEYBERT LOCAL)")
     print("="*60)
     print(f"Jumlah topik: {lda_model.num_topics}")
 
@@ -285,41 +204,31 @@ def label_topics_keybert(
         titles = topic_titles.get(t_key, []) if topic_titles else []
         num_docs = len(titles)
 
-        # ---------------------------------------------------------------------------
-        # FEATURE 1: TRY LLM CONTEXTUAL HOOK FIRST IF CONFIGURED
-        # ---------------------------------------------------------------------------
-        llm_label = get_llm_label(raw_words, titles, api_key=llm_api_key)
-        
         best_label = ""
         best_score = 0.0
 
-        if llm_label:
-            best_label = llm_label
-            best_score = 0.95
-            print(f"  LLM Labeling match: '{best_label}'")
-        else:
-            # KeyBERT extraction
-            top_words_str = " ".join(filtered_words[:10])
-            doc_text = top_words_str
-            if titles:
-                doc_text += " " + " ".join(titles)
+        # KeyBERT extraction
+        top_words_str = " ".join(filtered_words[:10])
+        doc_text = top_words_str
+        if titles:
+            doc_text += " " + " ".join(titles)
 
-            if keybert_loaded:
-                try:
-                    keywords = kw_model.extract_keywords(
-                        doc_text,
-                        keyphrase_ngram_range=(1, 2),
-                        stop_words=list(all_stopwords),
-                        use_mmr=True,
-                        diversity=0.5,
-                        top_n=5
-                    )
-                    if keywords:
-                        best_label = keywords[0][0].title()
-                        best_score = float(keywords[0][1])
-                        print(f"  KeyBERT candidates: {[(k, round(s,3)) for k,s in keywords[:3]]}")
-                except Exception as e:
-                    print(f"  KeyBERT error: {e}")
+        if keybert_loaded:
+            try:
+                keywords = kw_model.extract_keywords(
+                    doc_text,
+                    keyphrase_ngram_range=(1, 2),
+                    stop_words=list(all_stopwords),
+                    use_mmr=True,
+                    diversity=0.5,
+                    top_n=5
+                )
+                if keywords:
+                    best_label = keywords[0][0].title()
+                    best_score = float(keywords[0][1])
+                    print(f"  KeyBERT candidates: {[(k, round(s,3)) for k,s in keywords[:3]]}")
+            except Exception as e:
+                print(f"  KeyBERT error: {e}")
 
         if not best_label:
             best_label = " ".join(filtered_words[:3]).title()
@@ -388,8 +297,6 @@ def run_auto_labeling():
     parser.add_argument("--model_path", type=str, default="model/lda_model.gensim", help="Path ke file model LDA")
     parser.add_argument("--dist_path", type=str, default="model/topic_distribution.csv", help="Path ke topic distribution CSV")
     parser.add_argument("--output", type=str, default="model/topic_labels.csv", help="Path untuk menyimpan hasil label (CSV)")
-    parser.add_argument("--llm_api_key", type=str, default=None, help="API Key untuk LLM Contextual Auto-labeling")
-
     args = parser.parse_args()
 
     model_path = Path(args.model_path)
@@ -404,7 +311,7 @@ def run_auto_labeling():
 
     all_stopwords = get_all_stopwords()
 
-    topic_labels = label_topics_keybert(lda_model, all_stopwords, topic_titles, llm_api_key=args.llm_api_key)
+    topic_labels = label_topics_keybert(lda_model, all_stopwords, topic_titles)
 
     save_topic_labels(topic_labels, args.model_path.rsplit('/', 1)[0] if '/' in args.model_path else 'model')
 

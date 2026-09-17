@@ -13,16 +13,17 @@ warnings.filterwarnings('ignore')
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-# ── Color Palette ──
-PRIMARY = "#1E3A5F"
-SECONDARY = "#2E86AB"
-ACCENT = "#F39C12"
-BG_LIGHT = "#F4F6F9"
-TEXT = "#1A1A2E"
-MUTED = "#7F8C8D"
-SUCCESS = "#27AE60"
-DANGER = "#E74C3C"
-CARD_BG = "#FFFFFF"
+# ── Color Palette (Enterprise Dark Mode) ──
+PRIMARY = "#3B82F6"
+SECONDARY = "#60A5FA"
+ACCENT = "#F59E0B"
+BG_DARK = "#0B0F19"
+TEXT = "#F3F4F6"
+MUTED = "#9CA3AF"
+SUCCESS = "#10B981"
+DANGER = "#EF4444"
+CARD_BG = "#1F2937"
+BORDER = "#374151"
 
 COLOR_SCALE = [PRIMARY, SECONDARY, ACCENT, SUCCESS, "#8E44AD", "#E67E22", "#1ABC9C"]
 
@@ -36,133 +37,177 @@ st.set_page_config(
 
 st.markdown('<meta name="google" content="notranslate">', unsafe_allow_html=True)
 
-# ── Custom CSS ──
+# ── Custom CSS (Enterprise Dark Mode) ──
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    .main {{
-        padding: 2rem 1.5rem;
-        background-color: {BG_LIGHT};
-        font-family: 'Inter', -apple-system, sans-serif;
+    :root {{
+        --bg-main: #0B0F19;
+        --bg-sidebar: #111827;
+        --bg-card: #1F2937;
+        --bg-card-hover: #263346;
+        --border-color: #374151;
+        --border-sidebar: #1F2937;
+        --text-primary: #F3F4F6;
+        --text-secondary: #9CA3AF;
+        --accent-blue: #3B82F6;
     }}
 
-    /* ── Card System ── */
+    /* ── Canvas & Background Utama ── */
+    html, body, .stApp {{
+        background-color: {BG_DARK} !important;
+        color: {TEXT} !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+    }}
+
+    .main .block-container {{
+        padding: 2rem 1.5rem;
+        background-color: {BG_DARK};
+    }}
+
+    header[data-testid="stHeader"] {{
+        background-color: rgba(11, 15, 25, 0.8) !important;
+        backdrop-filter: blur(8px);
+    }}
+
+    /* ── Sidebar Modern (Surface Elevation) ── */
+    section[data-testid="stSidebar"] {{
+        background-color: #111827 !important;
+        border-right: 1px solid #1F2937 !important;
+    }}
+
+    section[data-testid="stSidebar"] * {{
+        color: {MUTED};
+    }}
+
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] .st-emotion-cache-1v0mbdj {{
+        color: #FFFFFF !important;
+        font-weight: 600;
+    }}
+
+    section[data-testid="stSidebar"] .stRadio > div {{
+        gap: 0.3rem;
+    }}
+    section[data-testid="stSidebar"] .stRadio label {{
+        padding: 0.52rem 0.8rem;
+        border-radius: 8px;
+        font-weight: 500;
+        color: {MUTED} !important;
+        transition: all 0.15s ease;
+    }}
+    section[data-testid="stSidebar"] .stRadio label:hover {{
+        background-color: rgba(59, 130, 246, 0.1) !important;
+        color: #FFFFFF !important;
+    }}
+    section[data-testid="stSidebar"] .stRadio label[data-checked="true"] {{
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        color: #FFFFFF !important;
+        font-weight: 600;
+    }}
+
+    /* ── Card System & Kontainer ── */
     .card {{
-        background: {CARD_BG};
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 2px 12px rgba(0,0,0,0.04);
-        border: 1px solid rgba(0,0,0,0.04);
-        transition: box-shadow 0.2s ease;
+        background: {CARD_BG} !important;
+        border-radius: 10px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3) !important;
+        border: 1px solid {BORDER} !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }}
     .card:hover {{
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.06);
+        border-color: #4B5563 !important;
+        box-shadow: 0 6px 12px -2px rgba(0,0,0,0.4) !important;
     }}
 
     /* ── Metric Cards ── */
     .metric-card {{
-        background: {CARD_BG};
-        border-radius: 10px;
-        padding: 1.2rem 1.2rem 0.8rem;
-        border-left: 4px solid {PRIMARY};
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        margin-bottom: 0.5rem;
+        background: {CARD_BG} !important;
+        border-radius: 10px !important;
+        padding: 1.2rem 1.2rem 0.9rem !important;
+        border: 1px solid {BORDER} !important;
+        border-left: 4px solid {PRIMARY} !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+        margin-bottom: 0.8rem !important;
     }}
     .metric-card.gold {{
-        border-left-color: {ACCENT};
+        border-left-color: {ACCENT} !important;
     }}
     .metric-card.green {{
-        border-left-color: {SUCCESS};
+        border-left-color: {SUCCESS} !important;
     }}
     .metric-card.red {{
-        border-left-color: {DANGER};
+        border-left-color: {DANGER} !important;
+    }}
+
+    /* Native Streamlit Metric overrides */
+    [data-testid="stMetric"] {{
+        background-color: {CARD_BG} !important;
+        border: 1px solid {BORDER} !important;
+        border-radius: 10px !important;
+        padding: 1rem 1.2rem !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    }}
+    [data-testid="stMetricLabel"] {{
+        color: {MUTED} !important;
+        font-size: 0.85rem !important;
+    }}
+    [data-testid="stMetricValue"] {{
+        color: #FFFFFF !important;
+        font-size: 1.8rem !important;
+        font-weight: 700 !important;
     }}
 
     /* ── Section Headers ── */
     .section-header {{
-        border-bottom: 3px solid {ACCENT};
-        padding-bottom: 0.5rem;
-        margin-bottom: 1.2rem;
+        border-bottom: 2px solid {BORDER} !important;
+        padding-bottom: 0.5rem !important;
+        margin-bottom: 1.2rem !important;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }}
     .section-header h3 {{
         margin: 0;
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 600;
-        color: {TEXT};
+        color: #FFFFFF !important;
     }}
 
-    /* ── Sidebar ── */
-    section[data-testid="stSidebar"] {{
-        background-color: {BG_LIGHT};
-        border-right: 1px solid rgba(0,0,0,0.04);
-    }}
-    section[data-testid="stSidebar"] .stRadio > div {{
-        gap: 0.3rem;
-    }}
-    section[data-testid="stSidebar"] .stRadio label {{
-        padding: 0.5rem 0.8rem;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.15s ease;
-    }}
-    section[data-testid="stSidebar"] .stRadio label:hover {{
-        background-color: rgba(30,58,95,0.06);
-    }}
-    section[data-testid="stSidebar"] .stRadio label[data-checked="true"] {{
-        background-color: {PRIMARY};
-        color: white !important;
-        font-weight: 600;
+    /* ── Form Controls & Input WIdgets ── */
+    .stSelectbox > div > div, 
+    .stMultiSelect > div > div,
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input,
+    .stTextArea textarea {{
+        background-color: #111827 !important;
+        color: #FFFFFF !important;
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
     }}
 
-    /* ── Divider ── */
+    /* ── Divider & Footer ── */
     hr.custom-divider {{
         margin: 1.5rem 0;
         border: 0;
         height: 1px;
-        background: linear-gradient(to right, transparent, rgba(0,0,0,0.08), transparent);
+        background: {BORDER};
     }}
 
-    /* ── Footer ── */
     .footer {{
         margin-top: 2rem;
         padding-top: 1rem;
-        border-top: 1px solid rgba(0,0,0,0.06);
+        border-top: 1px solid {BORDER};
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 0.8rem;
         color: {MUTED};
-    }}
-
-    /* ── Streamlit overrides ── */
-    .stMetric {{
-        background: transparent !important;
-        padding: 0 !important;
-    }}
-    .stMetric label {{
-        font-size: 0.85rem !important;
-        color: {MUTED} !important;
-    }}
-    .stMetric [data-testid="stMetricValue"] {{
-        font-size: 1.8rem !important;
-        font-weight: 700 !important;
-        color: {TEXT} !important;
-    }}
-    .st-emotion-cache-1wivap2 {{
-        background-color: transparent !important;
-    }}
-    .stTabs [data-baseweb="tab-list"] {{
-        gap: 0.5rem;
-    }}
-    .stTabs [data-baseweb="tab"] {{
-        border-radius: 8px 8px 0 0;
-        padding: 0.5rem 1rem;
-        font-weight: 500;
     }}
     </style>
 """, unsafe_allow_html=True)
@@ -181,7 +226,7 @@ def metric_card(value: str, label: str, variant: str = ""):
     cls = f"metric-card {variant}" if variant else "metric-card"
     st.markdown(f"""
     <div class="{cls}">
-        <div style="font-size: 1.8rem; font-weight: 700; color: {TEXT};">{value}</div>
+        <div style="font-size: 1.8rem; font-weight: 700; color: #FFFFFF;">{value}</div>
         <div style="font-size: 0.8rem; color: {MUTED}; margin-top: 0.2rem;">{label}</div>
     </div>
     """, unsafe_allow_html=True)
