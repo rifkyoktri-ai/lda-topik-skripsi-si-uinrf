@@ -71,6 +71,8 @@ def determine_trend_direction(values: list) -> str:
         return "Stabil"
 
 
+from data_manager import to_one_indexed, to_zero_indexed
+
 def analyze_topic_trends(
     topic_trend_df: pd.DataFrame,
     topic_labels: dict,
@@ -81,10 +83,14 @@ def analyze_topic_trends(
     topic_cols = [c for c in topic_trend_df.columns if c != 'Tahun']
 
     for col in topic_cols:
+        # Resolve topic_id: column names are 1-indexed human topic numbers (e.g. '1', '2', '3')
         try:
-            topic_id = int(''.join(filter(str.isdigit, col))) - 1
-        except:
-            topic_id = topic_cols.index(col)
+            raw_digit = int(''.join(filter(str.isdigit, col)))
+            topic_id_1 = raw_digit if raw_digit > 0 else to_one_indexed(raw_digit)
+        except Exception:
+            topic_id_1 = to_one_indexed(topic_cols.index(col))
+        
+        topic_id_0 = to_zero_indexed(topic_id_1)
 
         historical = []
         for year in years:
@@ -112,9 +118,13 @@ def analyze_topic_trends(
         trend = determine_trend_direction(historical)
         mae_loo = compute_wma_loo_error(historical)
 
+        # Lookup label using 1-indexed topic_id, fallback to 0-indexed or string key
         label = topic_labels.get(
-            topic_id,
-            topic_labels.get(str(topic_id), f"Topik {topic_id + 1}")
+            topic_id_1,
+            topic_labels.get(
+                topic_id_0,
+                topic_labels.get(str(topic_id_1), topic_labels.get(str(topic_id_0), f"Topik {topic_id_1}"))
+            )
         )
 
         if mae_loo is not None:
@@ -128,7 +138,7 @@ def analyze_topic_trends(
             reliability = "Tidak dapat dihitung"
 
         row = {
-            "topic_id" : topic_id,
+            "topic_id" : topic_id_1,
             "Label"    : label,
             "R2"       : round(r2, 4),
             "Metode"   : "Weighted Moving Average",

@@ -10,6 +10,7 @@ from typing import List, Dict, Optional, Tuple
 warnings.filterwarnings('ignore')
 from gensim.models import LdaModel
 from indonesian_stopwords import get_all_stopwords
+from data_manager import to_one_indexed, to_zero_indexed
 
 # ---------------------------------------------------------------------------
 # FEATURE 1: HUMAN-IN-THE-LOOP EXPORT FOR EXPERT VALIDATION
@@ -32,7 +33,7 @@ def export_human_validation_dataset(
     topic_top_words = {}
     for t_id in range(lda_model.num_topics):
         words = [w for w, _ in lda_model.show_topic(t_id, topn=15)]
-        topic_top_words[t_id + 1] = ", ".join(words)
+        topic_top_words[to_one_indexed(t_id)] = ", ".join(words)
         
     for idx, row in dist_df.iterrows():
         doc_id = row.get('ID', idx)
@@ -324,7 +325,7 @@ def run_auto_labeling():
     output_path.parent.mkdir(parents=True, exist_ok=True)
     labels_rows = []
     for tid_str, info in topic_labels.items():
-        tid = int(tid_str) + 1
+        tid = to_one_indexed(int(tid_str))
         labels_rows.append({
             'topic_id': tid,
             'label': info['label_final'],

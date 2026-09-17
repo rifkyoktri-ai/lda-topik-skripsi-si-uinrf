@@ -1,4 +1,4 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Manual Audit,Topic with 102 documents,fitur;manual;audit;pilih;lapor,0.812,0.3206
-2,Usaha Analis,Topic with 106 documents,aman;identifikasi;usaha;analis;ancam,0.773,0.3216
-3,Usability Kembang,Topic with 103 documents,usability;kembang;bimbing;catat;lapor,0.6983,0.3348
+1,Audit Npengelolaan,Topic with 102 documents,fitur;manual;audit;pilih;lapor,0.6645,
+2,Identifikasi Usaha,Topic with 106 documents,aman;identifikasi;usaha;analis;ancam,0.4777,
+3,Usability Bakti,Topic with 103 documents,usability;kembang;bimbing;catat;lapor,0.6388,

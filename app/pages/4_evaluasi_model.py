@@ -63,26 +63,31 @@ def card_end():
 def section_header(title: str):
     st.markdown(f'<div class="section-header"><h3>{title}</h3></div>', unsafe_allow_html=True)
 
+import sys
+base_path = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(base_path))
+from data_manager import get_file_hash
+
 # ---------------------------------------------------------------------------
 # DECOUPLED ARCHITECTURE: STREAMLIT CACHING FOR OFFLINE ARTIFACTS
 # ---------------------------------------------------------------------------
-@st.cache_data(ttl=3600)
-def load_hyperparameter_results(csv_path: str) -> pd.DataFrame:
+@st.cache_data
+def load_hyperparameter_results(csv_path: str, file_hash: str) -> pd.DataFrame:
     """Read-only cached loading of hyperparameter tuning results."""
     return pd.read_csv(csv_path)
 
-@st.cache_data(ttl=3600)
-def load_evaluation_metrics(csv_path: str) -> pd.DataFrame:
+@st.cache_data
+def load_evaluation_metrics(csv_path: str, file_hash: str) -> pd.DataFrame:
     """Read-only cached loading of evaluation metrics."""
     return pd.read_csv(csv_path)
 
-@st.cache_data(ttl=3600)
-def load_human_validation_csv(csv_path: str) -> pd.DataFrame:
+@st.cache_data
+def load_human_validation_csv(csv_path: str, file_hash: str) -> pd.DataFrame:
     """Read-only cached loading of human expert validation dataset."""
     return pd.read_csv(csv_path)
 
-@st.cache_data(ttl=3600)
-def load_viz_html(html_path: str) -> str:
+@st.cache_data
+def load_viz_html(html_path: str, file_hash: str) -> str:
     """Read-only cached loading of PyLDAvis self-contained HTML."""
     with open(html_path, 'r', encoding='utf-8') as f:
         return f.read()
@@ -101,7 +106,7 @@ human_val_path = base_path / "model" / "human_topic_validation.csv"
 card_start()
 section_header("📊 Hasil Hyperparameter Tuning & Metrics")
 if results_path.exists():
-    df = load_hyperparameter_results(str(results_path))
+    df = load_hyperparameter_results(str(results_path), get_file_hash(results_path))
     
     col1, col2 = st.columns([1, 2])
     with col1:
@@ -123,7 +128,7 @@ if results_path.exists():
 else:
     st.warning("Data hyperparameter_results.csv tidak ditemukan. Menampilkan metrik evaluasi dasar model utama:")
     if metrics_path.exists():
-        metrics_df = load_evaluation_metrics(str(metrics_path))
+        metrics_df = load_evaluation_metrics(str(metrics_path), get_file_hash(metrics_path))
         st.dataframe(metrics_df, hide_index=True)
     else:
         st.error("Tidak ada data metrik model yang ditemukan.")
@@ -141,7 +146,7 @@ card_end()
 st.markdown("<br>", unsafe_allow_html=True)
 section_header("📍 Visualisasi Interaktif Model (PyLDAvis)")
 if viz_path.exists():
-    html_string = load_viz_html(str(viz_path))
+    html_string = load_viz_html(str(viz_path), get_file_hash(viz_path))
     st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
     
     with st.container():
@@ -159,7 +164,7 @@ Dosen penguji atau pakar domain dapat menilai relevansi dokumen (skala 1-5) dan 
 """)
 
 if human_val_path.exists():
-    val_df = load_human_validation_csv(str(human_val_path))
+    val_df = load_human_validation_csv(str(human_val_path), get_file_hash(human_val_path))
     st.dataframe(val_df.head(10), hide_index=True)
     
     csv_bytes = val_df.to_csv(index=False).encode('utf-8')

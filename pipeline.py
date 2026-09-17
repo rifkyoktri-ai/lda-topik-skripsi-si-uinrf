@@ -460,9 +460,11 @@ def main():
 
     save_topic_labels(topic_labels, MODEL_DIR)
 
+from data_manager import to_one_indexed, to_zero_indexed
+
     labels_rows = []
     for tid_str, info in topic_labels.items():
-        tid = int(tid_str) + 1
+        tid = to_one_indexed(int(tid_str))
         doc_count = len(df_result[df_result['topik_dominan'] == tid])
         labels_rows.append({
             'topic_id': tid,

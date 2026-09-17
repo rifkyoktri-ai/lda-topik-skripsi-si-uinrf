@@ -1,8 +1,8 @@
 {
   "0": {
-    "label_final": "Manual Audit",
-    "label_auto": "Manual Audit",
-    "score": 0.812,
+    "label_final": "Audit Npengelolaan",
+    "label_auto": "Audit Npengelolaan",
+    "score": 0.6645,
     "top_words": [
       "fitur",
       "manual",
@@ -21,13 +21,12 @@
       "didik",
       "ajar"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.3206
+    "num_docs": 102
   },
   "1": {
-    "label_final": "Usaha Analis",
-    "label_auto": "Usaha Analis",
-    "score": 0.773,
+    "label_final": "Identifikasi Usaha",
+    "label_auto": "Identifikasi Usaha",
+    "score": 0.4777,
     "top_words": [
       "aman",
       "identifikasi",
@@ -42,13 +41,12 @@
       "analis",
       "ancam"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.3216
+    "num_docs": 106
   },
   "2": {
-    "label_final": "Usability Kembang",
-    "label_auto": "Usability Kembang",
-    "score": 0.6983,
+    "label_final": "Usability Bakti",
+    "label_auto": "Usability Bakti",
+    "score": 0.6388,
     "top_words": [
       "usability",
       "kembang",
@@ -63,7 +61,6 @@
       "catat",
       "lapor"
     ],
-    "num_docs": 0,
-    "quality_coherence": 0.3348
+    "num_docs": 103
   }
 }

@@ -75,29 +75,22 @@ def section_header(title: str):
 st.title("📊 Analisis & Proyeksi Tren Topik")
 st.markdown("Analisis popularitas topik dari tahun ke tahun beserta proyeksi menggunakan *Weighted Moving Average* (WMA).")
 
-# Load distribution data
+from data_manager import load_unified_model_data, get_model_artifacts_hash
+
 @st.cache_data
-def load_trend_data():
-    dist_path = base_path / "model" / "topic_distribution.csv"
-    labels_path = base_path / "model" / "topic_labels.csv"
-    
-    if not dist_path.exists():
-        return None, None
-        
-    df = pd.read_csv(dist_path)
-    
-    # Try loading labels for friendly names
+def load_trend_data(artifacts_hash: str):
+    unified = load_unified_model_data(base_path)
+    df_dist = unified["topic_distribution"]
+    labels_df = unified["topic_labels"]
     labels = {}
-    if labels_path.exists():
-        lbl_df = pd.read_csv(labels_path)
-        if 'topic_id' in lbl_df.columns and 'label' in lbl_df.columns:
-            labels = dict(zip(lbl_df['topic_id'], lbl_df['label']))
-            
-    return df, labels
+    if not labels_df.empty:
+        labels = dict(zip(labels_df['topic_id'], labels_df['label']))
+    return df_dist, labels
 
-df_dist, dict_labels = load_trend_data()
+artifacts_hash = get_model_artifacts_hash(base_path)
+df_dist, dict_labels = load_trend_data(artifacts_hash)
 
-if df_dist is None:
+if df_dist is None or df_dist.empty:
     st.warning("File model/topic_distribution.csv tidak ditemukan. Harap pastikan model LDA sudah berjalan.")
     st.stop()
 

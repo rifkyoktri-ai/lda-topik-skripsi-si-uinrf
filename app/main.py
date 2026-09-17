@@ -234,78 +234,32 @@ def metric_card(value: str, label: str, variant: str = ""):
 def custom_divider():
     st.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
 
-# Load data
-@st.cache_data
-def load_data():
-    base_path = Path(__file__).parent.parent
-    
-    try:
-        # Load evaluation metrics
-        metrics = pd.read_csv(base_path / "model" / "evaluation_metrics.csv")
-        
-        # Load topic distribution
-        topic_dist = pd.read_csv(base_path / "model" / "topic_distribution.csv")
-        
-        # Load preprocessed dataset
-        dataset = pd.read_csv(base_path / "data" / "intermediate" / "dataset_preprocessed.csv")
-        
-        return metrics, topic_dist, dataset
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return None, None, None
+from data_manager import (
+    load_unified_model_data,
+    get_file_hash,
+    get_model_artifacts_hash,
+    to_zero_indexed,
+    to_one_indexed
+)
 
-# Load topic labels from JSON (primary) or CSV (fallback)
+# Load unified model contract
 @st.cache_data
-def load_topic_labels():
+def get_unified_data(hash_key: str):
     base_path = Path(__file__).parent.parent
-    json_path = base_path / "model" / "topic_labels.json"
-    csv_path = base_path / "model" / "topic_labels.csv"
+    return load_unified_model_data(base_path)
 
-    try:
-        if json_path.exists():
-            with open(json_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            rows = []
-            for tid_str, info in data.items():
-                tid = int(tid_str) + 1
-                rows.append({
-                    'topic_id': tid,
-                    'label': info['label_final'],
-                    'description': f"Topik {tid}: {info['label_final']}",
-                    'keywords': ';'.join(info.get('top_words_filtered', info.get('top_words', []))[:5]),
-                    'label_score': info.get('score', ''),
-                    'quality_coherence': info.get('quality_coherence', '')
-                })
-            return pd.DataFrame(rows).sort_values('topic_id').reset_index(drop=True)
-        elif csv_path.exists():
-            labels_df = pd.read_csv(csv_path)
-            for col in ['label_score', 'quality_coherence']:
-                if col not in labels_df.columns:
-                    labels_df[col] = ''
-            return labels_df
-        else:
-            return pd.DataFrame({
-                'topic_id': range(5),
-                'label': [f'Topic {i}' for i in range(5)],
-                'description': [''] * 5,
-                'keywords': [''] * 5,
-                'label_score': [''] * 5,
-                'quality_coherence': [''] * 5
-            })
-    except Exception as e:
-        st.warning(f"Could not load topic labels: {e}")
-        return pd.DataFrame({
-            'topic_id': range(5),
-            'label': [f'Topic {i}' for i in range(5)],
-            'description': [''] * 5,
-            'keywords': [''] * 5,
-            'label_score': [''] * 5,
-            'quality_coherence': [''] * 5
-        })
+# Load preprocessed dataset
+@st.cache_data
+def load_dataset(file_hash: str):
+    base_path = Path(__file__).parent.parent
+    dataset_path = base_path / "data" / "intermediate" / "dataset_preprocessed.csv"
+    if dataset_path.exists():
+        return pd.read_csv(dataset_path)
+    return pd.DataFrame()
 
 # Load LDA visualization HTML
 @st.cache_data
-def load_lda_viz():
+def load_lda_viz(file_hash: str):
     base_path = Path(__file__).parent.parent
     viz_path = base_path / "model" / "lda_visualization.html"
     if viz_path.exists():
@@ -315,7 +269,7 @@ def load_lda_viz():
 
 # Load trend prediction data
 @st.cache_data
-def load_trend_prediction():
+def load_trend_prediction(file_hash: str):
     base_path = Path(__file__).parent.parent
     trend_path = base_path / "model" / "trend_prediction.csv"
     if trend_path.exists():
@@ -324,7 +278,7 @@ def load_trend_prediction():
 
 # Load topic trend data (historical proportions per year)
 @st.cache_data
-def load_topic_trend():
+def load_topic_trend(file_hash: str):
     base_path = Path(__file__).parent.parent
     trend_path = base_path / "model" / "topic_trend.csv"
     if trend_path.exists():
@@ -333,7 +287,7 @@ def load_topic_trend():
 
 # Load LDA Model for Word Cloud
 @st.cache_resource
-def load_lda_model():
+def load_lda_model(file_hash: str):
     base_path = Path(__file__).parent.parent
     model_path = base_path / "model" / "lda_model.gensim"
     if model_path.exists():
@@ -354,14 +308,29 @@ def display_html(html_content):
 st.title("📊 LDA Topic Modeling Dashboard")
 st.markdown("---")
 
-# Load all data
-metrics_df, topic_dist_df, dataset_df = load_data()
-lda_viz_html = load_lda_viz()
-topic_labels_df = load_topic_labels()
+# Compute hashes for cache invalidation
+base_path = Path(__file__).parent.parent
+artifacts_hash = get_model_artifacts_hash(base_path)
+dataset_hash = get_file_hash(base_path / "data" / "intermediate" / "dataset_preprocessed.csv")
+viz_hash = get_file_hash(base_path / "model" / "lda_visualization.html")
+trend_hash = get_file_hash(base_path / "model" / "trend_prediction.csv")
+topic_trend_hash = get_file_hash(base_path / "model" / "topic_trend.csv")
+model_hash = get_file_hash(base_path / "model" / "lda_model.gensim")
+
+# Load all synchronized data via single contract
+unified_data = get_unified_data(artifacts_hash)
+lda_model = load_lda_model(model_hash)
+dataset_df = load_dataset(dataset_hash)
+lda_viz_html = load_lda_viz(viz_hash)
+
+metrics_df = unified_data["evaluation_metrics"]
+topic_dist_df = unified_data["topic_distribution"]
+topic_labels_df = unified_data["topic_labels"]
+num_topics = unified_data["num_topics"]
 
 # Check if data loaded successfully
-if metrics_df is None or topic_dist_df is None:
-    st.error("❌ Gagal memuat data. Pastikan file CSV ada di folder yang benar.")
+if topic_dist_df is None or topic_dist_df.empty:
+    st.error("❌ Gagal memuat data topik. Pastikan file model dan CSV ada di folder model/.")
     st.stop()
 
 # Sidebar
@@ -797,11 +766,10 @@ elif page == "🏷️ Topic Analysis":
             st.info("No documents found for this topic.")
             
         # Word Cloud
-        lda_model = load_lda_model()
         if lda_model:
             custom_divider()
             section_header("☁️ Word Cloud Topik")
-            top_words = dict(lda_model.show_topic(selected_topic, topn=30))
+            top_words = dict(lda_model.show_topic(to_zero_indexed(selected_topic), topn=30))
             freq_dict = {w: float(v * 1000) for w, v in top_words.items()}
             
             from wordcloud import WordCloud
