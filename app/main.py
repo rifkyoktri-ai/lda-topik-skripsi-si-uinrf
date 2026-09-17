@@ -481,7 +481,28 @@ if page == "📈 Overview":
     # Quality Alerts
     card_start()
     section_header("⚠️ Quality Alerts")
-    from lda_evaluation import evaluate_topic_overlap
+
+    def evaluate_topic_overlap(lda_model, threshold=0.70):
+        if lda_model is None:
+            return []
+        n_topics = lda_model.num_topics
+        n_words = lda_model.num_terms
+        topic_word_matrix = np.zeros((n_topics, n_words))
+        for t in range(n_topics):
+            words_probs = dict(lda_model.show_topic(t, topn=n_words))
+            for word_id in range(n_words):
+                word = lda_model.id2word[word_id]
+                topic_word_matrix[t, word_id] = words_probs.get(word, 0.0)
+        overlapping = []
+        for i in range(n_topics):
+            for j in range(i + 1, n_topics):
+                norm_i = np.linalg.norm(topic_word_matrix[i])
+                norm_j = np.linalg.norm(topic_word_matrix[j])
+                if norm_i > 0 and norm_j > 0:
+                    sim = float(np.dot(topic_word_matrix[i], topic_word_matrix[j]) / (norm_i * norm_j))
+                    if sim > threshold:
+                        overlapping.append((i, j, sim))
+        return overlapping
 
     alerts = []
 
