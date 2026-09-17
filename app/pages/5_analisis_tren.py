@@ -32,10 +32,78 @@ st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+    /* ── Canvas & Background Utama ── */
     html, body, .stApp {{
         background-color: {BG_DARK} !important;
         color: {TEXT} !important;
         font-family: 'Inter', -apple-system, sans-serif !important;
+    }}
+
+    .main .block-container {{
+        padding: 2rem 1.5rem;
+        background-color: {BG_DARK};
+    }}
+
+    header[data-testid="stHeader"] {{
+        background-color: rgba(11, 15, 25, 0.8) !important;
+        backdrop-filter: blur(8px);
+    }}
+
+    /* ── Sidebar Modern (Surface Elevation) ── */
+    section[data-testid="stSidebar"] {{
+        background-color: #111827 !important;
+        border-right: 1px solid #1F2937 !important;
+    }}
+
+    section[data-testid="stSidebar"] * {{
+        color: {MUTED};
+    }}
+
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] span {{
+        color: #FFFFFF !important;
+    }}
+
+    /* Streamlit Native Multipage Nav Links */
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {{
+        background-color: #111827 !important;
+        padding-top: 1rem;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {{
+        background-color: #111827 !important;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a {{
+        background-color: transparent !important;
+        border-radius: 8px !important;
+        padding: 0.5rem 0.8rem !important;
+        margin-bottom: 0.2rem !important;
+        transition: all 0.15s ease !important;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a span {{
+        color: {MUTED} !important;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover {{
+        background-color: rgba(59, 130, 246, 0.1) !important;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover span {{
+        color: #FFFFFF !important;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"] {{
+        background-color: rgba(59, 130, 246, 0.2) !important;
+    }}
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"] span {{
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
     }}
 
     .card {{
