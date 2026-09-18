@@ -301,7 +301,32 @@ def load_lda_viz(file_hash: str):
     viz_path = base_path / "model" / "lda_visualization.html"
     if viz_path.exists():
         with open(viz_path, 'r', encoding='utf-8') as f:
-            return f.read()
+            content = f.read()
+        
+        # Inject CSS agar tampilan PyLDAvis full-width dan tidak terpotong
+        full_width_css = """
+        <style>
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow-x: auto !important;
+                background-color: transparent !important;
+            }
+            #lda_visualization, div[id^="lda_vis"], .ldavis-html {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+            }
+            svg.ldavis {
+                width: 100% !important;
+            }
+        </style>
+        """
+        if "</head>" in content:
+            return content.replace("</head>", f"{full_width_css}</head>")
+        return full_width_css + content
     return None
 
 # Muat data prediksi tren
@@ -336,7 +361,7 @@ def load_lda_model(file_hash: str):
 def display_html(html_content):
     """Display HTML content safely"""
     try:
-        components.html(html_content, height=900, scrolling=True)
+        components.html(html_content, height=980, scrolling=True)
     except Exception as e:
         st.error(f"Error: {e}")
         st.write("💡 Untuk melihat visualisasi, silakan buka file HTML langsung: `model/lda_visualization.html`")
@@ -638,8 +663,13 @@ elif page == "🔵 Visualisasi LDA":
     if lda_viz_html:
         card_start()
         section_header("📍 PyLDAvis Interactive Visualization")
-        st.caption("Klik pada topik untuk melihat top terms")
-        components.html(lda_viz_html, height=900, scrolling=True)
+        col_cap, col_opt = st.columns([3, 1])
+        with col_cap:
+            st.caption("Klik pada lingkaran topik di sebelah kiri untuk melihat kata kunci relevan di sebelah kanan.")
+        with col_opt:
+            viz_height = st.selectbox("Ukuran Tinggi Chart", [980, 1150, 1350, 850], index=0, key="viz_height_main")
+        
+        components.html(lda_viz_html, height=viz_height, scrolling=True)
         with st.expander("📚 Tentang PyLDAvis"):
             st.markdown("""
             **PyLDAvis** menampilkan:

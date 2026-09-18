@@ -157,7 +157,32 @@ def load_human_validation_csv(csv_path: str, file_hash: str) -> pd.DataFrame:
 def load_viz_html(html_path: str, file_hash: str) -> str:
     """Memuat file HTML visualisasi PyLDAvis."""
     with open(html_path, 'r', encoding='utf-8') as f:
-        return f.read()
+        content = f.read()
+    
+    # Inject CSS agar tampilan PyLDAvis full-width dan tidak terpotong
+    full_width_css = """
+    <style>
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow-x: auto !important;
+            background-color: transparent !important;
+        }
+        #lda_visualization, div[id^="lda_vis"], .ldavis-html {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+        }
+        svg.ldavis {
+            width: 100% !important;
+        }
+    </style>
+    """
+    if "</head>" in content:
+        return content.replace("</head>", f"{full_width_css}</head>")
+    return full_width_css + content
 
 
 st.title("📈 Evaluasi Model LDA (Decoupled UI Architecture)")
@@ -214,10 +239,14 @@ st.markdown("<br>", unsafe_allow_html=True)
 section_header("📍 Visualisasi Interaktif Model (PyLDAvis)")
 if viz_path.exists():
     html_string = load_viz_html(str(viz_path), get_file_hash(viz_path))
-    st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
-    
+    col_cap, col_opt = st.columns([3, 1])
+    with col_cap:
+        st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
+    with col_opt:
+        viz_height = st.selectbox("Ukuran Tinggi Chart", [980, 1150, 1350, 850], index=0, key="viz_height_eval")
+        
     with st.container():
-        components.html(html_string, width=1300, height=800, scrolling=True)
+        components.html(html_string, height=viz_height, scrolling=True)
 else:
     st.warning("File lda_visualization.html tidak ditemukan. Pastikan model telah dilatih dengan benar.")
 
