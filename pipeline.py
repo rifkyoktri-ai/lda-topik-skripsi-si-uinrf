@@ -27,6 +27,8 @@ from auto_labeling import label_topics_keybert, save_topic_labels
 # ---------------------------------------------------------------------------
 # LOGGING SETUP
 # ---------------------------------------------------------------------------
+os.makedirs('logs', exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -41,7 +43,7 @@ PROSES_DIR = 'data/intermediate'
 MODEL_DIR = 'model'
 
 # ---------------------------------------------------------------------------
-# FEATURE 4: EXPERIMENT TRACKING LOGGING FUNCTION
+# PENCATATAN RIWAYAT EKSPERIMEN
 # ---------------------------------------------------------------------------
 def log_experiment_history(
     random_state: int,
@@ -58,8 +60,7 @@ def log_experiment_history(
     vocab_size: int
 ):
     """
-    FEATURE 4: Experiment Tracking.
-    Records model metadata and multi-metric metrics to CSV for full auditability.
+    Menyimpan metadata model dan metrik evaluasi ke file CSV.
     """
     history_file = os.path.join(MODEL_DIR, 'experiment_history.csv')
     new_entry = {
@@ -101,7 +102,7 @@ def get_dominant_topic(lda_model, corpus):
     return pd.DataFrame(dominant_topics)
 
 # ---------------------------------------------------------------------------
-# FEATURE 1: ASYMMETRIC PRIORS IN MODEL INITIALIZATION
+# PELATIHAN MODEL LDA
 # ---------------------------------------------------------------------------
 def train_model(
     corpus,
@@ -114,10 +115,21 @@ def train_model(
     random_state: int = 42
 ) -> LdaModel:
     """
-    RESCUE PROTOCOL: Adaptive Hyperparameters & BoW.
-    Initializes LDA with auto document-topic prior (alpha='auto')
-    and auto topic-word prior (eta='auto') to learn asymmetric distributions dynamically.
+    Melatih model LDA dengan konfigurasi prior alpha dan eta.
     """
+    # Parsing string float ke numeric float jika memungkinkan (misal '0.01' -> 0.01)
+    if isinstance(alpha, str):
+        try:
+            alpha = float(alpha)
+        except ValueError:
+            pass
+
+    if isinstance(eta, str):
+        try:
+            eta = float(eta)
+        except ValueError:
+            pass
+
     model = LdaModel(
         corpus=corpus,
         id2word=dictionary,
@@ -132,7 +144,7 @@ def train_model(
     return model
 
 # ---------------------------------------------------------------------------
-# FEATURE 2 & 3: MULTI-METRIC COHERENCE & HOLD-OUT TEST PERPLEXITY TUNING
+# TUNING HYPERPARAMETER MODEL LDA
 # ---------------------------------------------------------------------------
 def auto_tune(
     corpus_train,
@@ -147,8 +159,7 @@ def auto_tune(
     random_state: int = 42
 ) -> Tuple[int, float, float, float, float, LdaModel]:
     """
-    FEATURE 2 & 3: Multi-Metric Coherence Validation & Hold-out Perplexity.
-    Evaluates both c_v and u_mass, as well as train vs hold-out test perplexity across K.
+    Mengevaluasi nilai Coherence (C_V dan U_Mass) serta Perplexity data Train dan Test pada rentang K.
     """
     eval_results = []
     models = {}
@@ -161,7 +172,7 @@ def auto_tune(
             alpha=alpha, eta=eta, random_state=random_state
         )
         
-        # FEATURE 2: Multi-Metric Coherence (C_V and U_MASS)
+        # Evaluasi Coherence (C_V dan U_Mass)
         cm_cv = CoherenceModel(
             model=model,
             texts=tokenized_docs,
@@ -180,7 +191,7 @@ def auto_tune(
         )
         umass_score = cm_umass.get_coherence()
 
-        # FEATURE 3: Hold-out Perplexity (Train vs Test)
+        # Evaluasi Perplexity (Train vs Test)
         train_perp = model.log_perplexity(corpus_train)
         test_perp = model.log_perplexity(corpus_test)
 
@@ -291,7 +302,7 @@ def plot_topic_trend(df_result: pd.DataFrame):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling (Senior Data Scientist Version)')
+    parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling')
     parser.add_argument('--num-topics', type=int, default=None,
                         help='Jumlah topik (default: auto-tune dari 4-12)')
     parser.add_argument('--passes', type=int, default=50,
@@ -299,9 +310,9 @@ def main():
     parser.add_argument('--iterations', type=int, default=400,
                         help='Jumlah iterasi LDA (default: 400)')
     parser.add_argument('--alpha', type=str, default='auto',
-                        help='Alpha parameter (default: auto)')
+                        help='Alpha parameter (default: auto, asymmetric, symmetric, or float like 0.01)')
     parser.add_argument('--eta', type=str, default='auto',
-                        help='Eta parameter (default: auto)')
+                        help='Eta parameter (default: auto, symmetric, or float like 0.01)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed untuk reproduksibilitas (default: 42)')
     parser.add_argument('--label-method', type=str, default='keybert',
@@ -319,7 +330,7 @@ def main():
     os.makedirs('logs', exist_ok=True)
 
     logger.info("=" * 60)
-    logger.info("PIPELINE TOPIC MODELING LDA (REFACTORED DATA SCIENTIST VERSION)")
+    logger.info("PIPELINE TOPIC MODELING LDA")
     logger.info("=" * 60)
 
     logger.info(f"\n[1/6] Memuat data preprocessed...")
@@ -347,20 +358,15 @@ def main():
             pickle.dump(corpus, f)
         logger.info(f"  Dictionary: {len(dictionary)} kata/n-gram")
 
-    # RESCUE PROTOCOL: Strictly Raw Bag-of-Words (BoW) Corpus
-    # Any TF-IDF transformation is completely bypassed to prevent Dirichlet distribution collapse
-    logger.info("  [RESCUE PROTOCOL] Training LDA EXCLUSIVELY on Raw Count Bag-of-Words (BoW) Corpus...")
+    # Menggunakan corpus Bag-of-Words (BoW) mentah
+    logger.info("  Pelatihan LDA menggunakan corpus Bag-of-Words (BoW)...")
 
-    # ---------------------------------------------------------------------------
-    # FEATURE 3: HOLD-OUT SET TESTING (80/20 TRAIN-TEST SPLIT)
-    # ---------------------------------------------------------------------------
-    logger.info("\n[3/6] Splitting Hold-out Test Set (80% Train / 20% Test)...")
+    # Pembagian data Train dan Test (80/20)
+    logger.info("\n[3/6] Membagi dataset (80% Train / 20% Test)...")
     corpus_train, corpus_test = train_test_split(corpus, test_size=0.20, random_state=args.seed)
     logger.info(f"  Train corpus: {len(corpus_train)} dokumen | Hold-out test corpus: {len(corpus_test)} dokumen")
 
-    # ---------------------------------------------------------------------------
-    # FEATURE 1 & 2: TRAINING MODEL LDA WITH ASYMMETRIC PRIORS & MULTI-METRIC AUTO-TUNE
-    # ---------------------------------------------------------------------------
+    # Pelatihan & validasi model LDA
     logger.info(f"\n[4/6] Training & Validasi Model LDA (Alpha='{args.alpha}', Eta='{args.eta}')...")
 
     if args.no_auto_tune or args.num_topics is not None:
@@ -403,9 +409,7 @@ def main():
             alpha=args.alpha, eta=args.eta, random_state=args.seed
         )
 
-    # ---------------------------------------------------------------------------
-    # FEATURE 4: LOG EXPERIMENT HISTORY TO CSV
-    # ---------------------------------------------------------------------------
+    # Catat riwayat eksperimen ke CSV
     log_experiment_history(
         random_state=args.seed,
         k=OPTIMAL_K,

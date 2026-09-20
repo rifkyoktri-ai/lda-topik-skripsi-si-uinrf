@@ -1,4 +1,9 @@
 ﻿topic_id,Label,R2,Metode,Arah,MAE_LOO,2021,2022,2023,2024,2025,2026,2027,pred_2027_reliability,Linearitas
-1,Keamanan & Manajemen Risiko Sistem,0.1362,Weighted Moving Average,Stabil,0.0241,22.58,25.29,27.08,27.45,23.91,25.58,25.69,Tinggi,Tidak Linier
-2,Evaluasi Kepuasan Pengguna Sistem,0.1027,Weighted Moving Average,Menurun,0.0605,29.03,33.33,33.33,37.25,20.65,29.87,29.58,Sedang,Tidak Linier
-3,Pengembangan Sistem Informasi Manajemen,0.0254,Weighted Moving Average,Stabil,0.0846,48.39,41.38,39.58,35.29,55.43,44.55,44.73,Sedang,Tidak Linier
+1,Evaluasi Usability Sistem Informasi,0.2756,Weighted Moving Average,Menurun,0.0813,31.03,20.51,32.61,27.66,15.29,23.8,23.26,Sedang,Tidak Linier
+2,Evaluasi Kualitas Layanan (ServQual),0.023,Weighted Moving Average,Stabil,0.055,10.34,17.95,4.35,12.77,10.59,10.89,10.78,Sedang,Tidak Linier
+3,Pengembangan Perangkat Lunak (SDLC/XP),0.3657,Weighted Moving Average,Meningkat,0.0501,10.34,17.95,10.87,14.89,20.0,15.9,16.26,Sedang,Tidak Linier
+4,Keamanan Sistem & Pengelolaan Arsip,0.4562,Weighted Moving Average,Meningkat,0.0424,3.45,1.28,13.04,10.64,9.41,8.98,9.46,Tinggi,Tidak Linier
+5,Evaluasi Kesuksesan & Adopsi Sistem Informasi,0.4974,Weighted Moving Average,Menurun,0.0381,20.69,12.82,15.22,8.51,12.94,12.72,12.28,Tinggi,Tidak Linier
+6,End-User Computing Satisfaction (EUCS),0.001,Weighted Moving Average,Stabil,0.0472,13.79,16.67,8.7,19.15,12.94,14.3,14.32,Tinggi,Tidak Linier
+7,"Analitik Data, Prediksi & Manajemen Risiko IT",0.0005,Weighted Moving Average,Stabil,0.0361,10.34,8.97,6.52,4.26,12.94,8.64,8.65,Tinggi,Tidak Linier
+8,Analisis Sentimen & Ulasan Pengguna,0.224,Weighted Moving Average,Meningkat,0.0378,0.0,3.85,8.7,2.13,5.88,4.78,5.0,Tinggi,Tidak Linier

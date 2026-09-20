@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-# ── Color Palette (Enterprise Dark Mode) ──
+# ── Skema Warna ──
 PRIMARY = "#3B82F6"
 SECONDARY = "#60A5FA"
 ACCENT = "#F59E0B"
@@ -27,7 +27,7 @@ BORDER = "#374151"
 
 COLOR_SCALE = [PRIMARY, SECONDARY, ACCENT, SUCCESS, "#8E44AD", "#E67E22", "#1ABC9C"]
 
-# Set page config
+# Konfigurasi halaman Streamlit
 st.set_page_config(
     page_title="LDA Topic Modeling Dashboard",
     page_icon="📊",
@@ -37,7 +37,7 @@ st.set_page_config(
 
 st.markdown('<meta name="google" content="notranslate">', unsafe_allow_html=True)
 
-# ── Custom CSS (Enterprise Dark Mode) ──
+# ── CSS Kustom ──
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -279,13 +279,13 @@ from data_manager import (
     to_one_indexed
 )
 
-# Load unified model contract
+# Muat data model terpadu
 @st.cache_data
 def get_unified_data(hash_key: str):
     base_path = Path(__file__).parent.parent
     return load_unified_model_data(base_path)
 
-# Load preprocessed dataset
+# Muat dataset preprocessed
 @st.cache_data
 def load_dataset(file_hash: str):
     base_path = Path(__file__).parent.parent
@@ -294,17 +294,42 @@ def load_dataset(file_hash: str):
         return pd.read_csv(dataset_path)
     return pd.DataFrame()
 
-# Load LDA visualization HTML
+# Muat HTML visualisasi LDA
 @st.cache_data
 def load_lda_viz(file_hash: str):
     base_path = Path(__file__).parent.parent
     viz_path = base_path / "model" / "lda_visualization.html"
     if viz_path.exists():
         with open(viz_path, 'r', encoding='utf-8') as f:
-            return f.read()
+            content = f.read()
+        
+        # Inject CSS agar tampilan PyLDAvis full-width dan tidak terpotong
+        full_width_css = """
+        <style>
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow-x: auto !important;
+                background-color: transparent !important;
+            }
+            #lda_visualization, div[id^="lda_vis"], .ldavis-html {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+            }
+            svg.ldavis {
+                width: 100% !important;
+            }
+        </style>
+        """
+        if "</head>" in content:
+            return content.replace("</head>", f"{full_width_css}</head>")
+        return full_width_css + content
     return None
 
-# Load trend prediction data
+# Muat data prediksi tren
 @st.cache_data
 def load_trend_prediction(file_hash: str):
     base_path = Path(__file__).parent.parent
@@ -313,7 +338,7 @@ def load_trend_prediction(file_hash: str):
         return pd.read_csv(trend_path)
     return None
 
-# Load topic trend data (historical proportions per year)
+# Muat data tren topik historis
 @st.cache_data
 def load_topic_trend(file_hash: str):
     base_path = Path(__file__).parent.parent
@@ -322,7 +347,7 @@ def load_topic_trend(file_hash: str):
         return pd.read_csv(trend_path)
     return None
 
-# Load LDA Model for Word Cloud
+# Muat Model LDA untuk Word Cloud
 @st.cache_resource
 def load_lda_model(file_hash: str):
     base_path = Path(__file__).parent.parent
@@ -336,7 +361,7 @@ def load_lda_model(file_hash: str):
 def display_html(html_content):
     """Display HTML content safely"""
     try:
-        components.html(html_content, height=900, scrolling=True)
+        components.html(html_content, height=980, scrolling=True)
     except Exception as e:
         st.error(f"Error: {e}")
         st.write("💡 Untuk melihat visualisasi, silakan buka file HTML langsung: `model/lda_visualization.html`")
@@ -354,7 +379,7 @@ trend_hash = get_file_hash(base_path / "model" / "trend_prediction.csv")
 topic_trend_hash = get_file_hash(base_path / "model" / "topic_trend.csv")
 model_hash = get_file_hash(base_path / "model" / "lda_model.gensim")
 
-# Load all synchronized data via single contract
+# Muat semua data terpadu
 unified_data = get_unified_data(artifacts_hash)
 lda_model = load_lda_model(model_hash)
 dataset_df = load_dataset(dataset_hash)
@@ -365,7 +390,7 @@ topic_dist_df = unified_data["topic_distribution"]
 topic_labels_df = unified_data["topic_labels"]
 num_topics = unified_data["num_topics"]
 
-# Check if data loaded successfully
+# Cek apakah data berhasil dimuat
 if topic_dist_df is None or topic_dist_df.empty:
     st.error("❌ Gagal memuat data topik. Pastikan file model dan CSV ada di folder model/.")
     st.stop()
@@ -638,8 +663,13 @@ elif page == "🔵 Visualisasi LDA":
     if lda_viz_html:
         card_start()
         section_header("📍 PyLDAvis Interactive Visualization")
-        st.caption("Klik pada topik untuk melihat top terms")
-        components.html(lda_viz_html, height=900, scrolling=True)
+        col_cap, col_opt = st.columns([3, 1])
+        with col_cap:
+            st.caption("Klik pada lingkaran topik di sebelah kiri untuk melihat kata kunci relevan di sebelah kanan.")
+        with col_opt:
+            viz_height = st.selectbox("Ukuran Tinggi Chart", [980, 1150, 1350, 850], index=0, key="viz_height_main")
+        
+        components.html(lda_viz_html, height=viz_height, scrolling=True)
         with st.expander("📚 Tentang PyLDAvis"):
             st.markdown("""
             **PyLDAvis** menampilkan:

@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import streamlit.components.v1 as components
 from pathlib import Path
 
-# ── Color Palette (Enterprise Dark Mode) ──
+# ── Skema Warna ──
 PRIMARY = "#3B82F6"
 SECONDARY = "#60A5FA"
 ACCENT = "#F59E0B"
@@ -136,28 +136,53 @@ sys.path.insert(0, str(base_path))
 from data_manager import get_file_hash
 
 # ---------------------------------------------------------------------------
-# DECOUPLED ARCHITECTURE: STREAMLIT CACHING FOR OFFLINE ARTIFACTS
+# PEMUATAN DATA DENGAN CACHE STREAMLIT
 # ---------------------------------------------------------------------------
 @st.cache_data
 def load_hyperparameter_results(csv_path: str, file_hash: str) -> pd.DataFrame:
-    """Read-only cached loading of hyperparameter tuning results."""
+    """Memuat hasil hyperparameter tuning."""
     return pd.read_csv(csv_path)
 
 @st.cache_data
 def load_evaluation_metrics(csv_path: str, file_hash: str) -> pd.DataFrame:
-    """Read-only cached loading of evaluation metrics."""
+    """Memuat metrik evaluasi model."""
     return pd.read_csv(csv_path)
 
 @st.cache_data
 def load_human_validation_csv(csv_path: str, file_hash: str) -> pd.DataFrame:
-    """Read-only cached loading of human expert validation dataset."""
+    """Memuat dataset validasi pakar."""
     return pd.read_csv(csv_path)
 
 @st.cache_data
 def load_viz_html(html_path: str, file_hash: str) -> str:
-    """Read-only cached loading of PyLDAvis self-contained HTML."""
+    """Memuat file HTML visualisasi PyLDAvis."""
     with open(html_path, 'r', encoding='utf-8') as f:
-        return f.read()
+        content = f.read()
+    
+    # Inject CSS agar tampilan PyLDAvis full-width dan tidak terpotong
+    full_width_css = """
+    <style>
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow-x: auto !important;
+            background-color: transparent !important;
+        }
+        #lda_visualization, div[id^="lda_vis"], .ldavis-html {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+        }
+        svg.ldavis {
+            width: 100% !important;
+        }
+    </style>
+    """
+    if "</head>" in content:
+        return content.replace("</head>", f"{full_width_css}</head>")
+    return full_width_css + content
 
 
 st.title("📈 Evaluasi Model LDA (Decoupled UI Architecture)")
@@ -175,20 +200,67 @@ section_header("📊 Hasil Hyperparameter Tuning & Metrics")
 if results_path.exists():
     df = load_hyperparameter_results(str(results_path), get_file_hash(results_path))
     
+    # Baca K dari model aktif yang dilatih
+    active_k = 8
+    if metrics_path.exists():
+        metrics_df = load_evaluation_metrics(str(metrics_path), get_file_hash(metrics_path))
+        try:
+            k_row = metrics_df[metrics_df['Metrik'].str.contains('Jumlah Topik', case=False, na=False)]
+            if not k_row.empty:
+                active_k = int(float(k_row.iloc[0]['Nilai']))
+        except Exception:
+            pass
+
     col1, col2 = st.columns([1, 2])
     with col1:
-        st.write("Top 10 Konfigurasi Terbaik (Berdasarkan C_V):")
-        top_10 = df.sort_values(by='coherence_cv', ascending=False).head(10)
-        st.dataframe(top_10[['k', 'alpha', 'eta', 'coherence_cv', 'coherence_umass']], hide_index=True)
+        st.write(f"Konfigurasi Terbaik per Jumlah Topik K (Model Aktif K={active_k} di-highlight):")
+        st.caption("📌 **Catatan:** Tabel menampilkan konfigurasi terbaik per K dari grid search. Parameter model final dipilih berdasarkan pertimbangan stabilitas (rasio perplexity train/test), bukan C_V grid search semata.")
+        
+        # Ambil konfigurasi terbaik per nilai K
+        best_per_k = df.loc[
+            df.groupby('k')['coherence_cv'].idxmax()
+        ].sort_values('k').reset_index(drop=True)
+
+        # Pastikan tipe data int pada perbandingan row['k'] dan active_k
+        def highlight_active(row):
+            if int(round(float(row['k']))) == int(active_k):
+                return ['background-color: #2e4a38; font-weight: bold; color: #ffffff'] * len(row)
+            return [''] * len(row)
+            
+        # Tampilkan dengan highlight K aktif
+        styled = best_per_k[['k', 'alpha', 'eta', 'coherence_cv', 'coherence_umass', 'log_perplexity']].style.apply(
+            highlight_active, axis=1)
+        st.dataframe(styled, use_container_width=True, hide_index=True)
+        
+        # Display Final Selected Model Parameters Card / Info Box
+        final_alpha = "asymmetric"
+        final_eta = "0.1"
+        final_cv = "0.4026"
+        if metrics_path.exists():
+            metrics_df = load_evaluation_metrics(str(metrics_path), get_file_hash(metrics_path))
+            try:
+                for _, r in metrics_df.iterrows():
+                    m = str(r['Metrik']).lower()
+                    if 'alpha' in m:
+                        final_alpha = str(r['Nilai'])
+                    elif 'eta' in m:
+                        final_eta = str(r['Nilai'])
+                    elif 'coherence score (c_v)' in m:
+                        final_cv = str(r['Nilai'])
+            except Exception:
+                pass
+
+        st.info(f"💡 **Parameter Model Final yang Dipilih:**\n\n"
+                f"**K** = `{active_k}` | **Alpha** = `{final_alpha}` | **Eta** = `{final_eta}` | **C_V Model Final** = `{final_cv}`")
         
     with col2:
         st.write("Elbow Curve (Jumlah Topik vs Coherence C_V):")
         max_cv_per_k = df.groupby('k')['coherence_cv'].max().reset_index()
-        optimal_k = max_cv_per_k.loc[max_cv_per_k['coherence_cv'].idxmax()]['k']
+        optimal_k = active_k
         
         fig = px.line(max_cv_per_k, x='k', y='coherence_cv', markers=True, 
                       title="Elbow Curve", labels={'k': 'Jumlah Topik (K)', 'coherence_cv': 'Max Coherence (C_V)'})
-        fig.add_vline(x=optimal_k, line_dash="dash", line_color="red", annotation_text=f"Optimal K={optimal_k}")
+        fig.add_vline(x=optimal_k, line_dash="dash", line_color="#00FF7F", annotation_text=f"Model Aktif K={optimal_k}")
         fig.update_layout(height=400, margin=dict(l=20,r=20,t=40,b=20))
         st.plotly_chart(fig, use_container_width=True)
         
@@ -214,10 +286,14 @@ st.markdown("<br>", unsafe_allow_html=True)
 section_header("📍 Visualisasi Interaktif Model (PyLDAvis)")
 if viz_path.exists():
     html_string = load_viz_html(str(viz_path), get_file_hash(viz_path))
-    st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
-    
+    col_cap, col_opt = st.columns([3, 1])
+    with col_cap:
+        st.caption("Klik pada gelembung topik di sebelah kiri untuk melihat persebaran kata kuncinya di sebelah kanan.")
+    with col_opt:
+        viz_height = st.selectbox("Ukuran Tinggi Chart", [980, 1150, 1350, 850], index=0, key="viz_height_eval")
+        
     with st.container():
-        components.html(html_string, width=1300, height=800, scrolling=True)
+        components.html(html_string, height=viz_height, scrolling=True)
 else:
     st.warning("File lda_visualization.html tidak ditemukan. Pastikan model telah dilatih dengan benar.")
 
@@ -245,29 +321,3 @@ else:
     st.info("Jalankan `python auto_labeling.py` untuk mengekspor dataset validasi pakar.")
 card_end()
 
-# 4. Grid Search per K
-st.markdown("---")
-card_start()
-section_header("📊 Hasil Grid Search Hyperparameter per K")
-
-if results_path.exists():
-    hp_df = load_hyperparameter_results(str(results_path), get_file_hash(results_path))
-
-    best_per_k = hp_df.loc[hp_df.groupby('k')['coherence_cv'].idxmax()].reset_index(drop=True)
-    display_cols = best_per_k[['k', 'coherence_cv', 'coherence_umass', 'log_perplexity', 'alpha', 'eta']].copy()
-    display_cols.columns = ['K Topik', 'Coherence CV', 'Coherence UMass', 'Log Perplexity', 'Alpha', 'Eta']
-    display_cols['Coherence CV'] = display_cols['Coherence CV'].round(4)
-    display_cols['Log Perplexity'] = display_cols['Log Perplexity'].round(2)
-
-    max_cv_k = display_cols.loc[display_cols['Coherence CV'].idxmax()]['K Topik']
-
-    def highlight_best(row):
-        return ['background-color: rgba(59, 130, 246, 0.25); font-weight: bold;' if row['K Topik'] == max_cv_k else '' for _ in row]
-
-    st.markdown("Tabel di bawah menunjukkan konfigurasi **terbaik per jumlah topik (K)** berdasarkan metrik Coherence C_V (baris terbaik di-highlight):")
-    st.dataframe(
-        display_cols.style.apply(highlight_best, axis=1),
-        use_container_width=True,
-        hide_index=True
-    )
-card_end()

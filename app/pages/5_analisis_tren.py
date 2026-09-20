@@ -5,7 +5,7 @@ import numpy as np
 import plotly.graph_objects as go
 from pathlib import Path
 
-# Setup path so trend_analyzer can be imported
+# Atur path agar trend_analyzer dapat diimpor
 base_path = Path(__file__).parent.parent.parent
 sys.path.append(str(base_path))
 
@@ -14,7 +14,7 @@ try:
 except ImportError:
     st.error("Gagal mengimpor fungsi dari trend_analyzer. Pastikan file tersebut ada di direktori root.")
 
-# ── Color Palette (Enterprise Dark Mode) ──
+# ── Skema Warna ──
 PRIMARY = "#3B82F6"
 SECONDARY = "#60A5FA"
 ACCENT = "#F59E0B"
@@ -184,21 +184,21 @@ card_end()
 # Run Analyzer
 try:
     
-    # We will compute trend for the selected topic
-    # Filter dataset first based on year range
+    # Hitung tren untuk topik yang dipilih
+    # Filter dataset berdasarkan rentang tahun
     df_filtered = df_dist[(df_dist['Tahun'] >= year_range[0]) & (df_dist['Tahun'] <= year_range[1])]
     
     if df_filtered.empty:
         st.warning("Tidak ada data untuk rentang tahun yang dipilih.")
     else:
-        # Calculate yearly count for the specific topic
+        # Hitung jumlah skripsi per tahun untuk topik spesifik
         yearly_counts = df_filtered[df_filtered['topik_dominan'] == selected_topic].groupby('Tahun').size()
         
-        # We need a complete index of years
+        # Buat indeks lengkap tahun
         all_years = list(range(year_range[0], year_range[1] + 1))
         historical = pd.Series(index=all_years, data=[yearly_counts.get(y, 0) for y in all_years])
         
-        # Perform WMA Forecast (next 3 years)
+        # Lakukan prediksi WMA (3 tahun ke depan)
         weights = np.arange(1, wma_window + 1)
         
         forecast = []
@@ -214,7 +214,7 @@ try:
             
         forecast_years = [year_range[1] + 1, year_range[1] + 2, year_range[1] + 3]
         
-        # Calculate standard deviation of historical data for confidence interval
+        # Hitung deviasi standar data historis untuk interval kepercayaan
         std_dev = historical.std() if len(historical) > 1 else 0
         upper_bound = [f + std_dev for f in forecast]
         lower_bound = [max(0, f - std_dev) for f in forecast]

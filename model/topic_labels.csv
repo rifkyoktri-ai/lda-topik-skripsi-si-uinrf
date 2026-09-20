@@ -1,4 +1,9 @@
 topic_id,label,description,keywords,label_score,quality_coherence
-1,Keamanan & Manajemen Risiko Sistem,Topic with 78 documents,bimbing_konseling;pegawai;aman;pribadi;ancam,1.0,
-2,Evaluasi Kepuasan Pengguna Sistem,Topic with 92 documents,puas_guna;bimbing;user_satisfaction;kembang;hitung,1.0,
-3,Pengembangan Sistem Informasi Manajemen,Topic with 139 documents,extreme_programming;usaha;jual;kelola_data;ukur,1.0,
+1,Evaluasi Usability Sistem Informasi,Topic with 66 documents,puas_guna;puas;kualitas_layan;sukses;webqual,1.0,0.4584
+2,Evaluasi Kualitas Layanan (ServQual),Topic with 34 documents,pegawai;extreme_programming;learning;bentuk;jual,1.0,0.3517
+3,Pengembangan Perangkat Lunak (SDLC/XP),Topic with 46 documents,identifikasi;kategori;aman;siakad;surat,1.0,0.2922
+4,Keamanan Sistem & Pengelolaan Arsip,Topic with 21 documents,ease_use;ancam;tracer_study;puas_guna;pengaruh_puas_guna,1.0,0.4896
+5,Evaluasi Kesuksesan & Adopsi Sistem Informasi,Topic with 38 documents,jual;usability;usaha;lapor;stok,1.0,0.4526
+6,End-User Computing Satisfaction (EUCS),Topic with 41 documents,bimbing;learning;karakteristik;sewa;iso_iec,1.0,0.4687
+7,"Analitik Data, Prediksi & Manajemen Risiko IT",Topic with 26 documents,extreme_programming;kelola_data;lapor;usaha;didik,1.0,0.354
+8,Analisis Sentimen & Ulasan Pengguna,Topic with 13 documents,bimbing_konseling;langgan;aman;usaha;audit,1.0,0.3535

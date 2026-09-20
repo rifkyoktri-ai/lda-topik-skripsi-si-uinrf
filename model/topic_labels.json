@@ -1,80 +1,240 @@
 {
   "0": {
-    "label_final": "Keamanan & Manajemen Risiko Sistem",
-    "label_auto": "Keamanan & Manajemen Risiko Sistem",
+    "label_final": "Evaluasi Usability Sistem Informasi",
+    "label_auto": "Evaluasi Usability Sistem Informasi",
     "score": 1.0,
     "top_words": [
-      "bimbing_konseling",
-      "pegawai",
-      "aman",
-      "pribadi",
-      "ancam",
-      "dukung_putus",
-      "mohon",
-      "usability"
+      "puas_guna",
+      "puas",
+      "kualitas_layan",
+      "sukses",
+      "webqual",
+      "pengaruh_signifikan",
+      "monitoring",
+      "model_delone_mclean",
+      "tolak",
+      "akurat"
     ],
     "top_words_filtered": [
-      "bimbing_konseling",
-      "pegawai",
-      "aman",
-      "pribadi",
-      "ancam",
-      "dukung_putus",
-      "mohon",
-      "usability"
+      "puas_guna",
+      "puas",
+      "kualitas_layan",
+      "sukses",
+      "webqual",
+      "pengaruh_signifikan",
+      "monitoring",
+      "model_delone_mclean",
+      "tolak",
+      "akurat"
     ],
-    "num_docs": 78
+    "num_docs": 66,
+    "quality_coherence": 0.4584
   },
   "1": {
-    "label_final": "Evaluasi Kepuasan Pengguna Sistem",
-    "label_auto": "Evaluasi Kepuasan Pengguna Sistem",
+    "label_final": "Evaluasi Kualitas Layanan (ServQual)",
+    "label_auto": "Evaluasi Kualitas Layanan (ServQual)",
     "score": 1.0,
     "top_words": [
-      "puas_guna",
-      "bimbing",
-      "user_satisfaction",
-      "kembang",
-      "hitung",
-      "kualitas_layan",
-      "sewa",
-      "puas",
-      "analis"
+      "pegawai",
+      "extreme_programming",
+      "learning",
+      "bentuk",
+      "jual",
+      "spk",
+      "surat",
+      "admin"
     ],
     "top_words_filtered": [
-      "puas_guna",
-      "bimbing",
-      "user_satisfaction",
-      "kembang",
-      "hitung",
-      "kualitas_layan",
-      "sewa",
-      "puas",
-      "analis"
+      "pegawai",
+      "extreme_programming",
+      "learning",
+      "bentuk",
+      "jual",
+      "spk",
+      "surat",
+      "admin"
     ],
-    "num_docs": 92
+    "num_docs": 34,
+    "quality_coherence": 0.3517
   },
   "2": {
-    "label_final": "Pengembangan Sistem Informasi Manajemen",
-    "label_auto": "Pengembangan Sistem Informasi Manajemen",
+    "label_final": "Pengembangan Perangkat Lunak (SDLC/XP)",
+    "label_auto": "Pengembangan Perangkat Lunak (SDLC/XP)",
+    "score": 1.0,
+    "top_words": [
+      "identifikasi",
+      "kategori",
+      "aman",
+      "siakad",
+      "surat",
+      "atribut",
+      "kualitas_layan",
+      "data_mining"
+    ],
+    "top_words_filtered": [
+      "identifikasi",
+      "kategori",
+      "aman",
+      "siakad",
+      "surat",
+      "atribut",
+      "kualitas_layan",
+      "data_mining"
+    ],
+    "num_docs": 46,
+    "quality_coherence": 0.2922
+  },
+  "3": {
+    "label_final": "Keamanan Sistem & Pengelolaan Arsip",
+    "label_auto": "Keamanan Sistem & Pengelolaan Arsip",
+    "score": 1.0,
+    "top_words": [
+      "ease_use",
+      "ancam",
+      "tracer_study",
+      "puas_guna",
+      "pengaruh_puas_guna",
+      "rencana_strategi",
+      "timeliness",
+      "end_user",
+      "computing_satisfaction",
+      "user_satisfaction"
+    ],
+    "top_words_filtered": [
+      "ease_use",
+      "ancam",
+      "tracer_study",
+      "puas_guna",
+      "pengaruh_puas_guna",
+      "rencana_strategi",
+      "timeliness",
+      "end_user",
+      "computing_satisfaction",
+      "user_satisfaction"
+    ],
+    "num_docs": 21,
+    "quality_coherence": 0.4896
+  },
+  "4": {
+    "label_final": "Evaluasi Kesuksesan & Adopsi Sistem Informasi",
+    "label_auto": "Evaluasi Kesuksesan & Adopsi Sistem Informasi",
+    "score": 1.0,
+    "top_words": [
+      "jual",
+      "usability",
+      "usaha",
+      "lapor",
+      "stok",
+      "bimbing",
+      "sehat",
+      "silayak",
+      "data_uji"
+    ],
+    "top_words_filtered": [
+      "jual",
+      "usability",
+      "usaha",
+      "lapor",
+      "stok",
+      "bimbing",
+      "sehat",
+      "silayak",
+      "data_uji"
+    ],
+    "num_docs": 38,
+    "quality_coherence": 0.4526
+  },
+  "5": {
+    "label_final": "End-User Computing Satisfaction (EUCS)",
+    "label_auto": "End-User Computing Satisfaction (EUCS)",
+    "score": 1.0,
+    "top_words": [
+      "bimbing",
+      "learning",
+      "karakteristik",
+      "sewa",
+      "iso_iec",
+      "ajar",
+      "usability",
+      "cuti",
+      "office",
+      "didik"
+    ],
+    "top_words_filtered": [
+      "bimbing",
+      "learning",
+      "karakteristik",
+      "sewa",
+      "iso_iec",
+      "ajar",
+      "usability",
+      "cuti",
+      "office",
+      "didik"
+    ],
+    "num_docs": 41,
+    "quality_coherence": 0.4687
+  },
+  "6": {
+    "label_final": "Analitik Data, Prediksi & Manajemen Risiko IT",
+    "label_auto": "Analitik Data, Prediksi & Manajemen Risiko IT",
     "score": 1.0,
     "top_words": [
       "extreme_programming",
-      "usaha",
-      "jual",
       "kelola_data",
-      "ukur",
-      "manual",
-      "lapor"
+      "lapor",
+      "usaha",
+      "didik",
+      "mesan",
+      "user_interface",
+      "cetak",
+      "office",
+      "langgan"
     ],
     "top_words_filtered": [
       "extreme_programming",
-      "usaha",
-      "jual",
       "kelola_data",
-      "ukur",
-      "manual",
-      "lapor"
+      "lapor",
+      "usaha",
+      "didik",
+      "mesan",
+      "user_interface",
+      "cetak",
+      "office",
+      "langgan"
     ],
-    "num_docs": 139
+    "num_docs": 26,
+    "quality_coherence": 0.354
+  },
+  "7": {
+    "label_final": "Analisis Sentimen & Ulasan Pengguna",
+    "label_auto": "Analisis Sentimen & Ulasan Pengguna",
+    "score": 1.0,
+    "top_words": [
+      "bimbing_konseling",
+      "langgan",
+      "aman",
+      "usaha",
+      "audit",
+      "langgar",
+      "nasabah",
+      "lapor",
+      "skala",
+      "tracer_study"
+    ],
+    "top_words_filtered": [
+      "bimbing_konseling",
+      "langgan",
+      "aman",
+      "usaha",
+      "audit",
+      "langgar",
+      "nasabah",
+      "lapor",
+      "skala",
+      "tracer_study"
+    ],
+    "num_docs": 13,
+    "quality_coherence": 0.3535
   }
 }
