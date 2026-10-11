@@ -1,0 +1,704 @@
+/*
+	Eprints free theme for branding your repository.
+	I just made some adjustments to match the features and services that exist in EPrints.
+	Agung Prasetyo Wibowo | prazetyo@gmail.com
+	https://agungprasetyo.net/
+*/
+
+/* This is where the ePrints theme for customisation goes */
+table.ep_multi {
+    margin-top: 30px;
+}
+
+dl.ep_action_list dd {
+	top: -1em;
+	left: 18em;
+}
+
+a:hover, .ep_tm_key_tools a:hover {
+	color: #4ebbf5;
+}
+
+h1.ep_tm_pagetitle {
+	font-size: 2.5em;
+	font-weight: 500;
+}
+
+.person_name {
+	color: #000 !important;
+}
+
+.ep_sr_title_bar {
+    padding: 10px 6px 10px 6px !important;
+	background-image: none;
+}
+
+.ep_subjectinput_tree dl dt {
+	line-height: 23px;
+}
+
+td.ep_columns_cell {
+	background-color: #ccffcc;
+}
+
+td.ep_columns_cell:first-child {
+	text-align: center;
+}
+
+.ep_columns_cell_rev_number {
+	text-align: center;
+}
+
+.ep_columns {
+	width: 80%;
+}
+
+.ep_columns_cell_last {
+	background-color: #ccffcc;
+}
+
+th {
+	font-family: 'Raleway', sans-serif;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.35em;
+	list-style: none;
+	text-transform: uppercase;
+}
+
+th.ep_columns_title, td.ep_columns_alter {
+	font-family: 'Montserrat',Sans-serif;
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: 2px;
+	line-height: 20px;
+	min-width: auto;
+	text-transform: uppercase;
+}
+
+.ep_form_internal_button {
+	font-family: 'Montserrat',Sans-serif;
+	font-size: 10px;
+	font-weight: 400;
+	letter-spacing: 2px;
+	min-width: inherit;
+	text-transform: uppercase;
+}
+
+th.ep_columns_title a, td.ep_columns_alter a {
+	*color: #000000
+}
+
+.ep_msg_message_content {
+    background-color: #4ebbf5;
+	*background-color: #fff;
+    border-color: #dbdfe1;
+	color: #ffffff;
+}
+
+.ep_msg_message_content, .ep_msg_warning_content, .ep_msg_error_content, .ep_msg_other_content {
+    background-image: none;
+    background-repeat: none;
+}
+
+.ep_sr_content, .ep_summary_box_body, .ep_tab_panel, .ep_toolbox_content, .ep_upload_doc {
+    background-image: none;
+    background-repeat: none;
+	background-color: #f5f6f7;
+}
+
+.ep_tab_bar li.ep_tab_selected a {
+	background-color: #f5f6f7;
+}
+
+.ep_tab_bar li a {
+    background-color: #dff0d8;
+}
+
+.ep_block {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+/* buttons */
+
+.ep_form_button_bar {
+	text-align: center;
+	padding: 4px;
+	clear: both;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.ep_form_action_button, .ep_form_action_button, .ep_blister_node, .ep_blister_node_selected, .ep_form_internal_button {
+	text-align: center;
+	padding: 15px 25px;
+	cursor: pointer;
+}
+
+.ep_blister_node {
+    border-color: #cccccc;
+    background-color: #4ebbf5;
+    background-image: none;
+    color: #ffffff;
+}
+
+.ep_blister_node:hover {
+    background-color: #000;
+}
+
+
+/*.ep_form_internal_button {
+	padding: 1px 14px;
+	background-position: 0px -2px;
+}*/
+
+.ep_form_action_button, .ep_form_internal_button, .ep_tm_searchbarbutton, .ep_blister_node_selected {
+    border: none;
+    background-image: none;
+    background-color: #000;
+    color: #fff;
+}
+
+.ep_form_action_button:active, .ep_form_internal_button:active, .ep_tm_searchbarbutton:active, .ep_blister_node_selected:active {
+	border: none;
+	background-color: #276496;
+}
+
+.ep_form_action_button:hover, .ep_form_action_button:hover {
+    background-color: #4ebbf5;
+}
+
+.ep_tm_searchbar, .ep_columns_title, td.ep_columns_alter {
+	background-color: #f5f6f7;
+	background-image: none;
+	background-repeat: repeat-x;
+}
+
+.button, input[type="submit"] {
+	font-family: 'Montserrat',Sans-serif;
+	font-size: 10px;
+	font-weight: 400;
+	letter-spacing: 2px;
+	line-height: normal;
+	min-width: inherit;
+	text-transform: uppercase;
+}
+
+select, input.ep_form_text, textarea {
+	padding: 5px;
+	margin-right: 4px;
+	border: solid 1px #ccc;
+}
+
+select:after {
+	content: '\f078';
+    font: normal normal normal 17px/1 FontAwesome;
+    color: #0ebeff;
+    right: 11px;
+    top: 6px;
+    height: 34px;
+    padding: 15px 0px 0px 8px;
+    border-left: 1px solid #0ebeff;
+    position: absolute;
+    pointer-events: none;
+}
+
+
+/* stop: overwrite EP Styling */
+
+body
+{
+	background-color: #ccc;
+}
+
+img
+{
+	margin-bottom: 0px;
+}
+/* layout */
+
+.account
+{
+	font-size: 80%;
+	color: #333;
+}
+				
+	.account a
+	{
+		color: #fff
+	}
+
+	.account .user
+	{
+		
+	}
+	
+.branding
+{
+	color: #ccc;
+	min-height: 70px;
+}
+		
+	.branding h1
+	{
+		font-size: 36px;
+		text-align: left;
+		padding: 20px 10px 0px 10px;
+		margin-bottom: 0px;
+	}
+
+	.branding h2
+	{
+		font-size: 22px;	
+	}
+
+	.branding form
+	{
+		margin-bottom: 0;
+		text-align: right;
+		float: right;	
+	}
+
+	.branding form button
+	{
+		display: inline;
+		margin-right: 0;
+		margin-left: -18px;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	.branding input
+	{
+		width: 200px;
+	}
+		
+.navigation
+{
+	background-color: #fff;
+	border-bottom: 1px solid #fff;
+}
+
+	.navigation:empty
+	{
+		display: none;	
+	}
+
+.content 
+{
+	background-color: #fff;
+	*min-height: 70vh;
+}
+
+.trailer
+{
+	font-size: 0.8em;
+}
+
+	.trailer :last-child
+	{
+		margin-bottom: 0;
+	}
+
+.logged_in_as, .ep_name_citation {
+	*padding-left: 8px;
+
+}
+
+/* rows */
+.row.small 
+{
+	padding: 9px 0;
+}
+
+.row.medium 
+{
+	padding: 18px 0;
+}
+
+.row.large 
+{
+	padding: 36px 0;
+}
+
+.search
+{
+	height: 50px;
+	background-color:#014359;
+	padding: 5px; 
+}
+
+.ep_tm_searchbarbox
+{
+	width:98%;
+}	
+
+.ep_tm_searchbarbutton
+{
+	float: right;
+	margin-top: 5px;
+}
+
+.horizontal 
+{
+margin-right: 0;
+}
+
+/* menus */
+
+.menu
+{
+	margin-bottom: 5px;
+}
+
+    .menu ul
+    {
+        list-style: none;
+        margin: 0;
+        padding: 0
+    }
+
+.menu.horizontal
+{
+
+}
+
+    .menu.horizontal ul
+    {
+	    
+    }
+
+    .menu.horizontal li
+    {
+	    display: block;
+        float: left;
+	    padding: 0;
+	    margin: 0;
+    }
+			
+    .menu.horizontal li a 
+    {
+        text-decoration: none;
+	    text-align: left;
+	    color: #fff;
+	    display: block;	
+    }
+    	
+    /* 1-st level menu */
+    .menu.horizontal > ul
+    {
+	height: 50px;
+	background-color: #014359;
+	position: relative;
+    }
+
+		.menu.horizontal > ul > li
+		{
+			line-height: 25px;	
+		}
+
+			.menu.horizontal > ul > li > a
+			{
+				padding: 0 25px 0 25px;
+				margin-right: 2px;
+			}
+		
+			.menu.horizontal > ul > li > a:hover, .menu.horizontal > ul > li.selected > a
+			{
+				background-color: #0A96A9; 
+			}
+
+    /* 2-nd level menu */
+    .menu.horizontal ul li:hover > ul { visibility: visible;}
+
+
+    .menu.horizontal > ul > li > ul
+    {
+		position: absolute;
+	       display: block;
+		left: inherit;
+		top: inherit;
+		width: 150px;
+		height: auto;
+    }
+		.menu.horizontal > ul > li > ul > li 
+		{
+			line-height: 26px;	
+			/*display: block;
+ * 			float: none;*/
+			background-color: #ccc;
+			width: 100%;
+			border-bottom: 1px solid #014359;
+			
+		}
+
+	    .menu.horizontal > ul > li > ul > li > a
+	    {
+		    
+		    padding: 0 15px;
+		   color: #333; 
+		   /*color: #fff; 
+ * 		   background-color: #0A96A9;*/
+	    }
+		
+	    .menu.horizontal > ul > li > ul > li > a:hover, .menu.horizontal > ul > li > ul > li.selected > a
+	    {
+		    
+		    background-color: #0A96A9;
+		    color: #fff; 
+	    }
+
+.menu.vertical
+{
+   
+}
+
+    .menu.vertical ul
+    {
+	    
+    }
+
+    .menu.vertical li
+    {
+	    line-height: 26px;
+	    display: block;
+	    padding: 0;
+	    margin: 0;
+	background-color: #0A96A9;
+	text-decoration: none;
+	color: #fff;
+    }
+
+.menu.vertical li {
+
+background-color: #848485
+;
+
+text-decoration: none;
+color: #fff;
+}
+
+			
+    .menu.vertical li a
+    {
+		border-bottom: 1px solid #80A1AC;
+		background-color: #014359;
+		display: block;
+	    padding: 0 5px 0 10px;
+        text-decoration: none;
+	    color: #fff;
+    }
+   
+	.menu.vertical li a:hover, .menu.vertical li.selected a:hover
+	{
+		background-color: #0A96A9;
+	}
+
+	.menu.vertical li.selected > a
+	{
+		background-color: #002D3C;	
+	}
+
+	/* second level */
+	.menu.vertical > ul > li > ul > li > a
+	{
+		padding-left: 20px;
+	}
+
+	/* third level */
+	.menu.vertical > ul > li > ul > li > ul > li > a
+	{
+		padding-left: 30px;
+	}
+
+
+.mobile-menu
+{
+		
+}
+
+.ep_tm_key_tools li {
+	border-left: 10px !important;
+
+}
+
+#ep_tm_menu_browse
+{
+}
+
+/* mobile menu styles */
+
+.mobile-menu-container
+{
+	width: 100%;
+	min-height: 36px;
+	background-color: #002D3C;
+}
+
+.mobile-menu-toggle
+{
+	height: 36px;
+	margin-right: 1%;
+	line-height: 36px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	font-weight: 900;
+	color: #fff;
+	float: right;
+}
+
+	.mobile-menu-toggle a
+	{
+		background-color: #002D3C;
+		width: 36px;
+		height: 27px;
+		padding: 0 0 9px 0;
+		text-decoration: none;
+		color: #fff;
+		text-align: center;
+		display: block;
+		float: right;
+		border-radius: 5px;
+	}
+
+	.mobile-menu-toggle a span
+	{
+		border-radius: 5px;
+		background-color: #fff;
+		display: block;
+		height: 3px;
+		width: 36px;
+		margin: 6px 0;
+	}
+
+.mobile-menu
+{
+	position: absolute;
+	left: 0;
+	top: 35px;
+	width: 100%;
+	background-color: #002D3C;
+	z-index:999;
+	border-bottom: 3px solid #002D3C;
+}
+
+	.mobile-menu h1 
+	{
+		background-color: #002D3C;
+		padding: 9px;
+		margin: 0;
+		color: #fff;
+	}
+
+	.mobile-menu ul
+	{
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		clear: both;
+	}
+	
+		.mobile-menu li
+		{
+			margin: 0;
+		}
+		
+			.mobile-menu li a
+			{
+				border-top: 1px solid #80A1AC;
+				background-color: #014359;
+				padding: 10px;
+				text-decoration: none;
+				color: #fff;
+				display: block;
+			}
+		
+				.mobile-menu li li a
+				{
+					padding-left: 20px;
+				}
+				
+					.mobile-menu li li li a
+					{
+						padding-left: 40px;
+					}
+					
+						.mobile-menu li li li li a
+						{
+							padding-left: 60px;
+						}
+					
+			.mobile-menu li a:hover
+			{
+				background: #0A96A9;
+			}
+
+
+/* desktop and tablet landscape */
+
+@media only screen and (min-width: 960px)
+{
+    
+}
+
+
+/* tablet portrait */
+
+@media only screen and (min-width: 768px) and (max-width: 959px)
+{
+
+}
+
+
+/* all mobile devices */
+
+@media only screen and (max-width: 767px)
+{	
+	.branding
+	{
+		background-image: none;	
+		text-align: center;
+		min-height: 56px;
+	}
+}
+
+
+/* mobile landscape */
+
+@media only screen and (min-width: 480px) and (max-width: 767px)
+{
+
+}
+
+
+/* mobile portrait */
+
+@media only screen and (max-width: 767px)
+{
+	.menu.horizontal > ul {
+		height: inherit;
+	}	
+	.menu.horizontal li {
+		float: none;
+	}
+	.menu.horizontal > ul > li > ul {
+		left: 60px;
+	}
+
+	.menu.horizontal li a {
+		border-bottom: 1px solid #80A1AC;
+	}	
+}
+
+
+/* modify for ePrints contents */
+.ep_tm_page_content {
+	width: auto;
+}
+
+
+
+.ep_name_citation a {
+	background-color: #848485 !important;
+}

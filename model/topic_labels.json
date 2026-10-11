@@ -1,0 +1,234 @@
+{
+  "0": {
+    "label_final": "Evaluasi Usability Sistem Informasi",
+    "label_auto": "Evaluasi Usability Sistem Informasi",
+    "score": 1.0,
+    "top_words": [
+      "sukses",
+      "nikah",
+      "monitoring",
+      "audit",
+      "kualitas_layan",
+      "model_delone_mclean",
+      "tolak",
+      "impact",
+      "tram",
+      "keluarga"
+    ],
+    "top_words_filtered": [
+      "sukses",
+      "nikah",
+      "monitoring",
+      "audit",
+      "kualitas_layan",
+      "model_delone_mclean",
+      "tolak",
+      "impact",
+      "tram",
+      "keluarga"
+    ],
+    "num_docs": 32
+  },
+  "1": {
+    "label_final": "Evaluasi Kualitas Layanan (ServQual)",
+    "label_auto": "Evaluasi Kualitas Layanan (ServQual)",
+    "score": 1.0,
+    "top_words": [
+      "pegawai",
+      "extreme_programming",
+      "spk",
+      "admin",
+      "jual",
+      "kelola_data",
+      "sukses",
+      "kredit",
+      "harap_mulia",
+      "surat"
+    ],
+    "top_words_filtered": [
+      "pegawai",
+      "extreme_programming",
+      "spk",
+      "admin",
+      "jual",
+      "kelola_data",
+      "sukses",
+      "kredit",
+      "harap_mulia",
+      "surat"
+    ],
+    "num_docs": 29
+  },
+  "2": {
+    "label_final": "Pengembangan Perangkat Lunak (SDLC/XP)",
+    "label_auto": "Pengembangan Perangkat Lunak (SDLC/XP)",
+    "score": 1.0,
+    "top_words": [
+      "siakad",
+      "kategori",
+      "identifikasi",
+      "kualitas_layan",
+      "atribut",
+      "surat",
+      "alami",
+      "aman",
+      "usability"
+    ],
+    "top_words_filtered": [
+      "siakad",
+      "kategori",
+      "identifikasi",
+      "kualitas_layan",
+      "atribut",
+      "surat",
+      "alami",
+      "aman",
+      "usability"
+    ],
+    "num_docs": 46
+  },
+  "3": {
+    "label_final": "Keamanan Sistem & Pengelolaan Arsip",
+    "label_auto": "Keamanan Sistem & Pengelolaan Arsip",
+    "score": 1.0,
+    "top_words": [
+      "puas_guna",
+      "puas",
+      "ease_use",
+      "model_end",
+      "ancam",
+      "computing_satisfaction",
+      "end_user",
+      "tracer_study",
+      "variabel_content",
+      "format"
+    ],
+    "top_words_filtered": [
+      "puas_guna",
+      "puas",
+      "ease_use",
+      "model_end",
+      "ancam",
+      "computing_satisfaction",
+      "end_user",
+      "tracer_study",
+      "variabel_content",
+      "format"
+    ],
+    "num_docs": 34
+  },
+  "4": {
+    "label_final": "Evaluasi Kesuksesan & Adopsi Sistem Informasi",
+    "label_auto": "Evaluasi Kesuksesan & Adopsi Sistem Informasi",
+    "score": 1.0,
+    "top_words": [
+      "jual",
+      "usability",
+      "lapor",
+      "usaha",
+      "bimbing",
+      "sehat",
+      "data_uji"
+    ],
+    "top_words_filtered": [
+      "jual",
+      "usability",
+      "lapor",
+      "usaha",
+      "bimbing",
+      "sehat",
+      "data_uji"
+    ],
+    "num_docs": 41
+  },
+  "5": {
+    "label_final": "End-User Computing Satisfaction (EUCS)",
+    "label_auto": "End-User Computing Satisfaction (EUCS)",
+    "score": 1.0,
+    "top_words": [
+      "bimbing",
+      "learning",
+      "karakteristik",
+      "sewa",
+      "ajar",
+      "iso_iec",
+      "usability",
+      "cuti",
+      "dukung_putus",
+      "didik"
+    ],
+    "top_words_filtered": [
+      "bimbing",
+      "learning",
+      "karakteristik",
+      "sewa",
+      "ajar",
+      "iso_iec",
+      "usability",
+      "cuti",
+      "dukung_putus",
+      "didik"
+    ],
+    "num_docs": 49
+  },
+  "6": {
+    "label_final": "Analitik Data, Prediksi & Manajemen Risiko IT",
+    "label_auto": "Analitik Data, Prediksi & Manajemen Risiko IT",
+    "score": 1.0,
+    "top_words": [
+      "extreme_programming",
+      "kelola_data",
+      "lapor",
+      "didik",
+      "usaha",
+      "efektif",
+      "cetak",
+      "langgan",
+      "mesan",
+      "office"
+    ],
+    "top_words_filtered": [
+      "extreme_programming",
+      "kelola_data",
+      "lapor",
+      "didik",
+      "usaha",
+      "efektif",
+      "cetak",
+      "langgan",
+      "mesan",
+      "office"
+    ],
+    "num_docs": 33
+  },
+  "7": {
+    "label_final": "Analisis Sentimen & Ulasan Pengguna",
+    "label_auto": "Analisis Sentimen & Ulasan Pengguna",
+    "score": 1.0,
+    "top_words": [
+      "bimbing_konseling",
+      "langgan",
+      "usaha",
+      "aman",
+      "audit",
+      "lapor",
+      "langgar",
+      "nasabah",
+      "beli",
+      "tracer_study"
+    ],
+    "top_words_filtered": [
+      "bimbing_konseling",
+      "langgan",
+      "usaha",
+      "aman",
+      "audit",
+      "lapor",
+      "langgar",
+      "nasabah",
+      "beli",
+      "tracer_study"
+    ],
+    "num_docs": 21
+  }
+}

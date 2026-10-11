@@ -1,0 +1,28 @@
+.venv
+logs/
+__pycache__/
+.pytest_cache/
+data/raw/*_files/
+~$*.xlsx
+~$*.docx
+*.pyc
+*.pyo
+.env
+*.gensim
+*.gensim.*
+corpus.pkl
+
+# Backup dokumen
+*.backup.docx
+*.backup2.docx
+*.backup_tables.docx
+
+# temporary scripts
+check_*.py
+find_*.py
+gen_*.py
+patch_thesis*.py
+script_*.js
+console_*.js
+scrape_repo.py
+test_uc.py

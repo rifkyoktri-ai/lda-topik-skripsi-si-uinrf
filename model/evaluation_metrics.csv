@@ -1,0 +1,12 @@
+Metrik,Nilai
+Jumlah Topik (K),8
+Coherence Score (C_V),0.4256
+Coherence Score (U_Mass),-10.7533
+Train Log Perplexity,-7.4518
+Hold-out Test Log Perplexity,-11.2839
+Alpha Prior,asymmetric
+Eta Prior,auto
+Passes,30
+Iterations,500
+Vocabulary Size,1849
+Inferensi,Online Variational Bayes

@@ -1,0 +1,86 @@
+# KONFIGURASI AKTUAL REPOSITORI PEMETAAN TOPIK LDA
+# Nilai-nilai di bawah ini merefleksikan nilai AKTUAL dari kode Python repositori.
+
+pipeline:
+  seed: 42
+  num_topics: 8
+  alpha: "asymmetric"
+  eta: "auto"
+  passes_pipeline_default: 30
+  passes_cli_default: 30
+  iterations_pipeline_default: 500
+  iterations_cli_default: 500
+  auto_tune_k_range: [4, 10]     # pipeline.py --min-k/--max-k
+  train_test_split_ratio: 0.20
+
+preprocessing:
+  min_token_length: 3            # len(w) > 2 di preprocess.py (buang token < 3 karakter)
+  min_document_tokens: 5         # len(doc) >= 5 di preprocess.py
+  min_ngram_count: 2             # Phrases(min_count=2) di preprocess.py
+  ngram_threshold: 7.0
+  dictionary_no_below: 2
+  dictionary_no_above: 0.40
+  english_abstract_threshold: 0.12  # Regex ENGLISH_INDICATOR_WORDS, bukan langdetect
+
+grid_search:
+  # hyperparameter_tuning.py -> menghasilkan model/hyperparameter_results.csv
+  min_k: 4
+  max_k: 10
+  alpha_options:
+    - "symmetric"
+    - "asymmetric"
+    - 0.01
+    - 0.1
+  eta_options:
+    - "symmetric"
+    - 0.01
+    - 0.1
+  passes_tuning: 10
+  iterations_tuning: 400
+  total_code_combinations: 84         # 7 (K=4..10) x 4 (alpha) x 3 (eta)
+  saved_results_rows: 84             # Terverifikasi: model/hyperparameter_results.csv = 84 baris
+  best_cv_by_k:
+    K4: 0.3605
+    K5: 0.3756
+    K6: 0.3909
+    K7: 0.4142
+    K8: 0.3871
+    K9: 0.4314
+    K10: 0.3993
+
+trend_analysis:
+  # Diimplementasikan di _stats_forecast/stats_forecast.py (bukan trend_analyzer.py)
+  wma_weights: [1, 2, 3, 4, 5]   # Urut dari tahun 2021 hingga 2025
+  historical_years: [2021, 2022, 2023, 2024, 2025]
+  projection_years: [2026, 2027]
+  backtest_target_years: [2023, 2024, 2025]
+  backtest_baselines: ["rata-rata historis", "naive"]
+
+model_saved_attributes:
+  num_topics: 8
+  alpha: "asymmetric"    # vektor prior yang diestimasi Gensim
+  eta: "auto"            # vektor prior per-kata yang diestimasi Gensim
+  passes: 30
+  iterations: 500
+  decay: 0.5
+  offset: 1.0
+  inference_method: "Online Variational Bayes"   # BUKAN Gibbs Sampling
+  random_state: 42
+
+verified_metrics:
+  # Dihitung ulang dari model/lda_model.gensim + data/intermediate/
+  total_documents: 285
+  vocabulary_size: 1849
+  coherence_cv: 0.4256
+  coherence_umass: -10.7533
+  log_perplexity_285: -7.4518
+  topic_diversity_top10: 0.7125
+  topic_diversity_top15: 0.6917
+  pct_max_theta_under_0.50: 13.33
+  avg_tokens_per_document: 58.1
+  avg_bow_terms_per_document: 33.2
+  chi_square: 23.9132
+  chi_square_df: 28
+  chi_square_p: 0.6861
+  cramers_v: 0.1448
+  permutation_p: 0.7031

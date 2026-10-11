@@ -1,0 +1,9 @@
+topic_id,label,description,keywords,label_score,quality_coherence
+1,Evaluasi Usability Sistem Informasi,Topic with 32 documents,sukses;nikah;monitoring;audit;kualitas_layan,1.0,
+2,Evaluasi Kualitas Layanan (ServQual),Topic with 29 documents,pegawai;extreme_programming;spk;admin;jual,1.0,
+3,Pengembangan Perangkat Lunak (SDLC/XP),Topic with 46 documents,siakad;kategori;identifikasi;kualitas_layan;atribut,1.0,
+4,Keamanan Sistem & Pengelolaan Arsip,Topic with 34 documents,puas_guna;puas;ease_use;model_end;ancam,1.0,
+5,Evaluasi Kesuksesan & Adopsi Sistem Informasi,Topic with 41 documents,jual;usability;lapor;usaha;bimbing,1.0,
+6,End-User Computing Satisfaction (EUCS),Topic with 49 documents,bimbing;learning;karakteristik;sewa;ajar,1.0,
+7,"Analitik Data, Prediksi & Manajemen Risiko IT",Topic with 33 documents,extreme_programming;kelola_data;lapor;didik;usaha,1.0,
+8,Analisis Sentimen & Ulasan Pengguna,Topic with 21 documents,bimbing_konseling;langgan;usaha;aman;audit,1.0,

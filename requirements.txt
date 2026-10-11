@@ -1,0 +1,23 @@
+# ── Dashboard (Streamlit) ────────────────────────────────────────────────────
+# st.navigation / st.Page membutuhkan Streamlit >= 1.36
+streamlit>=1.36,<2.0
+plotly>=5.18.0
+wordcloud>=1.9.0
+matplotlib>=3.7.0
+PyYAML>=6.0
+
+# ── Data & Statistik ─────────────────────────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+
+# ── Pemodelan Topik (LDA) ────────────────────────────────────────────────────
+# Protokol evaluasi C_V resmi skripsi: gensim 4.4.0
+gensim==4.4.0
+pyLDAvis>=3.4.0
+
+# ── Pemrosesan Teks Bahasa Indonesia ─────────────────────────────────────────
+# PySastrawi = implementasi Python dari algoritma stemming Nazief & Adriani
+PySastrawi>=1.2.1
+nltk>=3.8.0

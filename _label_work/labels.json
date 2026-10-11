@@ -1,0 +1,66 @@
+[
+  {
+    "topic_id": 1,
+    "label": "Audit TI & Evaluasi Kesuksesan SI",
+    "deskripsi": "Topik ini memuat skripsi seputar audit tata kelola IT, evaluasi kesuksesan/kualitas layanan sistem informasi instansi publik, serta analisis sentimen aplikasi.",
+    "top_words_fingerprint": "626f22436e18a2acd4fe6feb4ef2bc77258a6cd2b0656551b169750dad35522c",
+    "tingkat_kepercayaan": "Sedang",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 2,
+    "label": "Pengembangan & Analisis Sistem Heterogen",
+    "deskripsi": "Topik ini berisi kelompok skripsi heterogen yang mencakup pengembangan sistem kepegawaian, data mining transaksi penjualan, SPK kelayakan kredit, serta evaluasi kesuksesan akademik.",
+    "top_words_fingerprint": "6bc8510aff9d887793063d02558949db5935275c23835bdea106eaec69f9ff61",
+    "tingkat_kepercayaan": "Rendah",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 3,
+    "label": "Analisis Kualitas Layanan & Risiko SI",
+    "deskripsi": "Topik ini berfokus pada analisis kualitas layanan aplikasi/SIAKAD, evaluasi risiko keamanan informasi, serta sentiment analysis ulasan pengguna.",
+    "top_words_fingerprint": "eeef455d28831a8f6559c1ed39088144013e9f4b23f32189654d285ea90072c9",
+    "tingkat_kepercayaan": "Sedang",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 4,
+    "label": "Kepuasan Pengguna Akhir (EUCS & TAM)",
+    "deskripsi": "Topik ini secara spesifik mengelompokkan penelitian evaluasi kepuasan pengguna (EUCS) dan analisis penerimaan aplikasi digital.",
+    "top_words_fingerprint": "2c6cffe3b5c6c7e74262780c3791e07d0b7548df861e9a54f8e268b676dbc789",
+    "tingkat_kepercayaan": "Tinggi",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 5,
+    "label": "Manajemen Risiko TI & Analitik Data",
+    "deskripsi": "Topik ini memuat studi manajemen risiko teknologi informasi serta penerapan metode analitik data mentah (data mining, prediksi penjualan, dan NLP).",
+    "top_words_fingerprint": "a56b66105a86c4fe7161f797ec2504af0956d019e6f71b93ea06fe10546ea954",
+    "tingkat_kepercayaan": "Sedang",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 6,
+    "label": "Pengembangan & Perencanaan Strategis SI",
+    "deskripsi": "Topik ini mencakup skripsi mengenai perencanaan strategis sistem informasi, sistem pendukung keputusan seleksi, serta rancang bangun SI instansi pemerintah.",
+    "top_words_fingerprint": "0cdbc8a79bca299dad38d4f39c3cf0877be4c12c89c65f1b6d9a5124df84ebd6",
+    "tingkat_kepercayaan": "Sedang",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 7,
+    "label": "Rancang Bangun SI Berbasis Web & Mobile",
+    "deskripsi": "Topik ini mengelompokkan rancang bangun sistem informasi berbasis web/mobile serta evaluasi perilaku adopsi dan privasi pengguna.",
+    "top_words_fingerprint": "7e71122a9a4a534dc3ead4b747542a887650f34d170e4cccd5080c7103fe9a8a",
+    "tingkat_kepercayaan": "Sedang",
+    "status": "disetujui"
+  },
+  {
+    "topic_id": 8,
+    "label": "Keamanan Informasi & SI Institusi Pendidikan",
+    "deskripsi": "Topik ini merupakan kelompok topik berukuran paling kecil yang bersifat keranjang sisa, mencakup audit keamanan informasi, segmentasi pelanggan K-Means, dan sistem informasi sekolah.",
+    "top_words_fingerprint": "b651a8b8a2c0b86e94fba3214d888c1dd9e8fb486e13f314fc23dff1a0e88044",
+    "tingkat_kepercayaan": "Rendah",
+    "status": "disetujui"
+  }
+]

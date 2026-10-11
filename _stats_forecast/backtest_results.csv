@@ -1,0 +1,25 @@
+topik_id,metode,mae_pp,mae_relatif,rasio_vs_baseline
+1,WMA,6.5,0.5299,1.0861
+1,Rata-rata Historis,5.98,0.4879,1.0
+1,Naive,7.27,0.5931,1.2156
+2,WMA,5.97,0.5516,1.0689
+2,Rata-rata Historis,5.58,0.516,1.0
+2,Naive,8.55,0.7907,1.5322
+3,WMA,3.71,0.2493,1.325
+3,Rata-rata Historis,2.8,0.1881,1.0
+3,Naive,5.63,0.3783,2.0109
+4,WMA,4.4,0.3557,1.0547
+4,Rata-rata Historis,4.17,0.3372,1.0
+4,Naive,4.16,0.3359,0.9961
+5,WMA,4.66,0.3164,0.9721
+5,Rata-rata Historis,4.79,0.3255,1.0
+5,Naive,6.56,0.4454,1.3684
+6,WMA,6.84,0.4136,1.0282
+6,Rata-rata Historis,6.65,0.4023,1.0
+6,Naive,9.51,0.5752,1.4301
+7,WMA,3.28,0.2889,0.9988
+7,Rata-rata Historis,3.28,0.2892,1.0
+7,Naive,2.91,0.2566,0.8873
+8,WMA,1.77,0.2513,0.7037
+8,Rata-rata Historis,2.52,0.3571,1.0
+8,Naive,0.92,0.1298,0.3635

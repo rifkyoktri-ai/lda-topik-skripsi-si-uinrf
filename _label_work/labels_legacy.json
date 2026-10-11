@@ -1,0 +1,42 @@
+[
+  {
+    "topic_id": 1,
+    "label": "Audit & Evaluasi Sistem Informasi",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 2,
+    "label": "Extreme Programming (XP)",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 3,
+    "label": "Service Quality & User Satisfaction",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 4,
+    "label": "Kepuasan Pengguna Sistem Informasi",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 5,
+    "label": "Manajemen Risiko & Usability Website",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 6,
+    "label": "Sistem Informasi Akademik & Layanan",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 7,
+    "label": "Perilaku Pengguna & Adopsi TI",
+    "status": "deprecated"
+  },
+  {
+    "topic_id": 8,
+    "label": "Data Mining & Klasifikasi",
+    "status": "deprecated"
+  }
+]

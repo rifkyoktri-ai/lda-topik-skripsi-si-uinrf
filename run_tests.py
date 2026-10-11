@@ -1,0 +1,133 @@
+"""
+Test Runner & Summary Generator
+Proyek Skripsi LDA UIN Raden Fatah Palembang
+
+Menjalankan 5 unit test konsistensi data yang menjadi bukti verifikasi
+pada Bab III (fase Evaluation) dan Bab IV (subbab Evaluasi) skripsi.
+
+Jalankan:  python run_tests.py
+"""
+import sys
+import unittest
+import pandas as pd
+import ast
+import tempfile
+from pathlib import Path
+
+from preprocess import bersihkan, run_preprocessing
+
+REPO = Path(__file__).resolve().parent
+
+
+class TestPreprocessPipeline(unittest.TestCase):
+    """Kelompok 1-2: preprocessing deterministik & bebas artefak newline."""
+
+    def test_1_bersihkan_newline_and_escape_sequences(self):
+        """
+        Test 1: bersihkan() harus menangani \\n, \\\\n, \\r\\n, \\t, dan spasi ganda
+        tanpa menghasilkan artefak 'nmetode' atau 'nkata'.
+        """
+        sample_input = "Sistem \\r\\ninformasi \\nmetode \\t perancangan \r\n kata\t kunci."
+        cleaned = bersihkan(sample_input)
+
+        words = cleaned.split()
+        self.assertNotIn("nmetode", words)
+        self.assertNotIn("nkata", words)
+        for expected in ("metode", "kata", "informasi", "perancangan", "kunci"):
+            self.assertIn(expected, words)
+
+    def test_2_preprocessing_determinism(self):
+        """
+        Test 2: preprocessing bersifat deterministik (dua kali eksekusi
+        menghasilkan output identik).
+        """
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            dir1 = Path(tmp_dir) / "run1"
+            dir2 = Path(tmp_dir) / "run2"
+
+            run_preprocessing(use_tfidf=False, min_ngram_count=2, output_dir=str(dir1))
+            run_preprocessing(use_tfidf=False, min_ngram_count=2, output_dir=str(dir2))
+
+            df1 = pd.read_csv(dir1 / "dataset_preprocessed.csv")
+            df2 = pd.read_csv(dir2 / "dataset_preprocessed.csv")
+
+            pd.testing.assert_frame_equal(df1, df2)
+
+
+class TestCorpusIntegrity(unittest.TestCase):
+    """Kelompok 3-5: integritas korpus & konsistensi label terhadap model."""
+
+    def test_3_data_lineage_counts(self):
+        """
+        Test 3: jumlah dokumen pada setiap tahap lineage harus
+        312 (raw) -> 309 (processed) -> 285 (preprocessed).
+        """
+        raw = pd.read_csv(REPO / "data/raw/thesis_scraped.csv")
+        proc = pd.read_csv(REPO / "data/processed/thesis_for_pipeline.csv")
+        prep = pd.read_csv(REPO / "data/intermediate/dataset_preprocessed.csv")
+
+        self.assertEqual(len(raw), 312, f"raw: expected 312, got {len(raw)}")
+        self.assertEqual(len(proc), 309, f"processed: expected 309, got {len(proc)}")
+        self.assertEqual(len(prep), 285, f"preprocessed: expected 285, got {len(prep)}")
+
+    def test_4_document_id_uniqueness(self):
+        """
+        Test 4: ID dokumen unik dan sebaran per tahun sesuai GROUND_TRUTH.
+        """
+        prep = pd.read_csv(REPO / "data/intermediate/dataset_preprocessed.csv")
+
+        self.assertTrue(prep["ID"].is_unique, "Duplikat ID terdeteksi")
+        self.assertEqual(len(prep), 285)
+
+        expected_years = {2021: 29, 2022: 78, 2023: 46, 2024: 47, 2025: 85}
+        actual = prep.groupby("Tahun").size().to_dict()
+        self.assertEqual(actual, expected_years, f"Sebaran tahun tidak sesuai: {actual}")
+
+    def test_5_topic_distribution_consistency(self):
+        """
+        Test 5: jumlah dokumen per topik pada artefak final harus konsisten
+        dengan topic_counts_final.csv yang dipakai dashboard (total 285).
+        """
+        counts = pd.read_csv(REPO / "_fix_final/topic_counts_final.csv")
+        dist = pd.read_csv(REPO / "_fix_final/topic_distribution_final.csv")
+
+        self.assertEqual(int(counts["jumlah_dokumen"].sum()), 285)
+        self.assertEqual(len(dist), 285)
+        self.assertAlmostEqual(float(counts["persentase"].sum()), 100.0, delta=0.05)
+
+        for row in counts.itertuples():
+            self.assertEqual(
+                int((dist["topik_dominan"] == row.topik_dominan).sum()),
+                int(row.jumlah_dokumen),
+                f"Topik {row.topik_dominan}: jumlah dokumen tidak konsisten",
+            )
+
+
+def _run_label_integrity():
+    """Verifikasi tambahan (bukan unit test): fingerprint label vs model LDA."""
+    from topic_labels import validate_labels
+    return validate_labels(
+        str(REPO / "model/lda_model.gensim"),
+        str(REPO / "_label_work/labels.json"),
+    )
+
+
+if __name__ == "__main__":
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestPreprocessPipeline)
+    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCorpusIntegrity))
+    runner = unittest.TextTestRunner(verbosity=2)
+    result = runner.run(suite)
+
+    print("\n" + "=" * 60)
+    label_ok = True
+    try:
+        _run_label_integrity()
+        print("[OK] Fingerprint SHA-256 labels.json cocok dengan model LDA")
+    except Exception as exc:
+        label_ok = False
+        print(f"[GAGAL] Validasi fingerprint: {exc}")
+    print("=" * 60)
+
+    if not result.wasSuccessful() or not label_ok:
+        sys.exit(1)
+    print(f"\nSELURUH {result.testsRun} UNIT TEST LULUS.")
