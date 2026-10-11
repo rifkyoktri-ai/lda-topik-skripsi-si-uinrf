@@ -1,23 +1,45 @@
+# ── Environment ─────────────────────────────────────────────────────────────
 .venv
-logs/
+.env
 __pycache__/
 .pytest_cache/
-data/raw/*_files/
-~$*.xlsx
-~$*.docx
 *.pyc
 *.pyo
-.env
-*.gensim
-*.gensim.*
-corpus.pkl
 
-# Backup dokumen
+# ── Runtime output ──────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Office lock files ───────────────────────────────────────────────────────
+~$*.xlsx
+~$*.docx
+
+# ── Dokumen backup ──────────────────────────────────────────────────────────
 *.backup.docx
 *.backup2.docx
 *.backup_tables.docx
 
-# temporary scripts
+# ── Binary model (di-ignore secara umum) ────────────────────────────────────
+*.gensim
+*.gensim.*
+corpus.pkl
+*.npy
+
+# ...KECUALI artefak model final yang dibutuhkan untuk reproduksi ────────────
+!model/lda_model.gensim
+!model/lda_model.gensim.expElogbeta.npy
+!model/lda_model.gensim.id2word
+!model/lda_model.gensim.state
+!data/intermediate/dictionary.gensim
+!data/intermediate/corpus.pkl
+
+# ── Sampah scraper (aset CSS/JS/GIF hasil "Save Page As") ──────────────────
+data/raw/**/*_files/
+**/*.unduhan
+**/css(1)
+**/css(2)
+
+# ── Temporary scripts ───────────────────────────────────────────────────────
 check_*.py
 find_*.py
 gen_*.py
