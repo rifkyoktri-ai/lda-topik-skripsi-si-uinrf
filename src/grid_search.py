@@ -160,13 +160,18 @@ def run_grid_search(args):
     print(top_5[['k', 'alpha', 'eta', 'coherence_cv', 'coherence_umass']].to_string(index=False))
     
     # Conclusion text
-    best_k = top_5.iloc[0]['k']
+    best_k = int(top_5.iloc[0]['k'])
+    final_k = C.NUM_TOPICS
     print("\nCATATAN METODOLOGIS:")
-    print(f"Jika K optimal dari grid search ({best_k}) berbeda dari K=7 yang ada saat ini,")
-    print("Anda memiliki dua pilihan untuk sidang skripsi:")
-    print("1. Retrain model final menggunakan hyperparameter terbaik ini agar lebih solid secara metodologi.")
-    print("2. Jika waktu mendesak, pertahankan K=7 namun dokumentasikan hasil grid search ini sebagai")
-    print("   'Keterbatasan Penelitian' atau lampiran proses eksperimen yang membuktikan Anda melakukan tuning.")
+    print(f"K optimal menurut C_V = {best_k}; model final yang dipakai skripsi = K={final_k}")
+    print("(sumber: src/config.py -> NUM_TOPICS).")
+    if best_k != final_k:
+        print("Keduanya berbeda. Pilihan untuk sidang skripsi:")
+        print(f"1. Pertahankan K={final_k} dan jelaskan alasannya (jumlah dokumen per topik,")
+        print("   interpretabilitas) - inilah yang skripsi ini lakukan.")
+        print(f"2. Retrain ke K={best_k} bila penguji menuntut K optimum C_V.")
+    else:
+        print("K keduanya sama - tidak ada konflik.")
     print("="*60)
 
 

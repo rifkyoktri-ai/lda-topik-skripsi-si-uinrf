@@ -48,16 +48,17 @@ grid_search:
   total_code_combinations: 84         # 7 (K=4..10) x 4 (alpha) x 3 (eta)
   saved_results_rows: 84             # Terverifikasi: model/hyperparameter_results.csv = 84 baris
   best_cv_by_k:
+    # Diihitung ulang dari model/hyperparameter_results.csv (run ulang 84 konfigurasi)
     K4: 0.3605
     K5: 0.3756
-    K6: 0.3909
+    K6: 0.3783
     K7: 0.4142
     K8: 0.3871
     K9: 0.4314
-    K10: 0.3993
+    K10: 0.4022
 
 trend_analysis:
-  # Diimplementasikan di _stats_forecast/stats_forecast.py (bukan trend_analyzer.py)
+  # Diimplementasikan di src/forecast.py (modul lama _stats_forecast/stats_forecast.py dihapus)
   wma_weights: [1, 2, 3, 4, 5]   # Urut dari tahun 2021 hingga 2025
   historical_years: [2021, 2022, 2023, 2024, 2025]
   projection_years: [2026, 2027]
