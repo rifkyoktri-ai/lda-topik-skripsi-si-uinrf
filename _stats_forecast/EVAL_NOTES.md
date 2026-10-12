@@ -9,7 +9,7 @@
 
 ## 2. Evaluasi Metrik Koherensi & Perpleksitas
 - **$C_V = 0.4256$**: Metrik koherensi berbasis *sliding window* dan koefisien korelasi cosinus, dihitung dengan protokol resmi texts=data/intermediate/ (1.849 vocab), topn=20, processes=1, Gensim 4.4.0. Nilai ini berada pada rentang sedang untuk korpus skripsi akademik berbahasa Indonesia dengan terminologi multidisiplin.
-- **$	ext{UMass} = -10.7533$**: Metrik koherensi berbasis *log-conditional probability* kata dalam korpus asal (semakin mendekati 0 semakin baik).
+- **$\text{UMass} = -10.7533$**: Metrik koherensi berbasis *log-conditional probability* kata dalam korpus asal (semakin mendekati 0 semakin baik).
 - **Log Perplexity = -7.4518**: Mengukur seberapa baik model memprediksi sampel dokumen baru (semakin negatif/rendah *perplexity*, semakin baik kelayakan generatif model).
 
 ## 3. Weighted Moving Average (WMA) & Keterbatasannya

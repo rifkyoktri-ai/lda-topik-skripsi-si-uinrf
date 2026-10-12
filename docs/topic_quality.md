@@ -1,3 +1,17 @@
+<!-- ============================================================
+  LAPORAN EKSPLORASI - BUKAN ANGKA RESMI SKRIPSI
+  Dihitung pada korpus prapemrosesan VERSI LAMA (4.289 kata unik),
+  sedangkan model final memakai 1.849 kata unik.
+
+  Topic Diversity versi lama  : Top-10 0,7875 | Top-15 0,7250
+  Topic Diversity versi final : Top-10 0,7125 | Top-15 0,6917
+
+  Perbedaan ini WAJIB (efek ukuran kosakata), bukan kesalahan hitung.
+
+  TABEL KOHERENSI PER-TOPIK DI BAWAH INI tidak punya salinan di artefak
+  resmi - pakai hanya sebagai umbra perbandingan kualitatif.
+  ============================================================ -->
+
 # LAPORAN KUALITAS & DIVERSITAS TOPIK (`topic_quality.md`)
 
 ## 1. Topik Diversitas (Topic Diversity)

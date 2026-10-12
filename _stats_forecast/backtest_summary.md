@@ -9,10 +9,10 @@
   3. **Naive**: Nilai proporsi tahun $t-1$
 
 ## 2. Hasil Agregat MAE (Poin Persentase / pp)
-- **WMA MAE Rerata**: 4.64 pp
-- **Rata-rata Historis MAE Rerata**: 4.47 pp
-- **Naive MAE Rerata**: 5.69 pp
-- **Rasio MAE WMA vs Rata-rata Historis**: 1.0380
+- **WMA MAE Rerata**: 4.46 pp
+- **Rata-rata Historis MAE Rerata**: 4.35 pp
+- **Naive MAE Rerata**: 5.58 pp
+- **Rasio MAE WMA vs Rata-rata Historis**: 1.0259
 
 ## 3. Kesimpulan Evaluasi Backtest
 - WMA secara keseluruhan TIDAK mengalahkan baseline Rata-rata Historis (Rasio >= 0.95), mengindikasikan fluktuasi proporsi antar tahun berisik dan tidak memiliki tren linier kuat.

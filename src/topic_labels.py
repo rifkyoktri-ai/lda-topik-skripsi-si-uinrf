@@ -5,8 +5,9 @@ import os
 import sys
 import json
 import hashlib
-from typing import Dict, Any
 import gensim
+
+from . import config as C
 
 # Fix Windows console encoding
 sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
@@ -20,7 +21,7 @@ def compute_topic_fingerprint(lda_model, topic_id: int, topn: int = 10) -> str:
     words_str = ",".join(words)
     return hashlib.sha256(words_str.encode('utf-8')).hexdigest()
 
-def validate_labels(model_path: str = "model/lda_model.gensim", labels_path: str = "_label_work/labels.json") -> bool:
+def validate_labels(model_path: str = str(C.LDA_MODEL), labels_path: str = str(C.LABELS_JSON)) -> bool:
     """
     Memvalidasi integritas file labels.json terhadap model Gensim tersimpan.
     Gagal keras (ValueError) jika file tidak ada, jumlah topik != num_topics, atau fingerprint tidak cocok.
@@ -71,9 +72,9 @@ def validate_labels(model_path: str = "model/lda_model.gensim", labels_path: str
 
 if __name__ == "__main__":
     try:
-        res = validate_labels("model/lda_model.gensim", "_label_work/labels.json")
+        res = validate_labels(str(C.LDA_MODEL), str(C.LABELS_JSON))
         print("[SUCCESS] VALIDASI BERHASIL: Seluruh fingerprint label cocok 100% dengan model Gensim!")
-        with open("_label_work/labels.json", 'r', encoding='utf-8') as f:
+        with open(C.LABELS_JSON, 'r', encoding='utf-8') as f:
             data = json.load(f)
             for d in data:
                 print(f"  [Topik {d['topic_id']}] {d['label']} (Kepercayaan: {d['tingkat_kepercayaan']}) -> OK")

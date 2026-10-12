@@ -83,7 +83,7 @@ Berkas pendukung di direktori yang sama:
 - `tingkat_kepercayaan` (string): `Tinggi` | `Sedang` | `Rendah`.
 - `status` (string): Selalu `disetujui` (hasil validasi dosen pembimbing).
 
-Fingerprint divalidasi oleh `topic_labels.py::validate_labels()` dan dijalankan otomatis di `pipeline.py` serta `run_tests.py`.
+Fingerprint divalidasi oleh `src/topic_labels.py::validate_labels()` dan dijalankan otomatis di `src/modeling.py` serta `run_tests.py`.
 
 ### F. `_fix_final/topic_counts_final.csv` (8 baris)
 *Distribusi dokumen per topik — sumber angka pada halaman Beranda & Distribusi Topik.*

@@ -1,9 +1,9 @@
-topic_id,label,description,keywords,label_score,quality_coherence
-1,Evaluasi Usability Sistem Informasi,Topic with 32 documents,sukses;nikah;monitoring;audit;kualitas_layan,1.0,
-2,Evaluasi Kualitas Layanan (ServQual),Topic with 29 documents,pegawai;extreme_programming;spk;admin;jual,1.0,
-3,Pengembangan Perangkat Lunak (SDLC/XP),Topic with 46 documents,siakad;kategori;identifikasi;kualitas_layan;atribut,1.0,
-4,Keamanan Sistem & Pengelolaan Arsip,Topic with 34 documents,puas_guna;puas;ease_use;model_end;ancam,1.0,
-5,Evaluasi Kesuksesan & Adopsi Sistem Informasi,Topic with 41 documents,jual;usability;lapor;usaha;bimbing,1.0,
-6,End-User Computing Satisfaction (EUCS),Topic with 49 documents,bimbing;learning;karakteristik;sewa;ajar,1.0,
-7,"Analitik Data, Prediksi & Manajemen Risiko IT",Topic with 33 documents,extreme_programming;kelola_data;lapor;didik;usaha,1.0,
-8,Analisis Sentimen & Ulasan Pengguna,Topic with 21 documents,bimbing_konseling;langgan;usaha;aman;audit,1.0,
+topic_id,label,description,keywords,confidence,status
+1,Audit TI & Evaluasi Kesuksesan SI,"Topik ini memuat skripsi seputar audit tata kelola IT, evaluasi kesuksesan/kualitas layanan sistem informasi instansi publik, serta analisis sentimen aplikasi.",variabel;teknologi;model;kualitas;tahu,Sedang,disetujui
+2,Pengembangan & Analisis Sistem Heterogen,"Topik ini berisi kelompok skripsi heterogen yang mencakup pengembangan sistem kepegawaian, data mining transaksi penjualan, SPK kelayakan kredit, serta evaluasi kesuksesan akademik.",pegawai;publik;administrasi;extreme_programming;pengaruh,Rendah,disetujui
+3,Analisis Kualitas Layanan & Risiko SI,"Topik ini berfokus pada analisis kualitas layanan aplikasi/SIAKAD, evaluasi risiko keamanan informasi, serta sentiment analysis ulasan pengguna.",model;klasifikasi;siakad;kualitas;kategori,Sedang,disetujui
+4,Kepuasan Pengguna Akhir (EUCS & TAM),Topik ini secara spesifik mengelompokkan penelitian evaluasi kepuasan pengguna (EUCS) dan analisis penerimaan aplikasi digital.,puas_guna;puas;eucs;ease_use;model_end,Tinggi,disetujui
+5,Manajemen Risiko TI & Analitik Data,"Topik ini memuat studi manajemen risiko teknologi informasi serta penerapan metode analitik data mentah (data mining, prediksi penjualan, dan NLP).",model;risiko;teknologi;jual;tahu,Sedang,disetujui
+6,Pengembangan & Perencanaan Strategis SI,"Topik ini mencakup skripsi mengenai perencanaan strategis sistem informasi, sistem pendukung keputusan seleksi, serta rancang bangun SI instansi pemerintah.",kualitas;bimbing;variabel;manajemen;learning,Sedang,disetujui
+7,Rancang Bangun SI Berbasis Web & Mobile,Topik ini mengelompokkan rancang bangun sistem informasi berbasis web/mobile serta evaluasi perilaku adopsi dan privasi pengguna.,extreme_programming;kelola_data;manajemen;uang;lapor,Sedang,disetujui
+8,Keamanan Informasi & SI Institusi Pendidikan,"Topik ini merupakan kelompok topik berukuran paling kecil yang bersifat keranjang sisa, mencakup audit keamanan informasi, segmentasi pelanggan K-Means, dan sistem informasi sekolah.",bimbing_konseling;siswa;langgan;usaha;aman,Rendah,disetujui

@@ -6,7 +6,6 @@ kualitas topik, dan distribusi proporsi per tahun.
 Semua keluaran ditulis ke folder `experiments/` agar direktori root tetap bersih.
 """
 import ast
-import os
 import sys
 import numpy as np
 import pandas as pd
@@ -36,8 +35,8 @@ FINAL_SEED = 42
 EXP_DIR = Path("experiments")
 EXP_DIR.mkdir(parents=True, exist_ok=True)
 
-DATA_PATH = Path("data/intermediate/dataset_preprocessed.csv")
-DICT_PATH = Path("data/intermediate/dictionary.gensim")
+DATA_PATH = C.PREPROCESSED_CSV
+DICT_PATH = C.DICTIONARY_PATH
 
 
 def main():

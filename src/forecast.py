@@ -10,16 +10,22 @@ from scipy import stats
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-REPO_ROOT = os.path.dirname(BASE_DIR)
-FIX_FINAL_DIR = os.path.join(REPO_ROOT, "_fix_final")
-LABEL_WORK_DIR = os.path.join(REPO_ROOT, "_label_work")
-OUTPUT_DIR = BASE_DIR
+if __package__ in (None, ""):                      # izinkan `python src/forecast.py`
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    __package__ = "src"
+
+from . import config as C                          # satu sumber kebenaran path
+
+BASE_DIR = str(C.REPO)
+FIX_FINAL_DIR = str(C.FIX_FINAL_DIR)
+LABEL_WORK_DIR = str(C.LABEL_WORK_DIR)
+OUTPUT_DIR = str(C.STATS_DIR)                      # artefak statistik -> _stats_forecast/
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def load_data():
-    topic_by_year_path = os.path.join(FIX_FINAL_DIR, "topic_by_year_final.csv")
-    sensitivity_path = os.path.join(FIX_FINAL_DIR, "topic_by_year_sensitivity.csv")
-    labels_path = os.path.join(LABEL_WORK_DIR, "labels.json")
+    topic_by_year_path = str(C.TOPIC_BY_YEAR_FINAL)
+    sensitivity_path = str(C.TOPIC_SENSITIVITY)
+    labels_path = str(C.LABELS_JSON)
     
     df_by_year = pd.read_csv(topic_by_year_path)
     df_sensitivity = pd.read_csv(sensitivity_path)
@@ -461,7 +467,7 @@ def generate_eval_notes():
 
 ## 2. Evaluasi Metrik Koherensi & Perpleksitas
 - **$C_V = 0.4256$**: Metrik koherensi berbasis *sliding window* dan koefisien korelasi cosinus, dihitung dengan protokol resmi texts=data/intermediate/ (1.849 vocab), topn=20, processes=1, Gensim 4.4.0. Nilai ini berada pada rentang sedang untuk korpus skripsi akademik berbahasa Indonesia dengan terminologi multidisiplin.
-- **$\text{UMass} = -10.7533$**: Metrik koherensi berbasis *log-conditional probability* kata dalam korpus asal (semakin mendekati 0 semakin baik).
+- **$\\text{UMass} = -10.7533$**: Metrik koherensi berbasis *log-conditional probability* kata dalam korpus asal (semakin mendekati 0 semakin baik).
 - **Log Perplexity = -7.4518**: Mengukur seberapa baik model memprediksi sampel dokumen baru (semakin negatif/rendah *perplexity*, semakin baik kelayakan generatif model).
 
 ## 3. Weighted Moving Average (WMA) & Keterbatasannya

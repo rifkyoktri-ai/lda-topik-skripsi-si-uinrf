@@ -1,4 +1,3 @@
-import nltk
 try:
     from nltk.corpus import stopwords
     NLTK_STOPWORDS = set(stopwords.words('indonesian'))
@@ -174,14 +173,6 @@ CUSTOM_STOPWORDS_SI = {
     "html", "xml", "json", "ram", "cpu", "gpu", "os", "pc",
     "it", "ict",
 }
-
-def get_all_stopwords():
-    try:
-        nltk_sw = set(stopwords.words('indonesian'))
-    except LookupError:
-        nltk.download('stopwords')
-        nltk_sw = set(stopwords.words('indonesian'))
-    return nltk_sw.union(CUSTOM_STOPWORDS_SI)
 
 
 def get_conservative_stopwords():

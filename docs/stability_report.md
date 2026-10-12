@@ -1,3 +1,15 @@
+<!-- ============================================================
+  LAPORAN EKSPLORASI - MENUNJUKKAN LIMITASI, BUKAN KEUNGGULAN
+  Eksperimen multi-seed N=10 pada K=8.
+
+  HASIL PENTING: seluruh 8 topik punya Jaccard Index < 0,50
+  (rata-rata 0,22 - 0,41) -> BELUM STABIL antar-seed.
+
+  Ini temuan limitasi yang jujur. Bila dosen bertanya soal kestabilan
+  model, jawaban WAJIB menyebut laporan ini. Klaim "model stabil"
+  tidak boleh dibuat tanpa catatan ini.
+  ============================================================ -->
+
 # LAPORAN STABILITAS MULTI-SEED LDA (`stability_report.md`)
 
 ## 1. Hasil Eksperimen Multi-Seed (N=10, K=8, Passes=30)

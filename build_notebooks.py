@@ -21,14 +21,20 @@ NB = REPO / "notebooks"
 NB.mkdir(parents=True, exist_ok=True)
 
 
+def _src(t):
+    """nbformat: `source` = list of string, tiap baris (kecuali terakhir)
+    WAJIB diakhiri '\\n'. Pakai splitlines(keepends=True), bukan split('\\n')."""
+    return t.strip("\n").splitlines(keepends=True)
+
+
 def md(t):
     return {"cell_type": "markdown", "metadata": {},
-            "source": t.strip("\n").split("\n")}
+            "source": _src(t)}
 
 
 def code(t):
     return {"cell_type": "code", "execution_count": None,
-            "metadata": {}, "outputs": [], "source": t.strip("\n").split("\n")}
+            "metadata": {}, "outputs": [], "source": _src(t)}
 
 
 SETUP = '''
@@ -438,9 +444,20 @@ dijelaskan secara transparan pada Bab IV skripsi.
 code(SETUP),
 md("## Langkah 1 - Jalankan Grid Search"),
 code('''
-from src import grid_search
+# Grid search penuh = 84 konfigurasi (K=4..10 x 4 alpha x 3 eta), ~20-40 menit.
+# Set True untuk menjalankan ulang. PERINGATAN: menjalankan ulang akan
+# MENIMPA model/hyperparameter_results.csv, dan angka pada Tabel 6 skripsi
+# diturunkan dari berkas itu. Default False agar angka skripsi tetap terpakai.
+RUN_GRID = False
 
-grid_search.main()
+if RUN_GRID:
+    from src import grid_search
+    grid_search.main()
+else:
+    print("RUN_GRID=False -> memakai artefak yang sudah tersimpan:")
+    print("  ", C.HYPERPARAMS_CSV)
+    print("  Jumlah konfigurasi:", len(pd.read_csv(C.HYPERPARAMS_CSV)))
+    print("  Untuk menjalankan ulang: python -m src.grid_search")
 '''),
 md("## Langkah 2 - Analisis Hasil: C_V Tertinggi per K"),
 code('''

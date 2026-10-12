@@ -6,10 +6,9 @@ import pickle
 import ast
 import multiprocessing
 from datetime import datetime
-from typing import List, Tuple, Optional, Dict
+from typing import Tuple
 
 import pandas as pd
-import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -22,8 +21,6 @@ import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 
 from . import config as C
-from .indonesian_stopwords import get_conservative_stopwords
-from .indonesian_stopwords import get_all_stopwords
 from .labeling import load_approved_labels, export_human_validation_dataset
 
 # ---------------------------------------------------------------------------
@@ -305,7 +302,7 @@ def main():
     # Validasi awal integritas label resmi
     from .topic_labels import validate_labels
     try:
-        validate_labels("model/lda_model.gensim", "_label_work/labels.json")
+        validate_labels(str(C.LDA_MODEL), str(C.LABELS_JSON))
     except Exception as e:
         logger.error(f"❌ INTEGRITY CHECK FAILED (pipeline.py): {e}")
         raise ValueError(f"Label validation failed: {e}")
@@ -450,7 +447,7 @@ def main():
     # validate_labels() di awal main() menjamin model ini masih cocok dengan label.
     logger.info("  Labeling method: Human-in-the-Loop (label terkunci + fingerprint SHA-256)")
     topic_labels = load_approved_labels(
-        labels_path="_label_work/labels.json",
+        labels_path=str(C.LABELS_JSON),
         model_path=f'{MODEL_DIR}/lda_model.gensim',
         validate=False,
     )

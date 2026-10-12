@@ -1,5 +1,13 @@
-# KONFIGURASI AKTUAL REPOSITORI PEMETAAN TOPIK LDA
-# Nilai-nilai di bawah ini merefleksikan nilai AKTUAL dari kode Python repositori.
+# KONFIGURASI RUJUKAN REPOSITORI PEMETAAN TOPIK LDA
+#
+# ============================================================
+# DOKUMENTASI MANUAL - BUKAN DIBACA KODE MANA PUN.
+# Sumber kebenaran path & parameter: src/config.py
+# Sumber kebenaran angka hasil   : GROUND_TRUTH.md (auto-generated)
+#
+# File ini hanya rujukan cepat. Jangan menyalin angkanya ke
+# skripsi tanpa memverifikasi ke GROUND_TRUTH.md.
+# ============================================================
 
 pipeline:
   seed: 42
@@ -79,8 +87,8 @@ verified_metrics:
   pct_max_theta_under_0.50: 13.33
   avg_tokens_per_document: 58.1
   avg_bow_terms_per_document: 33.2
-  chi_square: 23.9132
+  chi_square: 23.9361
   chi_square_df: 28
-  chi_square_p: 0.6861
-  cramers_v: 0.1448
-  permutation_p: 0.7031
+  chi_square_p: 0.6849
+  cramers_v: 0.1449
+  permutation_p: 0.6994

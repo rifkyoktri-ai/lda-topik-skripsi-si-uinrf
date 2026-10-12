@@ -34,6 +34,7 @@ PHRASER_TRIGRAM = INTERMEDIATE_DIR / "phraser_trigram.pkl"
 # Model
 MODEL_DIR = REPO / "model"
 LDA_MODEL = MODEL_DIR / "lda_model.gensim"
+LDA_ID2WORD = MODEL_DIR / "lda_model.gensim.id2word"   # dictionary vocab model
 HYPERPARAMS_CSV = MODEL_DIR / "hyperparameter_results.csv"
 TOPIC_DISTRIBUTION = MODEL_DIR / "topic_distribution.csv"
 TOPIC_LABELS_CSV = MODEL_DIR / "topic_labels.csv"

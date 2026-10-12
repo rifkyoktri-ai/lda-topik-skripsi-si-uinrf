@@ -181,6 +181,7 @@ Rujukan resmi: [`GROUND_TRUTH.md`](GROUND_TRUTH.md)
 | `evaluation_lda.py` | Multi-seed, sweep K, perplexity (Notebook 05) |
 | `forecast.py` | Chi-square, Wilson, WMA, backtest (Notebook 06) |
 | `build_final.py` | **Regenerasi artefak final** (Notebook 08) |
+| `ground_truth.py` | **Generate `GROUND_TRUTH.md` dari artefak** |
 | `indonesian_stopwords.py` | Daftar stopword + domain SI |
 | `topic_labels.py` | Validasi fingerprint SHA-256 |
 | `topic_labels_cli.py` | CLI wrapper validasi label |

@@ -4,22 +4,19 @@ Menggunakan label terkunci dari _label_work/labels.json dengan pemindaian valida
 """
 import json
 import warnings
-import sys
 import argparse
 import pandas as pd
 from pathlib import Path
-import numpy as np
-from typing import List, Dict, Optional, Tuple
 
 warnings.filterwarnings('ignore')
 from gensim.models import LdaModel
-from .indonesian_stopwords import get_all_stopwords
-from .data_manager import to_one_indexed, to_zero_indexed
+from . import config as C
+from .data_manager import to_one_indexed
 from .topic_labels import validate_labels
 
 def load_approved_labels(
-    labels_path: str = "_label_work/labels.json",
-    model_path: str = "model/lda_model.gensim",
+    labels_path: str = str(C.LABELS_JSON),
+    model_path: str = str(C.LDA_MODEL),
     validate: bool = True
 ) -> dict:
     """
@@ -60,7 +57,7 @@ def export_human_validation_dataset(
     lda_model: LdaModel,
     corpus: list,
     dist_df: pd.DataFrame,
-    output_path: str = "model/human_topic_validation.csv"
+    output_path: str = str(C.HUMAN_VALIDATION_CSV)
 ) -> pd.DataFrame:
     """
     Mengekspor distribusi dokumen-topik beserta 15 kata teratas per topik
@@ -104,10 +101,10 @@ def export_human_validation_dataset(
 
 def run_auto_labeling():
     parser = argparse.ArgumentParser(description="Auto Labeling Topik LDA & Expert Validation Exporter")
-    parser.add_argument("--model_path", type=str, default="model/lda_model.gensim", help="Path ke file model LDA")
-    parser.add_argument("--labels_path", type=str, default="_label_work/labels.json", help="Path ke file labels JSON")
-    parser.add_argument("--dist_path", type=str, default="model/topic_distribution.csv", help="Path ke topic distribution CSV")
-    parser.add_argument("--output", type=str, default="model/topic_labels.csv", help="Path untuk menyimpan hasil label (CSV)")
+    parser.add_argument("--model_path", type=str, default=str(C.LDA_MODEL), help="Path ke file model LDA")
+    parser.add_argument("--labels_path", type=str, default=str(C.LABELS_JSON), help="Path ke file labels JSON")
+    parser.add_argument("--dist_path", type=str, default=str(C.TOPIC_DISTRIBUTION), help="Path ke topic distribution CSV")
+    parser.add_argument("--output", type=str, default=str(C.TOPIC_LABELS_CSV), help="Path untuk menyimpan hasil label (CSV)")
     args = parser.parse_args()
 
     model_path = Path(args.model_path)

@@ -1,3 +1,14 @@
+<!-- ============================================================
+  LAPORAN EKSPLORASI - BUKAN ANGKA RESMI SKRIPSI
+  Protokol: train/test split 80/20 (228 dokumen latih / 57 dokumen uji).
+
+  Angka resmi skripsi: Log Perplexity = -7,4518
+  (seluruh 285 dokumen, inferensi penuh - lihat GROUND_TRUTH.md)
+
+  Dokumen ini dipertahankan sebagai jejak eksperimen, bukan rujukan
+  penulisan. JANGAN disalin ke Bab III/IV/V.
+  ============================================================ -->
+
 # LAPORAN EVALUASI PERPLEXITY (`perplexity_report.md`)
 
 ## 1. Per-word Log Perplexity Bound

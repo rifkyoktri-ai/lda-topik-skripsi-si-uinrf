@@ -76,7 +76,7 @@ ENGLISH_INDICATOR_WORDS = {
 # ---------------------------------------------------------------------------
 # LOGGING & PATH SETUP
 # ---------------------------------------------------------------------------
-PROSES_DIR = 'data/intermediate'
+PROSES_DIR = str(C.INTERMEDIATE_DIR)
 
 # Direktori WAJIB dibuat sebelum FileHandler dibuka, jika tidak import akan gagal
 # dengan FileNotFoundError saat folder logs/ belum ada (mis. pada repo bersih).
@@ -312,7 +312,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Pipeline Preprocessing Data Teks")
     parser.add_argument('--use-tfidf', action='store_true', help="Aktifkan TF-IDF vectorization alih-alih standard BoW")
     parser.add_argument('--min-ngram-count', type=int, default=2, help="Minimum frekuensi untuk membentuk N-gram Phraser")
-    parser.add_argument('--output-dir', type=str, default='data/intermediate', help="Direktori output")
+    parser.add_argument('--output-dir', type=str, default=str(C.INTERMEDIATE_DIR), help="Direktori output")
     args = parser.parse_args()
 
     run_preprocessing(use_tfidf=args.use_tfidf, min_ngram_count=args.min_ngram_count, output_dir=args.output_dir)

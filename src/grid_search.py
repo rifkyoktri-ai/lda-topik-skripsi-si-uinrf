@@ -1,6 +1,5 @@
 import argparse
 import pandas as pd
-import numpy as np
 import time
 from pathlib import Path
 from tqdm import tqdm
@@ -50,7 +49,7 @@ def run_grid_search(args):
     # 1. Load Data
     dict_path = Path(str(C.DICTIONARY_PATH))
     if not dict_path.exists():
-        dict_path = Path("model/lda_model.gensim.id2word")
+        dict_path = C.LDA_ID2WORD
     if not dict_path.exists():
         raise FileNotFoundError(f"Dictionary tidak ditemukan di data/intermediate/dictionary.gensim maupun model/lda_model.gensim.id2word")
     
@@ -147,7 +146,7 @@ def run_grid_search(args):
 
     # 4. Save Results
     results_df = pd.DataFrame(results)
-    out_path = Path("model/hyperparameter_results.csv")
+    out_path = C.HYPERPARAMS_CSV
     out_path.parent.mkdir(parents=True, exist_ok=True)
     results_df.to_csv(out_path, index=False)
     

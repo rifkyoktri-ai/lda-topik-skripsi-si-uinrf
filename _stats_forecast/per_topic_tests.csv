@@ -1,9 +1,9 @@
 topik_id,label,spearman_rho,p_spearman_raw,p_spearman_bonferroni,spearman_sig,z_stat_21_25,p_ztest_raw,p_ztest_bonferroni,ztest_sig,slope_linear_pp
 1,Audit TI & Evaluasi Kesuksesan SI,-0.5,0.391,1.0,Tidak,-1.107,0.2683,1.0,Tidak,-1.308
-2,Pengembangan & Analisis Sistem Heterogen,-0.2,0.7471,1.0,Tidak,-0.8753,0.3814,1.0,Tidak,-0.903
+2,Pengembangan & Analisis Sistem Heterogen,-0.2,0.7471,1.0,Tidak,-0.8753,0.3814,1.0,Tidak,-0.775
 3,Analisis Kualitas Layanan & Risiko SI,0.3,0.6238,1.0,Tidak,0.9312,0.3517,1.0,Tidak,0.475
 4,Kepuasan Pengguna Akhir (EUCS & TAM),0.5,0.391,1.0,Tidak,0.0434,0.9653,1.0,Tidak,1.17
-5,Manajemen Risiko TI & Analitik Data,-0.6,0.2848,1.0,Tidak,-0.5757,0.5648,1.0,Tidak,-1.547
+5,Manajemen Risiko TI & Analitik Data,-0.6,0.2848,1.0,Tidak,-0.5757,0.5648,1.0,Tidak,-1.676
 6,Pengembangan & Perencanaan Strategis SI,0.6,0.2848,1.0,Tidak,0.615,0.5385,1.0,Tidak,1.551
 7,Rancang Bangun SI Berbasis Web & Mobile,-0.4,0.5046,1.0,Tidak,-0.1172,0.9067,1.0,Tidak,-0.601
 8,Keamanan Informasi & SI Institusi Pendidikan,0.6,0.2848,1.0,Tidak,0.8714,0.3835,1.0,Tidak,1.168

@@ -3,15 +3,13 @@ Unit Test Verifikasi Integritas Modul topic_labels & labels.json (_label_work/)
 """
 import sys
 import json
-import hashlib
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Unbuffer stdout for Windows console
 sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
 
-from src.topic_labels import validate_labels, compute_topic_fingerprint
-import gensim
+from src.topic_labels import validate_labels
 
 def test_validate_labels_success():
     """Memastikan validate_labels() lolos pada model final + labels.json yang benar"""

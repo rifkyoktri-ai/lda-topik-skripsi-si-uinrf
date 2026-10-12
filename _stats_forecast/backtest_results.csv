@@ -2,18 +2,18 @@ topik_id,metode,mae_pp,mae_relatif,rasio_vs_baseline
 1,WMA,6.5,0.5299,1.0861
 1,Rata-rata Historis,5.98,0.4879,1.0
 1,Naive,7.27,0.5931,1.2156
-2,WMA,5.97,0.5516,1.0689
-2,Rata-rata Historis,5.58,0.516,1.0
-2,Naive,8.55,0.7907,1.5322
+2,WMA,5.74,0.5434,1.0619
+2,Rata-rata Historis,5.4,0.5117,1.0
+2,Naive,8.13,0.7694,1.5036
 3,WMA,3.71,0.2493,1.325
 3,Rata-rata Historis,2.8,0.1881,1.0
 3,Naive,5.63,0.3783,2.0109
-4,WMA,4.4,0.3557,1.0547
-4,Rata-rata Historis,4.17,0.3372,1.0
-4,Naive,4.16,0.3359,0.9961
-5,WMA,4.66,0.3164,0.9721
-5,Rata-rata Historis,4.79,0.3255,1.0
-5,Naive,6.56,0.4454,1.3684
+4,WMA,4.55,0.3549,1.016
+4,Rata-rata Historis,4.47,0.3493,1.0
+4,Naive,5.6,0.4375,1.2523
+5,WMA,3.29,0.2264,0.8955
+5,Rata-rata Historis,3.68,0.2529,1.0
+5,Naive,4.68,0.3214,1.2711
 6,WMA,6.84,0.4136,1.0282
 6,Rata-rata Historis,6.65,0.4023,1.0
 6,Naive,9.51,0.5752,1.4301
