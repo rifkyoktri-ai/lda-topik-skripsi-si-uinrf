@@ -4,10 +4,10 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, BASE_DIR)
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, REPO_ROOT)
 
-from stats_forecast import calculate_wma
+from src.forecast import calculate_wma
 
 def test_wma_formula():
     """
@@ -23,7 +23,7 @@ def test_sum_shares_per_year():
     """
     Test sum of shares per year equals 100% (+- 0.1 pp).
     """
-    topic_by_year_path = os.path.join(os.path.dirname(BASE_DIR), "_fix_final", "topic_by_year_final.csv")
+    topic_by_year_path = os.path.join(REPO_ROOT, "_fix_final", "topic_by_year_final.csv")
     df = pd.read_csv(topic_by_year_path)
     
     for idx, row in df.iterrows():
@@ -57,7 +57,7 @@ def test_forecast_direction_logic():
     """
     Test direction column is NEVER 'naik (indikatif)' if wma_2026 < share_2025.
     """
-    forecast_path = os.path.join(BASE_DIR, "forecast_table.csv")
+    forecast_path = os.path.join(REPO_ROOT, "_stats_forecast", "forecast_table.csv")
     df_forecast = pd.read_csv(forecast_path)
     
     for idx, row in df_forecast.iterrows():
@@ -71,7 +71,7 @@ def test_forecast_table_rows():
     """
     Test forecast_table.csv contains exactly 8 rows.
     """
-    forecast_path = os.path.join(BASE_DIR, "forecast_table.csv")
+    forecast_path = os.path.join(REPO_ROOT, "_stats_forecast", "forecast_table.csv")
     df_forecast = pd.read_csv(forecast_path)
     assert len(df_forecast) == 8, f"Expected 8 rows, got {len(df_forecast)}"
 

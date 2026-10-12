@@ -1,21 +1,10 @@
-Metrik,Nilai,Protokol_Keterangan
-Coherence_Score_CV,0.4256,"PROTOKOL RESMI — texts=data/intermediate/ (v1), topn=20 (default Gensim), processes=1, gensim 4.4.0. Dihitung ulang dari model/lda_model.gensim."
-Coherence_Score_UMass,-10.7533,"corpus BoW 285 dokumen (data/intermediate/corpus.pkl), processes=1"
-Train_Log_Perplexity,-7.4518,"log perplexity atas keseluruhan 285 dokumen korpus v1"
-Log_Perplexity_Holdout,-11.2839,"20% hold-out, seed=42 (pipeline.py)"
-Topic_Diversity_Top10,0.7125,proporsi kata unik top-10 (8 topik)
-Topic_Diversity_Top15,0.6917,proporsi kata unik top-15 (8 topik)
-Pct_Max_Theta_Under_0.50,13.33,persentase dokumen dengan probabilitas dominan < 0.50
-Vocabulary_Size,1849,"jumlah kata unik pada dictionary.gensim"
-Avg_Tokens_Per_Doc,58.1,"rata-rata token hasil prapemrosesan per dokumen"
-Avg_BoW_Terms_Per_Doc,33.2,"rata-rata term yang lolos filter_extremes per dokumen"
-Model_Parameters,"K=8, alpha=asymmetric, eta=auto, passes=30, iterations=500, seed=42","Online Variational Bayes (BUKAN Gibbs Sampling)"
-Inferensi_LDA,"Online Variational Bayes","Implementasi default Gensim 4.4.0"
-Jaccard_Top15_Topic_1,0.4143,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_2,0.2765,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_3,0.3121,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_4,0.2483,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_5,0.3076,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_6,0.2351,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_7,0.3074,Jaccard top-15 antar seed (kestabilan rendah)
-Jaccard_Top15_Topic_8,0.2227,Jaccard top-15 antar seed (kestabilan rendah)
+﻿Metrik,Nilai,Protokol_Keterangan
+Coherence_Score_CV,0.4256,"texts=data/intermediate/ (1.849 vocab), topn=20, processes=1, gensim 4.4.0"
+Coherence_Score_UMass,-10.7533,"corpus BoW 285 dokumen, processes=1"
+Train_Log_Perplexity,-7.4518,seluruh 285 dokumen korpus v1
+Topic_Diversity_Top10,0.7125,proporsi kata unik top-10
+Topic_Diversity_Top15,0.6917,proporsi kata unik top-15
+Pct_Max_Theta_Under_0.50,13.33,persentase dokumen dengan theta dominan < 0.50
+Vocabulary_Size,1849,jumlah kata unik dictionary.gensim
+Total_Documents,285,korpus bersih
+Model_Parameters,"K=8, alpha=asymmetric, eta=auto, passes=30, iterations=500, seed=42",Online Variational Bayes (BUKAN Gibbs Sampling)

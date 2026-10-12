@@ -13,9 +13,9 @@ from typing import List, Dict, Optional, Tuple
 
 warnings.filterwarnings('ignore')
 from gensim.models import LdaModel
-from indonesian_stopwords import get_all_stopwords
-from data_manager import to_one_indexed, to_zero_indexed
-from topic_labels import validate_labels
+from .indonesian_stopwords import get_all_stopwords
+from .data_manager import to_one_indexed, to_zero_indexed
+from .topic_labels import validate_labels
 
 def load_approved_labels(
     labels_path: str = "_label_work/labels.json",

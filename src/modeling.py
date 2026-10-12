@@ -21,8 +21,10 @@ from sklearn.model_selection import train_test_split
 import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 
-from indonesian_stopwords import get_conservative_stopwords
-from auto_labeling import load_approved_labels, export_human_validation_dataset
+from . import config as C
+from .indonesian_stopwords import get_conservative_stopwords
+from .indonesian_stopwords import get_all_stopwords
+from .labeling import load_approved_labels, export_human_validation_dataset
 
 # ---------------------------------------------------------------------------
 # LOGGING SETUP
@@ -39,7 +41,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-PROSES_DIR = 'data/intermediate'
+PROSES_DIR = str(C.INTERMEDIATE_DIR)
 MODEL_DIR = 'model'
 
 # ---------------------------------------------------------------------------
@@ -301,7 +303,7 @@ def plot_topic_trend(df_result: pd.DataFrame):
 
 def main():
     # Validasi awal integritas label resmi
-    from topic_labels import validate_labels
+    from .topic_labels import validate_labels
     try:
         validate_labels("model/lda_model.gensim", "_label_work/labels.json")
     except Exception as e:

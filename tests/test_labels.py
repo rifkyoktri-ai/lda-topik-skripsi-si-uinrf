@@ -5,11 +5,12 @@ import sys
 import json
 import hashlib
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Unbuffer stdout for Windows console
 sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
 
-from topic_labels import validate_labels, compute_topic_fingerprint
+from src.topic_labels import validate_labels, compute_topic_fingerprint
 import gensim
 
 def test_validate_labels_success():
@@ -70,8 +71,8 @@ def test_labels_json_schema():
     print("PASSED: test_labels_json_schema")
 
 def test_auto_labeling_spot_check_topic4():
-    """Memastikan auto_labeling.py menghasilkan label yang sama untuk topik 4"""
-    from auto_labeling import load_approved_labels
+    """Memastikan src/labeling.py menghasilkan label yang sama untuk topik 4"""
+    from src.labeling import load_approved_labels
     labels_map = load_approved_labels("_label_work/labels.json", "model/lda_model.gensim")
     
     # Topic 4 internal key 0-indexed is "3"

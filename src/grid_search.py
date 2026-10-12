@@ -4,6 +4,7 @@ import numpy as np
 import time
 from pathlib import Path
 from tqdm import tqdm
+from . import config as C
 from gensim.models import LdaModel
 from gensim.models.coherencemodel import CoherenceModel
 from gensim.corpora import Dictionary
@@ -47,7 +48,7 @@ def run_grid_search(args):
     print("="*60)
     
     # 1. Load Data
-    dict_path = Path("data/intermediate/dictionary.gensim")
+    dict_path = Path(str(C.DICTIONARY_PATH))
     if not dict_path.exists():
         dict_path = Path("model/lda_model.gensim.id2word")
     if not dict_path.exists():
@@ -170,13 +171,26 @@ def run_grid_search(args):
     print("="*60)
 
 
-if __name__ == "__main__":
+def build_parser():
+    """Argumen CLI untuk grid search."""
     parser = argparse.ArgumentParser(description="LDA Hyperparameter Tuning")
-    parser.add_argument("--min_k", type=int, default=4, help="Minimum jumlah topik")
-    parser.add_argument("--max_k", type=int, default=10, help="Maximum jumlah topik")
-    parser.add_argument("--passes", type=int, default=10, help="Jumlah passes training LDA")
-    parser.add_argument("--workers", type=int, default=1, help="Jumlah workers (CPU)")
-    parser.add_argument("--data_path", type=str, default="data/intermediate/dataset_preprocessed.csv", help="Path ke dataset")
-    
-    args = parser.parse_args()
-    run_grid_search(args)
+    parser.add_argument("--min_k", type=int, default=C.GRID_MIN_K,
+                        help="Minimum jumlah topik")
+    parser.add_argument("--max_k", type=int, default=C.GRID_MAX_K,
+                        help="Maximum jumlah topik")
+    parser.add_argument("--passes", type=int, default=C.GRID_PASSES,
+                        help="Jumlah passes training LDA")
+    parser.add_argument("--workers", type=int, default=1,
+                        help="Jumlah workers (CPU)")
+    parser.add_argument("--data_path", type=str, default=str(C.PREPROCESSED_CSV),
+                        help="Path ke dataset")
+    return parser
+
+
+def main():
+    """Entry point untuk dipanggil dari notebook maupun terminal."""
+    run_grid_search(build_parser().parse_args())
+
+
+if __name__ == "__main__":
+    main()

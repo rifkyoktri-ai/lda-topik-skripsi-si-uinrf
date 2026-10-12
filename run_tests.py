@@ -1,22 +1,25 @@
 """
-Test Runner & Summary Generator
-Proyek Skripsi LDA UIN Raden Fatah Palembang
+run_tests.py — Test Runner & Verifikasi Konsistensi Data
 
-Menjalankan 5 unit test konsistensi data yang menjadi bukti verifikasi
-pada Bab III (fase Evaluation) dan Bab IV (subbab Evaluasi) skripsi.
+Menjalankan 5 unit test konsistensi data yang menjadi bukti verifikasi pada
+Bab III (fase Evaluation) dan Bab IV (subbab Evaluasi) skripsi, ditambah
+validasi fingerprint label terhadap model LDA.
 
 Jalankan:  python run_tests.py
 """
 import sys
 import unittest
-import pandas as pd
 import ast
 import tempfile
 from pathlib import Path
 
-from preprocess import bersihkan, run_preprocessing
-
 REPO = Path(__file__).resolve().parent
+sys.path.insert(0, str(REPO))
+
+import pandas as pd
+
+from src import config as C
+from src.preprocessing import bersihkan, run_preprocessing
 
 
 class TestPreprocessPipeline(unittest.TestCase):
@@ -45,8 +48,12 @@ class TestPreprocessPipeline(unittest.TestCase):
             dir1 = Path(tmp_dir) / "run1"
             dir2 = Path(tmp_dir) / "run2"
 
-            run_preprocessing(use_tfidf=False, min_ngram_count=2, output_dir=str(dir1))
-            run_preprocessing(use_tfidf=False, min_ngram_count=2, output_dir=str(dir2))
+            run_preprocessing(use_tfidf=False,
+                              min_ngram_count=C.MIN_NGRAM_COUNT,
+                              output_dir=str(dir1))
+            run_preprocessing(use_tfidf=False,
+                              min_ngram_count=C.MIN_NGRAM_COUNT,
+                              output_dir=str(dir2))
 
             df1 = pd.read_csv(dir1 / "dataset_preprocessed.csv")
             df2 = pd.read_csv(dir2 / "dataset_preprocessed.csv")
@@ -62,9 +69,9 @@ class TestCorpusIntegrity(unittest.TestCase):
         Test 3: jumlah dokumen pada setiap tahap lineage harus
         312 (raw) -> 309 (processed) -> 285 (preprocessed).
         """
-        raw = pd.read_csv(REPO / "data/raw/thesis_scraped.csv")
-        proc = pd.read_csv(REPO / "data/processed/thesis_for_pipeline.csv")
-        prep = pd.read_csv(REPO / "data/intermediate/dataset_preprocessed.csv")
+        raw = pd.read_csv(C.SCRAPED_CSV)
+        proc = pd.read_csv(C.PIPELINE_CSV)
+        prep = pd.read_csv(C.PREPROCESSED_CSV)
 
         self.assertEqual(len(raw), 312, f"raw: expected 312, got {len(raw)}")
         self.assertEqual(len(proc), 309, f"processed: expected 309, got {len(proc)}")
@@ -74,7 +81,7 @@ class TestCorpusIntegrity(unittest.TestCase):
         """
         Test 4: ID dokumen unik dan sebaran per tahun sesuai GROUND_TRUTH.
         """
-        prep = pd.read_csv(REPO / "data/intermediate/dataset_preprocessed.csv")
+        prep = pd.read_csv(C.PREPROCESSED_CSV)
 
         self.assertTrue(prep["ID"].is_unique, "Duplikat ID terdeteksi")
         self.assertEqual(len(prep), 285)
@@ -88,8 +95,8 @@ class TestCorpusIntegrity(unittest.TestCase):
         Test 5: jumlah dokumen per topik pada artefak final harus konsisten
         dengan topic_counts_final.csv yang dipakai dashboard (total 285).
         """
-        counts = pd.read_csv(REPO / "_fix_final/topic_counts_final.csv")
-        dist = pd.read_csv(REPO / "_fix_final/topic_distribution_final.csv")
+        counts = pd.read_csv(C.TOPIC_COUNTS_FINAL)
+        dist = pd.read_csv(C.TOPIC_DIST_FINAL)
 
         self.assertEqual(int(counts["jumlah_dokumen"].sum()), 285)
         self.assertEqual(len(dist), 285)
@@ -104,21 +111,21 @@ class TestCorpusIntegrity(unittest.TestCase):
 
 
 def _run_label_integrity():
-    """Verifikasi tambahan (bukan unit test): fingerprint label vs model LDA."""
-    from topic_labels import validate_labels
-    return validate_labels(
-        str(REPO / "model/lda_model.gensim"),
-        str(REPO / "_label_work/labels.json"),
-    )
+    """Verifikasi tambahan: fingerprint label vs model LDA."""
+    from src.topic_labels import validate_labels
+    return validate_labels(str(C.LDA_MODEL), str(C.LABELS_JSON))
 
 
 if __name__ == "__main__":
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestPreprocessPipeline)
-    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCorpusIntegrity))
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite()
+    suite.addTests(loader.loadTestsFromTestCase(TestPreprocessPipeline))
+    suite.addTests(loader.loadTestsFromTestCase(TestCorpusIntegrity))
+
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
 
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 62)
     label_ok = True
     try:
         _run_label_integrity()
@@ -126,7 +133,7 @@ if __name__ == "__main__":
     except Exception as exc:
         label_ok = False
         print(f"[GAGAL] Validasi fingerprint: {exc}")
-    print("=" * 60)
+    print("=" * 62)
 
     if not result.wasSuccessful() or not label_ok:
         sys.exit(1)

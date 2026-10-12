@@ -8,7 +8,8 @@ import argparse
 from datetime import datetime
 
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from indonesian_stopwords import get_conservative_stopwords
+from . import config as C
+from .indonesian_stopwords import get_conservative_stopwords
 from gensim import corpora
 from gensim.models.phrases import Phrases, Phraser
 from gensim.models import TfidfModel
@@ -138,16 +139,16 @@ def stem_token_or_compound(token: str, stemmer) -> str:
 # ---------------------------------------------------------------------------
 # MAIN PIPELINE EXECUTOR
 # ---------------------------------------------------------------------------
-def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2, output_dir: str = 'data/intermediate'):
+def run_preprocessing(use_tfidf: bool = False, min_ngram_count: int = 2, output_dir: str = None):
     logger.info("=" * 60)
     logger.info("PREPROCESSING PIPELINE")
     logger.info("=" * 60)
 
-    proses_dir = output_dir
+    proses_dir = output_dir or str(C.INTERMEDIATE_DIR)
     os.makedirs(proses_dir, exist_ok=True)
 
     logger.info("\n[1/5] Memuat data...")
-    raw_path = 'data/processed/thesis_for_pipeline.csv'
+    raw_path = str(C.PIPELINE_CSV)
     if not os.path.exists(raw_path):
         raise FileNotFoundError(f"Dataset mentah tidak ditemukan di {raw_path}")
 
@@ -316,3 +317,10 @@ if __name__ == '__main__':
 
     run_preprocessing(use_tfidf=args.use_tfidf, min_ngram_count=args.min_ngram_count, output_dir=args.output_dir)
 
+
+
+def main():
+    """Entry point default: prapemrosesan BoW tanpa TF-IDF."""
+    return run_preprocessing(use_tfidf=False,
+                             min_ngram_count=C.MIN_NGRAM_COUNT,
+                             output_dir=str(C.INTERMEDIATE_DIR))

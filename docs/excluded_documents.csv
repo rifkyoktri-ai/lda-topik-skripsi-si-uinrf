@@ -1,0 +1,28 @@
+﻿id,title,year,stage,reason,similarity_score_with_duplicate
+23737,SKRIPSI.,2022,raw_to_processed,Tereliminasi pada pembersihan scraping awal,
+25121,Prediksi Jumlah Produksi Minyak Sawit Mentah (Crude Palm Oil) Menggunakan Metode Regresi Linear Sederhana.,2022,raw_to_processed,Tereliminasi pada pembersihan scraping awal,
+25740,Sistem Pendukung Pengambilan Keputusan Pupuk Produksi Kelapa Sawit Dengan Menggunakan Metode Simple Multi Attribute Rating Technique (Smart).,2022,raw_to_processed,Tereliminasi pada pembersihan scraping awal,
+41627,SISTEM INFORMASI E-LEGALISIR PADA UIN RADEN FATAH \r\nPALEMBANG DENGAN MENGGUNAKAN METODE  \r\nRAPID APPLICATION DEVELOPMENT.,2024,preprocess_title_dedup,Duplikat judul dari dokumen ID 41612,1.0000
+48254,Analisis User Experience Website Silayak Uin Raden Fatah Palembang Menggunakan User Experience Questionnaire (UEQ).,2025,preprocess_title_dedup,Duplikat judul dari dokumen ID 47960,0.2783
+48944,ANALISIS SENTIMEN APLIKASI LIVIN BY MANDIRI  \r\nPADA ULASAN PENGGUNA DI GOOGLE PLAYSTORE  \r\nMENGGUNAKAN ALGORITMA NAÏVE BAIYES.,2025,preprocess_title_dedup,Duplikat judul dari dokumen ID 48743,1.0000
+49710,ANALISIS KEPUASAN PENGGUNA APLIKASI E-DOSEN UIN RADEN FATAH PALEMBANG MENGGUNAKAN MODEL END-USER COMPUTING SATISFACTION (EUCS).,2025,preprocess_title_dedup,Duplikat judul dari dokumen ID 49698,1.0000
+15952,SISTEM INFORMASI KHS DAN KRS ONLINE PADA UNIVERSITAS ISLAM OKI.,2021,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+19574,AUDIT SISTEM INFORMASI MENGGUNAKAN COBIT 5 PADA\r\nE-LEARNING UNIVERSITAS MUHAMMADIYAH PALEMBANG.,2021,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+20248,ANALISIS KUALITAS LAYANAN SLIMS MENGGUNAKAN\r\nMODEL WEBQUAL 4.0 DAN IMPORTANCE PERFORMANCE\r\nANALYSIS (IPA).,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+20564,PENERAPAN E-COMMERCE PADA STARTUP STORE\r\nPALEMBANG.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+20612,ANALISIS PENGARUH KEPUASAN PENGGUNA\r\nSISTEM INFORMASI AKADEMIK UNIVERSITAS\r\nMUHAMMADIYAHPALEMBANG MENGGUNAKAN\r\nMODEL DELONE AND MCLEAN.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+20614,ANALISIS PENERIMAAN PENGGUNA SISTEM INFORMASI\r\nAKADEMIK STIQ AL-LATHIFIYYAH MENGGUNAKAN\r\nTASK TECHNOLOGY FIT.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+20684,SISTEM INFORMASI PENJUALAN BERBASIS WEB DI CV\r\nSEHAT SEJAHTERA 69 PALEMBANG MENGGUNAKAN\r\nMETODE PROTOTYPE.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+21044,SISTEM INFORMASI RESERVASI HOTEL ARJUNA\r\nBATURAJA BERBASIS WEB.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+21079,PENERAPAN SISTEM INFORMASI AKADEMIK\r\nLEMBAGA KURSUS SYNAPSE ACADEMY.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+21081,PERENCANAAN STRATEGIS SISTEM INFORMASI\r\nDI MAN 2 PALEMBANG MENGGUNAKAN METODE\r\nWARD AND PEPPARD.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+24194,Audit Keamanan Sistem Informasi Menggunakan ISO/IEC 27002:2013 Pada UIN Raden Fatah Palembang.,2022,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+34490,EVALUASI DAN ANALISIS KEPUASAN PENGGUNA SISTEM INFORMASI AKADEMIK UNIVERSITAS BATURAJA MENGGUNAKAN MODEL EUCS.,2023,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+34648,ANALISIS KUALITAS LAYANAN PENERIMAAN MAHASISWA BARU UIN RADEN FATAH PALEMBANG MENGGUNAKAN METODE KANO.,2023,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+38598,ANALISIS PENERIMAAN SISTEM INFORMASI LAYANAN AKADEMIK (SILAYAK) UIN RADEN FATAH PALEMBANG \r\nMENGGUNAKAN MODEL UNIFIED THEORY OF ACCEPTANCE AND USE OF TECHNOLOGY.,2024,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+42975,SISTEM INFORMASI KOS-KOSAN DI KOTA PALEMBANG BERBASIS ANDROID MENGGUNAKAN METODE EXTREME\r\nPROGRAMMING.,2024,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+43676,Penerapan Algoritma C4.5 Untuk Klasifikasi Predikat Kelulusan Mahasiswa UIN Raden Fatah Palembang.,2024,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+46773,IMPLEMENTASI METODE RAPID APPLICATION DEVELOPMENT (RAD) DALAM MEMBANGUN SISTEM INFORMASI INVENTORY PADA TB. CARADA ELEKTRIK.,2025,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+49320,SISTEM INFORMASI PELAYANAN MD.VET LUBUKLINGGAU MENGGUNAKAN METODE EXTREME PROGRAMMING.,2025,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+51022,Sistem Informasi Administrasi Pada SD Negeri 178 Palembang Mnenggunakan Metode Extreme Programming.,2025,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,
+52383,PENERAPAN FRAMEWORK LARAVEL DAN METODE \r\nEXTREME PROGRAMMING DALAM MEMBANGUN \r\nSISTEM INFORMASI ONLINE COURSE.,2025,preprocess_token_len_filter,Jumlah token < 5 setelah stopword filtering & stemming,

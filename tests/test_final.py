@@ -1,8 +1,13 @@
 """
 Unit Test Verifikasi Integritas Data & Konsistensi Matematika (_fix_final/)
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import pandas as pd
 import numpy as np
+from src import config as C
 
 def test_topic_distribution_total_count():
     df_dist = pd.read_csv('_fix_final/topic_distribution_final.csv')
@@ -27,8 +32,9 @@ def test_evaluation_summary_keys():
     metrics = set(df_eval['Metrik'])
     required_metrics = {
         'Coherence_Score_CV', 'Coherence_Score_UMass', 'Train_Log_Perplexity',
+        'Vocabulary_Size', 'Total_Documents', 'Model_Parameters',
         'Topic_Diversity_Top10', 'Topic_Diversity_Top15', 'Pct_Max_Theta_Under_0.50',
-        'Reproduksi_CV_0.4026'
+
     }
     for m in required_metrics:
         assert m in metrics, f"Missing metric {m} in evaluation_summary.csv"

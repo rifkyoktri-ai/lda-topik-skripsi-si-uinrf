@@ -8,6 +8,7 @@ __pycache__/
 
 # ── Runtime output ──────────────────────────────────────────────────────────
 logs/
+experiments/
 *.log
 
 # ── Office lock files ───────────────────────────────────────────────────────
@@ -39,12 +40,6 @@ data/raw/**/*_files/
 **/css(1)
 **/css(2)
 
-# ── Temporary scripts ───────────────────────────────────────────────────────
-check_*.py
-find_*.py
-gen_*.py
-patch_thesis*.py
-script_*.js
-console_*.js
-scrape_repo.py
-test_uc.py
+# ── Jupyter ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+.ipynb_checkpoints
