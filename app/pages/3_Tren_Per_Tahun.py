@@ -21,7 +21,7 @@ with open(os.path.join(REPO, "_label_work", "labels.json"), "r", encoding="utf-8
 labels_map = {item["label"]: int(item["topic_id"]) for item in raw_labels}
 labels_list = [item["label"] for item in raw_labels]
 
-st.markdown("<h1>Tren Komposisi Topik 2021–2025</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1>Tren Komposisi Topik {artifacts.rentang_tahun()}</h1>", unsafe_allow_html=True)
 
 selected_labels = st.multiselect(
     "Pilih topik yang ditampilkan",

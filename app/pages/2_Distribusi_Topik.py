@@ -11,7 +11,7 @@ labels = data["labels_dict"]
 chart_helpers.set_style()
 
 st.markdown('<h1 class="main-title">📊 Distribusi Topik Penelitian</h1>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">Sebaran dokumen skripsi berdasarkan topik utama (2021-2025).</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="sub-title">Sebaran dokumen skripsi berdasarkan topik utama ({artifacts.rentang_tahun()}).</p>', unsafe_allow_html=True)
 
 # ── Tabel utama ──────────────────────────────────────────────────────────────
 counts_display = counts.copy()

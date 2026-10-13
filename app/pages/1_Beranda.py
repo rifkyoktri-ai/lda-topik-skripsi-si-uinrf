@@ -17,6 +17,24 @@ with open(os.path.join(REPO, "_label_work", "labels.json"), "r", encoding="utf-8
 
 labels_dict = {int(item["topic_id"]): item["label"] for item in raw_labels}
 
+# ── Nilai turunan (dihitung, bukan diketik) ─────────────────────────────────
+_dist = pd.read_csv(os.path.join(REPO, "_fix_final", "topic_distribution_final.csv"))
+TH_AWAL, TH_AKHIR = int(_dist["Tahun"].min()), int(_dist["Tahun"].max())
+RENTANG = f"{TH_AWAL}\u2013{TH_AKHIR}"
+N_DOC = artifacts.idr(M["Total_Documents"], 0)
+N_TOPIK = M["k"]
+CV_TAMPIL = artifacts.idr(M["Coherence_Score_CV"], 4)
+
+# Dua topik terbesar beserta label dan persentasenya
+_atas = counts_df.nlargest(2, "persentase")
+_besar = [
+    (int(r["topik_dominan"]),
+     labels_dict[int(r["topik_dominan"])],
+     artifacts.idr(r["persentase"], 1))
+    for _, r in _atas.iterrows()
+]
+(T1_ID, T1_LBL, T1_PCT), (T2_ID, T2_LBL, T2_PCT) = _besar
+
 # ── Header Layout 60/40 ──────────────────────────────────────────────────────
 col_txt, col_met = st.columns([6, 4])
 
@@ -24,25 +42,25 @@ with col_txt:
     st.markdown("<h1>Pemetaan Topik Penelitian</h1>", unsafe_allow_html=True)
     st.markdown(
         "<p style='color:#9CA3AF; font-size:1.05rem;'>"
-        "Program Studi Sistem Informasi · UIN Raden Fatah Palembang · 2021–2025"
+        f"Program Studi Sistem Informasi · UIN Raden Fatah Palembang · {RENTANG}"
         "</p>",
         unsafe_allow_html=True,
     )
     st.markdown(
-        "Analisis terhadap **285 skripsi** menggunakan Latent Dirichlet Allocation (LDA) "
-        "mengidentifikasi **8 topik** penelitian. Tidak ditemukan pergeseran komposisi yang "
-        "signifikan secara statistik selama 2021–2025 *(chi-square p = "
+        f"Analisis terhadap **{N_DOC} skripsi** menggunakan Latent Dirichlet Allocation (LDA) "
+        f"mengidentifikasi **{N_TOPIK} topik** penelitian. Tidak ditemukan pergeseran komposisi yang "
+        f"signifikan secara statistik selama {RENTANG} *(chi-square p = "
         f"{artifacts.idr(M['chi2_p'], 2)})*. Topik terbesar "
-        "adalah **Pengembangan & Perencanaan Strategis SI** (17,2%) dan "
-        "**Analisis Kualitas Layanan & Risiko SI** (16,1%)."
+        f"adalah **{T1_LBL}** ({T1_PCT}%) dan "
+        f"**{T2_LBL}** ({T2_PCT}%)."
     )
 
 with col_met:
     m1, m2 = st.columns(2)
-    m1.metric("Skripsi dianalisis", "285")
-    m2.metric("Topik teridentifikasi", "8")
-    m1.metric("Koherensi model (C_V)", "0,4256")
-    m2.metric("Rentang data", "2021–2025")
+    m1.metric("Skripsi dianalisis", N_DOC)
+    m2.metric("Topik teridentifikasi", str(N_TOPIK))
+    m1.metric("Koherensi model (C_V)", CV_TAMPIL)
+    m2.metric("Rentang data", RENTANG)
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -77,5 +95,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.caption(
     "Data cutoff: September 2026 · Cakupan scraping 2025 ~82% · "
-    "Model: LDA K=8, Online Variational Bayes · C_V = 0,4256 (texts=v1, topn=20, processes=1)"
+    f"Model: LDA K={N_TOPIK}, Online Variational Bayes · "
+    f"C_V = {CV_TAMPIL} (texts=v1, topn=20, processes=1)"
 )

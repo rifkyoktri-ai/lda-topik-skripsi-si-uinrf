@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import os
+import artifacts
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -47,17 +48,22 @@ else:
     val_cv_k8 = 0.3941
     total_cfg = 140
 
+# Metrik resmi dibaca dari artefak (bukan hard-code)
+M = artifacts.load_metrics()
+K_MODEL = M.get("k", 8)
+CV_RESMI = artifacts.idr(M.get("Coherence_Score_CV", 0.4256), 4)
+
 # ── Metrik Ringkasan (Data Aktual Sistem) ────────────────────────────────────
 m1, m2, m3, m4 = st.columns(4)
-m1.metric("Model Aktif (K)", "8")
-m2.metric("C_V Model Final (Resmi)", "0,4256", help="Evaluasi protokol resmi: texts=v1, topn=20, processes=1")
-m3.metric("Max C_V Grid Search (K=8)", f"{val_cv_k8:.4f}", help="Hasil eksperimen grid search awal di hyperparameter_results.csv")
+m1.metric("Model Aktif (K)", str(K_MODEL))
+m2.metric("C_V Model Final (Resmi)", CV_RESMI, help="Evaluasi protokol resmi: texts=v1, topn=20, processes=1")
+m3.metric(f"Max C_V Grid Search (K={K_MODEL})", f"{val_cv_k8:.4f}", help="Hasil eksperimen grid search awal di hyperparameter_results.csv")
 m4.metric("Total Konfigurasi Grid", f"{total_cfg}")
 
 st.info(
     "📌 **Catatan Penyelarasan Evaluasi:**\n"
-    "- **`0,4256`** adalah nilai Coherence ($C_V$) **Resmi Model Final ($K=8$)** yang dilatih hingga 30 passes & 500 iterasi serta dievaluasi menggunakan protokol standar resmi (`texts=v1`, `topn=20`). Angka ini yang digunakan pada Bab III, IV, V, dan Beranda.\n"
-    f"- **`{val_cv_k8:.4f}`.replace('.', ',')`** adalah nilai max $C_V$ untuk $K=8$ pada tahap **Grid Search** "
+    f"- **`{CV_RESMI}`** adalah nilai Coherence ($C_V$) **Resmi Model Final ($K={K_MODEL}$)** yang dilatih hingga 30 passes & 500 iterasi serta dievaluasi menggunakan protokol standar resmi (`texts=v1`, `topn=20`). Angka ini yang digunakan pada Bab III, IV, V, dan Beranda.\n"
+    f"- **`{val_cv_k8:.4f}`.replace('.', ',')`** adalah nilai max $C_V$ untuk $K={K_MODEL}$ pada tahap **Grid Search** "
     f"({total_cfg} konfigurasi di `hyperparameter_results.csv`)."
 )
 

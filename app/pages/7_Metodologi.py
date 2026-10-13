@@ -38,7 +38,7 @@ crisp_dm_data = {
     ],
     "Implementasi": [
         "Identifikasi pola topik riset Prodi SI",
-        "285 abstrak skripsi 2021-2025",
+        f"{N_DOC_TAMPIL} abstrak skripsi {RENTANG_TAHUN}",
         "Tokenisasi, stemming Sastrawi, filter stopword bahasa Indonesia + domain SI",
         "LDA Gensim, grid search K=4-10",
         "Koherensi C_V, walk-forward backtest MAE, uji komposisi chi-square",
@@ -71,7 +71,7 @@ param_data = {
         "30",
         "500",
         "42",
-        "285 dokumen (2021-2025)",
+        f"{N_DOC_TAMPIL} dokumen ({RENTANG_TAHUN})",
     ],
 }
 st.dataframe(pd.DataFrame(param_data), use_container_width=True, hide_index=True)
@@ -119,12 +119,20 @@ st.dataframe(pd.DataFrame(eval_table_data), use_container_width=True, hide_index
 _n_cfg = len(pd.read_csv(os.path.join(REPO, "model", "hyperparameter_results.csv"),
                           encoding="utf-8-sig")) if os.path.exists(
     os.path.join(REPO, "model", "hyperparameter_results.csv")) else 140
+
+# K dan C_V resmi dibaca dari artefak (bukan hard-code)
+_M = artifacts.load_metrics()
+_k_final = _M.get("k", 8)
+_cv_final = artifacts.idr(_M.get("Coherence_Score_CV", 0.4256), 4)
+N_DOC_TAMPIL = artifacts.idr(_M.get("Total_Documents", 285), 0)
+RENTANG_TAHUN = artifacts.rentang_tahun()
+
 st.markdown(f"**Nilai C_V dari Grid Search ({_n_cfg} konfigurasi, K=4–10):**")
 st.caption(
     "Nilai berikut adalah C_V maksimum untuk setiap K pada tahap grid search "
-    "(`model/hyperparameter_results.csv`, 140 konfigurasi). Model final K=8 "
-    "dilatih ulang dengan passes=30 dan iterations=500 sehingga menghasilkan "
-    "C_V = 0,4256 — angka ini tidak berasal dari grid search, melainkan dari "
+    f"(`model/hyperparameter_results.csv`, {_n_cfg} konfigurasi). Model final K={_k_final} "
+    f"dilatih ulang dengan passes=30 dan iterations=500 sehingga menghasilkan "
+    f"C_V = {_cv_final} — angka ini tidak berasal dari grid search, melainkan dari "
     "pelatihan final."
 )
 

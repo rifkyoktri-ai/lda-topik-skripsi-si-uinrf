@@ -116,6 +116,14 @@ def _run_label_integrity():
     return validate_labels(str(C.LDA_MODEL), str(C.LABELS_JSON))
 
 
+def _run_metrics_sync():
+    """Verifikasi tambahan: konstanta metrik di config.py vs artefak resmi."""
+    from tests.test_metrics_sync import TestKonfigurasiVsArtefak
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestKonfigurasiVsArtefak)
+    result = unittest.TextTestRunner(verbosity=0).run(suite)
+    return result.wasSuccessful(), result.testsRun
+
+
 if __name__ == "__main__":
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -135,6 +143,13 @@ if __name__ == "__main__":
         print(f"[GAGAL] Validasi fingerprint: {exc}")
     print("=" * 62)
 
-    if not result.wasSuccessful() or not label_ok:
+    sync_ok, sync_n = _run_metrics_sync()
+    if sync_ok:
+        print(f"[OK] {sync_n} metrik resmi di config.py cocok dengan artefak")
+    else:
+        print("[GAGAL] Konstanta metrik config.py BERBEDA dari artefak resmi")
+    print("=" * 62)
+
+    if not result.wasSuccessful() or not label_ok or not sync_ok:
         sys.exit(1)
-    print(f"\nSELURUH {result.testsRun} UNIT TEST LULUS.")
+    print(f"\nSELURUH {result.testsRun + sync_n} UNIT TEST LULUS.")

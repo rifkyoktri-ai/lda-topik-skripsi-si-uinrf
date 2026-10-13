@@ -20,6 +20,20 @@ STATS_DIR = os.path.join(REPO, "_stats_forecast")
 MODEL_DIR = os.path.join(REPO, "model")
 
 FORECAST_FILE = os.path.join(STATS_DIR, "forecast_table.csv")
+DIST_FILE     = os.path.join(FIX_DIR, "topic_distribution_final.csv")
+
+
+def rentang_tahun() -> str:
+    """
+    Rentang tahun korpus, dihitung dari artefak (mis. "2021-2025").
+
+    Dipakai pada judul halaman dan caption agar tahun tidak diketik manual
+    di beberapa berkas sekaligus.
+    """
+    if os.path.exists(DIST_FILE):
+        th = pd.read_csv(DIST_FILE, encoding="utf-8-sig")["Tahun"]
+        return f"{int(th.min())}\u2013{int(th.max())}"
+    return "2021\u20132025"   # cadangan bila artefak tidak ada
 
 # Hash artefak untuk versioning
 if os.path.exists(FORECAST_FILE):
