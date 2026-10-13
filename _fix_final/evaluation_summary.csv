@@ -7,4 +7,4 @@ Topic_Diversity_Top15,0.6917,proporsi kata unik top-15
 Pct_Max_Theta_Under_0.50,13.33,persentase dokumen dengan theta dominan < 0.50
 Vocabulary_Size,1849,jumlah kata unik dictionary.gensim
 Total_Documents,285,korpus bersih
-Model_Parameters,"K=8, alpha=asymmetric, eta=auto, passes=30, iterations=500, seed=42",Online Variational Bayes (BUKAN Gibbs Sampling)
+Model_Parameters,"K=8, alpha=auto, eta=auto, passes=30, iterations=500, seed=42",Online Variational Bayes (BUKAN Gibbs Sampling)

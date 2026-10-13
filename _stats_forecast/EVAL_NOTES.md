@@ -5,7 +5,7 @@
 - **Karakteristik Online VB**:
   - Mengoptimalkan *Evidence Lower Bound* (ELBO) secara deterministik lewat pembaruan stokastik mini-batch.
   - Memungkinkan penanganan dataset secara cepat dan efisien.
-  - Menggunakan parameter konsentrasi dokumen-topik $\alpha$ *asymmetric* dan kata-topik $\eta$ *auto*.
+  - Menggunakan parameter konsentrasi dokumen-topik $\alpha$ dan kata-topik $\eta$ mode *auto* (diestimasi dari data latih).
 
 ## 2. Evaluasi Metrik Koherensi & Perpleksitas
 - **$C_V = 0.4256$**: Metrik koherensi berbasis *sliding window* dan koefisien korelasi cosinus, dihitung dengan protokol resmi texts=data/intermediate/ (1.849 vocab), topn=20, processes=1, Gensim 4.4.0. Nilai ini berada pada rentang sedang untuk korpus skripsi akademik berbahasa Indonesia dengan terminologi multidisiplin.

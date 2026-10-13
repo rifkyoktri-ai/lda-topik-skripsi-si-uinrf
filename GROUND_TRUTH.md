@@ -7,7 +7,7 @@
 > Jika angka di skripsi berbeda dengan dokumen ini, dokumen ini yang benar
 > karena diturunkan langsung dari artefak pipeline.
 
-_Terakhir dibuat: 2026-10-12 15:28_
+_Terakhir dibuat: 2026-10-13 11:32_
 
 ---
 
@@ -19,7 +19,7 @@ _Terakhir dibuat: 2026-10-12 15:28_
 | **Ukuran Kosakata** | **1849 Kata** | `data/intermediate/dictionary.gensim` |
 | **Model LDA Binary** | `model/lda_model.gensim` | Latent Dirichlet Allocation |
 | **Jumlah Topik (K)** | **8 Topik** | Dipilih berdasarkan optimasi koherensi & interpretabilitas |
-| **Alpha / Eta** | `asymmetric` / `auto` | Vektor prior yang diestimasi Gensim dari data latih |
+| **Alpha / Eta** | `auto` / `auto` | Vektor prior yang diestimasi Gensim dari data latih |
 | **Passes / Iterations** | **30 / 500** | Full convergence training |
 | **Random State / Seed** | **42** | Terkunci untuk reproduksibilitas |
 | **Metode Inferensi** | Online Variational Bayes | Gensim 4.4.0 Engine (**bukan** Gibbs Sampling) |
@@ -42,7 +42,7 @@ _Terakhir dibuat: 2026-10-12 15:28_
 | Persentase Ambigu ($\theta < 0.50$) | `13,33%` |
 | Vocabulary Size | `1849,00` |
 | Total Dokumen | `285,00` |
-| **Model Parameters** | `K=8, alpha=asymmetric, eta=auto, passes=30, iterations=500, seed=42` |
+| **Model Parameters** | `K=8, alpha=auto, eta=auto, passes=30, iterations=500, seed=42` |
 
 ### Uji Homogenitas Komposisi Topik x Tahun
 

@@ -97,13 +97,13 @@ python -m src.topic_labels_cli   # validasi fingerprint
 |:---|---:|:---|
 | Jumlah dokumen | **285** | 2021:29 · 2022:78 · 2023:46 · 2024:47 · 2025:85 |
 | Ukuran kosakata | **1.849** | `data/intermediate/dictionary.gensim` |
-| Jumlah topik $K$ | **8** |(alpha=asymmetric, eta=auto) |
+| Jumlah topik $K$ | **8** | (alpha=auto, eta=auto) |
 | Coherence $C_V$ | **0,4256** | dihitung ulang dari `model/lda_model.gensim` |
 | $U_{mass}$ | −10,7533 | *Online Variational Bayes* |
 | Log Perplexity | −7,4518 | *Online Variational Bayes* |
 | Topic Diversity | 0,7125 / 0,6917 | *Online Variational Bayes* |
 | Passes / Iterations | 30 / 500 | *Online Variational Bayes* |
-| $\alpha$ / $\eta$ / seed | asymmetric / auto / 42 | *Online Variational Bayes* |
+| $\alpha$ / $\eta$ / seed | auto / auto / 42 | *Online Variational Bayes* |
 
 Semua angka **dapat direproduksi ulang** dengan menjalankan notebook terkait.
 Rujukan resmi: [`GROUND_TRUTH.md`](GROUND_TRUTH.md)

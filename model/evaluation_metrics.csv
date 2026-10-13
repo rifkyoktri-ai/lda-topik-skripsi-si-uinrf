@@ -4,7 +4,7 @@ Coherence Score (C_V),0.4256
 Coherence Score (U_Mass),-10.7533
 Train Log Perplexity,-7.4518
 Hold-out Test Log Perplexity,-11.2839
-Alpha Prior,asymmetric
+Alpha Prior,auto
 Eta Prior,auto
 Passes,30
 Iterations,500

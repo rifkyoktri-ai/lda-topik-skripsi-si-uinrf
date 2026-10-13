@@ -71,8 +71,8 @@ def run_grid_search(args):
     
     # 2. Setup Grid Search
     k_range = list(range(args.min_k, args.max_k + 1))
-    alpha_options = ['symmetric', 'asymmetric', 0.01, 0.1]
-    eta_options = ['symmetric', 0.01, 0.1]
+    alpha_options = list(C.GRID_ALPHA_OPTIONS)
+    eta_options = list(C.GRID_ETA_OPTIONS)
     
     grid = list(product(k_range, alpha_options, eta_options))
     total_combinations = len(grid)

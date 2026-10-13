@@ -102,18 +102,23 @@ ENGLISH_ABSTRACT_THRESHOLD = 0.12
 
 # ── MODEL LDA FINAL ──────────────────────────────────────────────────────────
 NUM_TOPICS = 8
-LDA_ALPHA = "asymmetric"
+LDA_ALPHA = "auto"
 LDA_ETA = "auto"
 LDA_PASSES = 30
 LDA_ITERATIONS = 500
 RANDOM_SEED = 42
 TRAIN_TEST_SPLIT = 0.20       # hold-out 20% (untuk log perplexity)
 
+# Catatan alpha: model final dilatih dengan alpha="auto" (estimasi dari data),
+# bukan "asymmetric". Bukti: model/experiment_history.csv baris 2026-09-26
+# (alpha=auto, eta=auto, C_V=0.4256) dan vektor alpha tersimpan ~0.0244
+# (hasil estimasi), bukan 0.125 (nilai tetap 1/K milik "symmetric"/"asymmetric").
+
 # Grid search
 GRID_MIN_K = 4
 GRID_MAX_K = 10
-GRID_ALPHA_OPTIONS = ["symmetric", "asymmetric", 0.01, 0.1]
-GRID_ETA_OPTIONS = ["symmetric", 0.01, 0.1]
+GRID_ALPHA_OPTIONS = ["symmetric", "asymmetric", "auto", 0.01, 0.1]
+GRID_ETA_OPTIONS = ["symmetric", "auto", 0.01, 0.1]
 GRID_PASSES = 10
 GRID_ITERATIONS = 400
 

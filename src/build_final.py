@@ -142,7 +142,7 @@ def build_evaluation_summary(lda_model, texts, dictionary, corpus, theta):
          "persentase dokumen dengan theta dominan < 0.50"),
         ("Vocabulary_Size", len(dictionary), "jumlah kata unik dictionary.gensim"),
         ("Total_Documents", df_len_holder, "korpus bersih"),
-        ("Model_Parameters", f"K={lda_model.num_topics}, alpha=asymmetric, eta=auto, "
+        ("Model_Parameters", f"K={lda_model.num_topics}, alpha={C.LDA_ALPHA}, eta={C.LDA_ETA}, "
                              f"passes=30, iterations=500, seed=42",
          "Online Variational Bayes (BUKAN Gibbs Sampling)"),
     ]

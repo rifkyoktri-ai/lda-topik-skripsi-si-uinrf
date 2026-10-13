@@ -26,8 +26,8 @@ np.random.seed(42)
 
 # Parameter model final sesuai GROUND_TRUTH.md
 FINAL_K = 8
-FINAL_ALPHA = 'asymmetric'
-FINAL_ETA = 'auto'
+FINAL_ALPHA = C.LDA_ALPHA
+FINAL_ETA = C.LDA_ETA
 FINAL_PASSES = 30
 FINAL_ITERATIONS = 500
 FINAL_SEED = 42
@@ -163,8 +163,8 @@ def main():
                 corpus=corpus,
                 id2word=dictionary,
                 num_topics=k,
-                alpha='asymmetric',
-                eta=0.1,
+                alpha=FINAL_ALPHA,
+                eta=FINAL_ETA,
                 passes=30,
                 iterations=300,
                 random_state=s

@@ -12,7 +12,7 @@
 pipeline:
   seed: 42
   num_topics: 8
-  alpha: "asymmetric"
+  alpha: "auto"
   eta: "auto"
   passes_pipeline_default: 30
   passes_cli_default: 30
@@ -67,8 +67,8 @@ trend_analysis:
 
 model_saved_attributes:
   num_topics: 8
-  alpha: "asymmetric"    # vektor prior yang diestimasi Gensim
-  eta: "auto"            # vektor prior per-kata yang diestimasi Gensim
+  alpha: "auto"             # vektor prior yang diestimasi Gensim dari data latih
+  eta: "auto"               # vektor prior per-kata yang diestimasi Gensim
   passes: 30
   iterations: 500
   decay: 0.5

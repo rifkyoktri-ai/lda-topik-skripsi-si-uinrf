@@ -153,8 +153,8 @@ def auto_tune(
     k_range: range = range(4, 13),
     passes: int = 20,
     iterations: int = 400,
-    alpha: str = 'asymmetric',
-    eta: str = 'auto',
+    alpha: str = C.LDA_ALPHA,
+    eta: str = C.LDA_ETA,
     random_state: int = 42
 ) -> Tuple[int, float, float, float, float, LdaModel]:
     """
@@ -314,9 +314,9 @@ def main():
                         help='Jumlah passes LDA (default: 30)')
     parser.add_argument('--iterations', type=int, default=500,
                         help='Jumlah iterasi LDA (default: 500)')
-    parser.add_argument('--alpha', type=str, default='asymmetric',
-                        help='Alpha parameter (default: asymmetric, symmetric, auto, or float)')
-    parser.add_argument('--eta', type=str, default='auto',
+    parser.add_argument('--alpha', type=str, default=C.LDA_ALPHA,
+                        help='Alpha parameter (default: auto, symmetric, asymmetric, or float)')
+    parser.add_argument('--eta', type=str, default=C.LDA_ETA,
                         help='Eta parameter (default: auto, symmetric, or float)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed untuk reproduksibilitas (default: 42)')
