@@ -44,8 +44,8 @@ if hp_exists:
     val_cv_k8 = hp_k8["coherence_cv"].max()
     total_cfg = len(df_hp)
 else:
-    val_cv_k8 = 0.3871
-    total_cfg = 84
+    val_cv_k8 = 0.3941
+    total_cfg = 140
 
 # ── Metrik Ringkasan (Data Aktual Sistem) ────────────────────────────────────
 m1, m2, m3, m4 = st.columns(4)
@@ -57,7 +57,8 @@ m4.metric("Total Konfigurasi Grid", f"{total_cfg}")
 st.info(
     "📌 **Catatan Penyelarasan Evaluasi:**\n"
     "- **`0,4256`** adalah nilai Coherence ($C_V$) **Resmi Model Final ($K=8$)** yang dilatih hingga 30 passes & 500 iterasi serta dievaluasi menggunakan protokol standar resmi (`texts=v1`, `topn=20`). Angka ini yang digunakan pada Bab III, IV, V, dan Beranda.\n"
-    "- **`0,3871`** adalah nilai max $C_V$ untuk $K=8$ pada tahap **Eksperimen Grid Search Awal** (`hyperparameter_results.csv`) saat pengujian variasi kombinasi hiperparameter."
+    f"- **`{val_cv_k8:.4f}`.replace('.', ',')`** adalah nilai max $C_V$ untuk $K=8$ pada tahap **Grid Search** "
+    f"({total_cfg} konfigurasi di `hyperparameter_results.csv`)."
 )
 
 st.markdown("<hr>", unsafe_allow_html=True)

@@ -4,6 +4,10 @@ import json
 import os
 import plotly.graph_objects as go
 import plotly.express as px
+import artifacts
+
+# Metrik resmi dibaca dari artefak (bukan hard-code)
+M = artifacts.load_metrics()
 
 # ── Load data resmi ─────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -117,7 +121,7 @@ if selected_labels:
     st.plotly_chart(fig, use_container_width=True)
 
 st.info(
-    "Uji homogenitas chi-square: p = 0,69 — tidak ditemukan perubahan komposisi "
+    f"Uji homogenitas chi-square: p = {artifacts.idr(M['chi2_p'], 2)} — tidak ditemukan perubahan komposisi "
     "yang signifikan antar tahun. Tidak ada topik dengan tren yang terkonfirmasi "
     "secara statistik (Spearman + koreksi Bonferroni, semua p > 0,05). Fluktuasi "
     "yang terlihat kemungkinan merupakan variasi acak dari jumlah dokumen per tahun "

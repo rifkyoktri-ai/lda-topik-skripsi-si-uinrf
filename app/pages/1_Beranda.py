@@ -3,6 +3,10 @@ import pandas as pd
 import json
 import os
 import plotly.graph_objects as go
+import artifacts
+
+# Metrik resmi dibaca dari artefak (bukan hard-code) - lihat artifacts.load_metrics()
+M = artifacts.load_metrics()
 
 # ── Load data resmi ─────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -27,7 +31,8 @@ with col_txt:
     st.markdown(
         "Analisis terhadap **285 skripsi** menggunakan Latent Dirichlet Allocation (LDA) "
         "mengidentifikasi **8 topik** penelitian. Tidak ditemukan pergeseran komposisi yang "
-        "signifikan secara statistik selama 2021–2025 *(chi-square p = 0,69)*. Topik terbesar "
+        "signifikan secara statistik selama 2021–2025 *(chi-square p = "
+        f"{artifacts.idr(M['chi2_p'], 2)})*. Topik terbesar "
         "adalah **Pengembangan & Perencanaan Strategis SI** (17,2%) dan "
         "**Analisis Kualitas Layanan & Risiko SI** (16,1%)."
     )

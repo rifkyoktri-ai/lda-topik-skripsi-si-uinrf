@@ -3,6 +3,7 @@ artifacts.py  — Central data loader. JANGAN UBAH SUMBER DATA.
 Semua angka dari GROUND_TRUTH.md.
 """
 import os
+import re
 import json
 import hashlib
 import pandas as pd
@@ -26,6 +27,61 @@ if os.path.exists(FORECAST_FILE):
         ARTIFACT_VERSION = hashlib.sha256(_f.read()).hexdigest()[:8]
 else:
     ARTIFACT_VERSION = "unknown"
+
+
+def idr(value, decimals=2):
+    """Angka gaya Indonesia: 0.6849 -> '0,68'"""
+    return (f"{value:.{decimals}f}").replace(".", ",")
+
+
+def load_metrics() -> dict:
+    """
+    Baca metrik resmi dari artefak - JANGAN hard-code di halaman.
+
+    Sumber:
+      _fix_final/evaluation_summary.csv        -> alpha, eta, C_V, vocab, dll
+      _stats_forecast/composition_tests_report.md -> chi-square, p, Cramer's V
+
+    Mengembalikan dict; kunci yang tidak ditemukan simply tidak ada.
+    """
+    out = {}
+
+    ev = os.path.join(FIX_DIR, "evaluation_summary.csv")
+    if os.path.exists(ev):
+        df = pd.read_csv(ev, encoding="utf-8-sig")
+        for _, r in df.iterrows():
+            key = str(r["Metrik"]).strip()
+            val = r["Nilai"]
+            if key == "Model_Parameters":
+                out["model_parameters"] = str(val)
+                m = re.search(r"alpha=([^,]+),\s*eta=([^,]+)", str(val))
+                if m:
+                    out["alpha"] = m.group(1).strip()
+                    out["eta"] = m.group(2).strip()
+                m = re.search(r"K=(\d+)", str(val))
+                if m:
+                    out["k"] = int(m.group(1))
+            else:
+                try:
+                    out[key] = float(val)
+                except (TypeError, ValueError):
+                    out[key] = val
+
+    ct = os.path.join(STATS_DIR, "composition_tests_report.md")
+    if os.path.exists(ct):
+        with open(ct, "r", encoding="utf-8") as f:
+            txt = f.read()
+        for key, pattern in [
+            ("chi2", r"Statistik \$\\chi\^2\$\*\*:\s*([\d.]+)"),
+            ("chi2_df", r"Derajat Kebebasan \(\$dof\$\)\*\*:\s*(\d+)"),
+            ("chi2_p", r"p-value Mentah \(Asimptotik\)\*\*:\s*([\d.]+)"),
+            ("cramers_v", r"Cramer's V\*\*:\s*([\d.]+)"),
+            ("perm_p", r"p-value Permutasi\*\*:\s*([\d.]+)"),
+        ]:
+            m = re.search(pattern, txt)
+            if m:
+                out[key] = float(m.group(1))
+    return out
 
 
 def load_all() -> dict:
@@ -81,6 +137,7 @@ def load_all() -> dict:
         "forecast":        forecast_df,
         "labels":          raw_labels,
         "labels_dict":     labels_dict,
+        "metrics":         load_metrics(),
     }
 
 

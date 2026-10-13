@@ -3,6 +3,10 @@ import pandas as pd
 import json
 import os
 import hashlib
+import artifacts
+
+# Metrik resmi dibaca dari artefak (bukan hard-code)
+M = artifacts.load_metrics()
 
 # ── Paths Data Resmi ────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -61,9 +65,9 @@ param_data = {
     "Nilai": [
         "Latent Dirichlet Allocation (LDA)",
         "Gensim 4.4.0, Online Variational Bayes (bukan Gibbs Sampling)",
-        "8",
-        "Asymmetric",
-        "Auto",
+        str(M.get("k", 8)),
+        str(M.get("alpha", "auto")).capitalize(),
+        str(M.get("eta", "auto")).capitalize(),
         "30",
         "500",
         "42",
@@ -112,20 +116,35 @@ eval_table_data = {
 }
 st.dataframe(pd.DataFrame(eval_table_data), use_container_width=True, hide_index=True)
 
-st.markdown("**Nilai C_V dari Grid Search (84 konfigurasi, K=4–10):**")
+_n_cfg = len(pd.read_csv(os.path.join(REPO, "model", "hyperparameter_results.csv"),
+                          encoding="utf-8-sig")) if os.path.exists(
+    os.path.join(REPO, "model", "hyperparameter_results.csv")) else 140
+st.markdown(f"**Nilai C_V dari Grid Search ({_n_cfg} konfigurasi, K=4–10):**")
 st.caption(
-    "Nilai berikut adalah C_V maksimum untuk setiap K pada tahap grid search awal "
-    "(`model/hyperparameter_results.csv`). Model final K=8 dilatih ulang dengan "
-    "passes=30 dan iterations=500 sehingga menghasilkan C_V = 0,4256 — angka ini "
-    "tidak berasal dari grid search, melainkan dari pelatihan final."
+    "Nilai berikut adalah C_V maksimum untuk setiap K pada tahap grid search "
+    "(`model/hyperparameter_results.csv`, 140 konfigurasi). Model final K=8 "
+    "dilatih ulang dengan passes=30 dan iterations=500 sehingga menghasilkan "
+    "C_V = 0,4256 — angka ini tidak berasal dari grid search, melainkan dari "
+    "pelatihan final."
 )
+
+# C_V per-K dihitung dari artefak, bukan ditulis manual
+_hp_path = os.path.join(REPO, "model", "hyperparameter_results.csv")
+_k_rows = []
+if os.path.exists(_hp_path):
+    _hp = pd.read_csv(_hp_path, encoding="utf-8-sig")
+    _best = _hp.loc[_hp.groupby("k")["coherence_cv"].idxmax()]
+    _k_rows = [[int(r["k"]), artifacts.idr(float(r["coherence_cv"]), 4)]
+               for _, r in _best.sort_values("k").iterrows()]
+
+_keterangan = {
+    8: "Dipilih (interpretabilitas & minimum 21 dok./topik)",
+    9: "C_V tertinggi pada grid search",
+}
 k_comp_data = {
-    "K": [4, 5, 6, 7, 8, 9, 10],
-    "C_V (grid search)": ["0,3605", "0,3756", "0,3909", "0,4142", "0,3871", "0,4314", "0,3993"],
-    "Keterangan": [
-        "", "", "", "", "Dipilih (interpretabilitas & minimum 21 dok./topik)",
-        "C_V tertinggi pada grid search", "",
-    ],
+    "K": [r[0] for r in _k_rows],
+    "C_V (grid search)": [r[1] for r in _k_rows],
+    "Keterangan": [_keterangan.get(r[0], "") for r in _k_rows],
 }
 st.dataframe(pd.DataFrame(k_comp_data), use_container_width=True, hide_index=True)
 
