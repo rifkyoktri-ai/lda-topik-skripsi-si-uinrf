@@ -51,6 +51,7 @@ BANTUAN = """
   python run.py notebook      notebook 01-08 (lama, ~20 menit)
   python run.py notebook-fast 01-03 + 05-08 (lewati training, ~2 menit)
   python run.py audit         regenerate outputs/audit/assignment_audit.md
+  python run.py figures       bangkitkan ulang wordcloud 8 topik
   python run.py structure     validasi struktur repo
   python run.py dashboard     dashboard Streamlit
   python run.py all           test -> notebook-fast -> audit
@@ -88,6 +89,8 @@ PERINTAH = {
         for n in URUTAN_NOTEBOOK_CEPAT),
     "audit": lambda: run(["-m", "src.assignment_audit"],
                          "Audit keyakinan penugasan dokumen"),
+    "figures": lambda: run(["-m", "src.make_figures"],
+                           "Bangkitkan ulang wordcloud 8 topik"),
     "structure": lambda: run(["tests/test_structure.py"],
                              "Validasi struktur repo"),
     "dashboard": lambda: run(["-m", "streamlit", "run", "app/main.py"],

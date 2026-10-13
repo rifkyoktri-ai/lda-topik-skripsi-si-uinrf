@@ -69,6 +69,10 @@ DATA_LINEAGE_BY_YEAR = AUDIT_DIR / "data_lineage_by_year.csv"
 # Label (sumber kebenaran nama topik)
 LABELS_JSON = MODEL_DIR / "labels.json"
 
+# Gambar (dihasilkan ulang oleh src/make_figures.py)
+FIGURES_DIR = OUTPUTS_DIR / "figures"
+WORDCLOUD_DIR = FIGURES_DIR / "wordclouds"
+
 # Statistik & proyeksi
 FORECAST_CSV = STATS_DIR / "forecast_table.csv"
 BACKTEST_CSV = STATS_DIR / "backtest_results.csv"
