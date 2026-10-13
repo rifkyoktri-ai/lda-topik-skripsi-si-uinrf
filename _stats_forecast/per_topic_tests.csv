@@ -5,5 +5,5 @@ topik_id,label,spearman_rho,p_spearman_raw,p_spearman_bonferroni,spearman_sig,z_
 4,Kepuasan Pengguna Akhir (EUCS & TAM),0.5,0.391,1.0,Tidak,0.0434,0.9653,1.0,Tidak,1.17
 5,Manajemen Risiko TI & Analitik Data,-0.6,0.2848,1.0,Tidak,-0.5757,0.5648,1.0,Tidak,-1.676
 6,Pengembangan & Perencanaan Strategis SI,0.6,0.2848,1.0,Tidak,0.615,0.5385,1.0,Tidak,1.551
-7,Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna,-0.4,0.5046,1.0,Tidak,-0.1172,0.9067,1.0,Tidak,-0.601
+7,Penerapan Metode & Framework Sistem Informasi,-0.4,0.5046,1.0,Tidak,-0.1172,0.9067,1.0,Tidak,-0.601
 8,Keamanan Informasi & SI Institusi Pendidikan,0.6,0.2848,1.0,Tidak,0.8714,0.3835,1.0,Tidak,1.168
