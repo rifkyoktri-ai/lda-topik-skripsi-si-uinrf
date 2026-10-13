@@ -31,29 +31,31 @@ preprocessing:
   english_abstract_threshold: 0.12  # Regex ENGLISH_INDICATOR_WORDS, bukan langdetect
 
 grid_search:
-  # hyperparameter_tuning.py -> menghasilkan model/hyperparameter_results.csv
+  # src/grid_search.py -> menghasilkan model/hyperparameter_results.csv
   min_k: 4
   max_k: 10
   alpha_options:
     - "symmetric"
     - "asymmetric"
+    - "auto"        # ditambahkan: konfigurasi model final
     - 0.01
     - 0.1
   eta_options:
     - "symmetric"
+    - "auto"        # ditambahkan: konfigurasi model final
     - 0.01
     - 0.1
   passes_tuning: 10
   iterations_tuning: 400
-  total_code_combinations: 84         # 7 (K=4..10) x 4 (alpha) x 3 (eta)
-  saved_results_rows: 84             # Terverifikasi: model/hyperparameter_results.csv = 84 baris
+  total_code_combinations: 140        # 7 (K=4..10) x 5 (alpha) x 4 (eta)
+  saved_results_rows: 140            # Terverifikasi: model/hyperparameter_results.csv = 140 baris
   best_cv_by_k:
-    # Diihitung ulang dari model/hyperparameter_results.csv (run ulang 84 konfigurasi)
+    # Diihitung ulang dari model/hyperparameter_results.csv (run ulang 140 konfigurasi)
     K4: 0.3605
     K5: 0.3756
     K6: 0.3783
     K7: 0.4142
-    K8: 0.3871
+    K8: 0.3941
     K9: 0.4314
     K10: 0.4022
 
