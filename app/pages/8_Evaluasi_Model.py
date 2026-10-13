@@ -50,8 +50,8 @@ else:
 
 # Metrik resmi dibaca dari artefak (bukan hard-code)
 M = artifacts.load_metrics()
-K_MODEL = M.get("k", 8)
-CV_RESMI = artifacts.idr(M.get("Coherence_Score_CV", 0.4256), 4)
+K_MODEL = artifacts.metrik(M, "k")
+CV_RESMI = artifacts.idr(artifacts.metrik(M, "Coherence_Score_CV"), 4)
 
 # ── Metrik Ringkasan (Data Aktual Sistem) ────────────────────────────────────
 m1, m2, m3, m4 = st.columns(4)

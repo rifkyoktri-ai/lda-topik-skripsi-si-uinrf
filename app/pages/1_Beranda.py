@@ -21,9 +21,9 @@ labels_dict = {int(item["topic_id"]): item["label"] for item in raw_labels}
 _dist = pd.read_csv(os.path.join(REPO, "outputs", "topics", "topic_distribution_final.csv"))
 TH_AWAL, TH_AKHIR = int(_dist["Tahun"].min()), int(_dist["Tahun"].max())
 RENTANG = f"{TH_AWAL}\u2013{TH_AKHIR}"
-N_DOC = artifacts.idr(M["Total_Documents"], 0)
+N_DOC = artifacts.idr(artifacts.metrik(M, "Total_Documents"), 0)
 N_TOPIK = M["k"]
-CV_TAMPIL = artifacts.idr(M["Coherence_Score_CV"], 4)
+CV_TAMPIL = artifacts.idr(artifacts.metrik(M, "Coherence_Score_CV"), 4)
 
 # Dua topik terbesar beserta label dan persentasenya
 _atas = counts_df.nlargest(2, "persentase")
@@ -50,7 +50,7 @@ with col_txt:
         f"Analisis terhadap **{N_DOC} skripsi** menggunakan Latent Dirichlet Allocation (LDA) "
         f"mengidentifikasi **{N_TOPIK} topik** penelitian. Tidak ditemukan pergeseran komposisi yang "
         f"signifikan secara statistik selama {RENTANG} *(chi-square p = "
-        f"{artifacts.idr(M['chi2_p'], 2)})*. Topik terbesar "
+        f"{artifacts.idr(artifacts.metrik(M, 'chi2_p', 0.0), 2)})*. Topik terbesar "
         f"adalah **{T1_LBL}** ({T1_PCT}%) dan "
         f"**{T2_LBL}** ({T2_PCT}%)."
     )

@@ -53,6 +53,41 @@ def idr(value, decimals=2):
     return (f"{value:.{decimals}f}").replace(".", ",")
 
 
+# Kunci yang wajib ada agar dashboard bisa tampil. Kalau salah satu hilang,
+# lebih baik tampil pesan jelas daripada KeyError di tengah halaman.
+KUNCI_WAJIB = ["Total_Documents", "k", "Coherence_Score_CV"]
+
+
+def metrik(m, kunci, default=None):
+    """
+    Ambil kunci wajib dari hasil load_metrics().
+
+    Kalau kunci tidak ada, tampilkan penyebabnya di Streamlit lalu hentikan
+    halaman - daripada membiarkan KeyError yang tidak jelas tampil ke user.
+
+    Kegagalan diam-diam pernah terjadi: saat folder _fix_final/ dipindah ke
+    outputs/, load_metrics() mengembalikan dict KOSONG sehingga seluruh
+    halaman gagal tanpa penjelasan.
+    """
+    if kunci in m:
+        return m[kunci]
+    if default is not None:
+        return default
+
+    import streamlit as st
+    st.error(
+        "### Artefak tidak ditemukan\n\n"
+        "Metrik **%s** tidak terbaca - hanya %d kunci yang berhasil dibaca.\n\n"
+        "**Penyebab yang paling mungkin:** proses Streamlit masih berjalan "
+        "dengan kode versi lama. Hentikan (Ctrl+C) lalu jalankan ulang:\n\n"
+        "    python run.py dashboard\n\n"
+        "Kalau masih gagal, pastikan artefak ini ada:\n\n"
+        "    outputs/model/evaluation_summary.csv"
+        % (kunci, len(m))
+    )
+    st.stop()
+
+
 def load_metrics() -> dict:
     """
     Baca metrik resmi dari artefak - JANGAN hard-code di halaman.
@@ -66,6 +101,14 @@ def load_metrics() -> dict:
     out = {}
 
     ev = os.path.join(MODEL_DIR, "evaluation_summary.csv")
+    if not os.path.exists(ev):
+        raise FileNotFoundError(
+            "Artefak metrik tidak ditemukan: %s\n"
+            "Folder hasil berada di outputs/ (bukan _fix_final/ lagi). "
+            "Kalau dashboard menampilkan error ini, hampir pasti "
+            "proses Streamlit masih memakai kode versi lama."
+            % ev
+        )
     if os.path.exists(ev):
         df = pd.read_csv(ev, encoding="utf-8-sig")
         for _, r in df.iterrows():

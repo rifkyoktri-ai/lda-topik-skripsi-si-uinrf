@@ -122,9 +122,9 @@ _n_cfg = len(pd.read_csv(os.path.join(REPO, "outputs", "model", "hyperparameter_
 
 # K dan C_V resmi dibaca dari artefak (bukan hard-code)
 _M = artifacts.load_metrics()
-_k_final = _M.get("k", 8)
-_cv_final = artifacts.idr(_M.get("Coherence_Score_CV", 0.4256), 4)
-N_DOC_TAMPIL = artifacts.idr(_M.get("Total_Documents", 285), 0)
+_k_final = artifacts.metrik(_M, "k")
+_cv_final = artifacts.idr(artifacts.metrik(_M, "Coherence_Score_CV"), 4)
+N_DOC_TAMPIL = artifacts.idr(artifacts.metrik(_M, "Total_Documents"), 0)
 RENTANG_TAHUN = artifacts.rentang_tahun()
 
 st.markdown(f"**Nilai C_V dari Grid Search ({_n_cfg} konfigurasi, K=4–10):**")
