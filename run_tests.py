@@ -124,6 +124,19 @@ def _run_metrics_sync():
     return result.wasSuccessful(), result.testsRun
 
 
+def _run_structure():
+    """Verifikasi tambahan: bentuk repo (path, git tracking, folder kosong)."""
+    from tests import test_structure as ts
+    loader2 = unittest.TestLoader()
+    suite2 = unittest.TestSuite()
+    for name in dir(ts):
+        obj = getattr(ts, name)
+        if isinstance(obj, type) and issubclass(obj, unittest.TestCase):
+            suite2.addTests(loader2.loadTestsFromTestCase(obj))
+    result = unittest.TextTestRunner(verbosity=0).run(suite2)
+    return result.wasSuccessful(), result.testsRun
+
+
 if __name__ == "__main__":
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -150,6 +163,14 @@ if __name__ == "__main__":
         print("[GAGAL] Konstanta metrik config.py BERBEDA dari artefak resmi")
     print("=" * 62)
 
-    if not result.wasSuccessful() or not label_ok or not sync_ok:
+    struct_ok, struct_n = _run_structure()
+    if struct_ok:
+        print(f"[OK] {struct_n} pemeriksaan struktur repo lolos")
+    else:
+        print("[GAGAL] Struktur repo bermasalah - jalankan: python run.py structure")
+    print("=" * 62)
+
+    total = result.testsRun + sync_n + struct_n
+    if not result.wasSuccessful() or not label_ok or not sync_ok or not struct_ok:
         sys.exit(1)
-    print(f"\nSELURUH {result.testsRun + sync_n} UNIT TEST LULUS.")
+    print(f"\nSELURUH {total} UNIT TEST LULUS.")

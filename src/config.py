@@ -31,8 +31,16 @@ CORPUS_PATH = INTERMEDIATE_DIR / "corpus.pkl"
 PHRASER_BIGRAM = INTERMEDIATE_DIR / "phraser_bigram.pkl"
 PHRASER_TRIGRAM = INTERMEDIATE_DIR / "phraser_trigram.pkl"
 
-# Model
-MODEL_DIR = REPO / "outputs" / "model"
+# ── ARTEFAK HASIL ────────────────────────────────────────────────────────────
+# Dihasilkan pipeline, tapi WAJIB ikut commit agar skripsi dapat direproduksi.
+# (lihat catatan di README bagian outputs/)
+OUTPUTS_DIR = REPO / "outputs"
+MODEL_DIR = OUTPUTS_DIR / "model"
+TOPICS_DIR = OUTPUTS_DIR / "topics"
+AUDIT_DIR = OUTPUTS_DIR / "audit"
+STATS_DIR = OUTPUTS_DIR / "forecast"
+
+# ── MODEL ────────────────────────────────────────────────────────────────────
 LDA_MODEL = MODEL_DIR / "lda_model.gensim"
 LDA_ID2WORD = MODEL_DIR / "lda_model.gensim.id2word"   # dictionary vocab model
 HYPERPARAMS_CSV = MODEL_DIR / "hyperparameter_results.csv"
@@ -43,9 +51,7 @@ EVAL_METRICS_CSV = MODEL_DIR / "evaluation_metrics.csv"
 EXPERIMENT_HISTORY = MODEL_DIR / "experiment_history.csv"
 HUMAN_VALIDATION_CSV = MODEL_DIR / "human_topic_validation.csv"
 
-# Artefak hasil (dihasilkan pipeline, tapi WAJIB ikut commit agar
-# skripsi dapat direproduksi - lihat catatan di README bagian outputs/)
-TOPICS_DIR = REPO / "outputs" / "topics"
+# Artefak hasil per tahap
 TOPIC_COUNTS_FINAL = TOPICS_DIR / "topic_counts_final.csv"
 TOPIC_DIST_FINAL = TOPICS_DIR / "topic_distribution_final.csv"
 TOPIC_BY_YEAR_FINAL = TOPICS_DIR / "topic_by_year_final.csv"
@@ -56,7 +62,6 @@ CORPUS_CORRECTED = TOPICS_DIR / "corpus_corrected.pkl"
 EVAL_SUMMARY_CSV = MODEL_DIR / "evaluation_summary.csv"
 
 # Audit keyakinan penugasan dokumen
-AUDIT_DIR = REPO / "outputs" / "audit"
 ASSIGNMENT_AUDIT_MD = AUDIT_DIR / "assignment_audit.md"
 EXCLUDED_DOCUMENTS = AUDIT_DIR / "excluded_documents.csv"
 DATA_LINEAGE_BY_YEAR = AUDIT_DIR / "data_lineage_by_year.csv"
@@ -65,7 +70,6 @@ DATA_LINEAGE_BY_YEAR = AUDIT_DIR / "data_lineage_by_year.csv"
 LABELS_JSON = MODEL_DIR / "labels.json"
 
 # Statistik & proyeksi
-STATS_DIR = REPO / "outputs" / "forecast"
 FORECAST_CSV = STATS_DIR / "forecast_table.csv"
 BACKTEST_CSV = STATS_DIR / "backtest_results.csv"
 SHARE_INTERVALS = STATS_DIR / "share_intervals.csv"
