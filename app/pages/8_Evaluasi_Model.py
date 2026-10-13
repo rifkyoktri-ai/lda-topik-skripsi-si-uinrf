@@ -8,9 +8,9 @@ import artifacts
 # ── Paths ────────────────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-hp_path  = os.path.join(REPO, "model", "hyperparameter_results.csv")
+hp_path  = os.path.join(REPO, "outputs", "model", "hyperparameter_results.csv")
 ksw_path = os.path.join(REPO, "k_sweep.csv")
-ev_path  = os.path.join(REPO, "_fix_final", "evaluation_summary.csv")
+ev_path  = os.path.join(REPO, "outputs", "model", "evaluation_summary.csv")
 
 # ── Header ───────────────────────────────────────────────────────────────────
 st.markdown("<h1>Evaluasi Model LDA</h1>", unsafe_allow_html=True)
@@ -199,17 +199,17 @@ if hp_exists:
 st.markdown("<hr>", unsafe_allow_html=True)
 
 # ── BAGIAN 3: Metrik Evaluasi Sistem ─────────────────────────────────────────
-st.subheader("📁 Data Evaluasi Tambahan Sistem (`_fix_final/evaluation_summary.csv`)")
+st.subheader("📁 Data Evaluasi Tambahan Sistem (`outputs/model/evaluation_summary.csv`)")
 
 if os.path.exists(ev_path):
     ev_df = pd.read_csv(ev_path)
     st.dataframe(ev_df, use_container_width=True, hide_index=True)
 else:
-    st.info("Berkas `_fix_final/evaluation_summary.csv` tidak ditemukan.")
+    st.info("Berkas `outputs/model/evaluation_summary.csv` tidak ditemukan.")
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.divider()
 st.caption(
-    "Data Murni Sistem: model/hyperparameter_results.csv · _fix_final/evaluation_summary.csv"
+    "Data Murni Sistem: model/hyperparameter_results.csv · outputs/model/evaluation_summary.csv"
 )
 

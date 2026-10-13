@@ -3,7 +3,7 @@ import hashlib
 import pandas as pd
 import gensim
 
-df_words = pd.read_csv('_fix_final/top_words_final.csv')
+df_words = pd.read_csv('outputs/topics/top_words_final.csv')
 lda = gensim.models.LdaModel.load('model/lda_model.gensim')
 
 approved_labels = {
@@ -35,7 +35,7 @@ for tid in range(1, 9):
     })
     print(f'Topik {tid}: label="{lbl}", fingerprint={fp_hash[:16]}..., confidence={conf}')
 
-with open('_label_work/labels.json', 'w', encoding='utf-8') as f:
+with open('outputs/model/labels.json', 'w', encoding='utf-8') as f:
     json.dump(labels_list, f, indent=2, ensure_ascii=False)
 
-print('Saved _label_work/labels.json successfully.')
+print('Saved outputs/model/labels.json successfully.')

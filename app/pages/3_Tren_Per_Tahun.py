@@ -12,10 +12,10 @@ M = artifacts.load_metrics()
 # ── Load data resmi ─────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-tby = pd.read_csv(os.path.join(REPO, "_fix_final", "topic_by_year_final.csv"))
-intervals = pd.read_csv(os.path.join(REPO, "_stats_forecast", "share_intervals.csv"))
+tby = pd.read_csv(os.path.join(REPO, "outputs", "topics", "topic_by_year_final.csv"))
+intervals = pd.read_csv(os.path.join(REPO, "outputs/forecast", "share_intervals.csv"))
 
-with open(os.path.join(REPO, "_label_work", "labels.json"), "r", encoding="utf-8") as f:
+with open(os.path.join(REPO, "outputs/model", "labels.json"), "r", encoding="utf-8") as f:
     raw_labels = json.load(f)
 
 labels_map = {item["label"]: int(item["topic_id"]) for item in raw_labels}

@@ -2,11 +2,11 @@
 """Generator GROUND_TRUTH.md - rujukan resmi angka skripsi.
 
 Seluruh angka diambil dari artefak, bukan diketik manual:
-  _fix_final/topic_counts_final.csv   -> jumlah dokumen & persentase per topik
-  _fix_final/evaluation_summary.csv   -> metrik evaluasi model
-  _stats_forecast/composition_tests_report.md -> uji homogenitas
-  _stats_forecast/per_topic_tests.csv -> uji tren per topik
-  _label_work/labels.json             -> label & tingkat kepercayaan
+  outputs/topics/topic_counts_final.csv   -> jumlah dokumen & persentase per topik
+  outputs/model/evaluation_summary.csv   -> metrik evaluasi model
+  outputs/forecast/composition_tests_report.md -> uji homogenitas
+  outputs/forecast/per_topic_tests.csv -> uji tren per topik
+  outputs/model/labels.json             -> label & tingkat kepercayaan
 
 Jalankan:  python -m src.ground_truth
 """
@@ -76,7 +76,7 @@ def main():
     A('> **DIBUANG OTOMATIS oleh `src/ground_truth.py`.** Jangan diedit manual.')
     A('> Regenerasi: `python -m src.ground_truth`')
     A('>')
-    A('> Sumber angka: artefak di `_fix_final/`, `_stats_forecast/`, dan `_label_work/`.')
+    A('> Sumber angka: artefak di `outputs/`, `outputs/forecast/`, dan `outputs/model/`.')
     A('> Jika angka di skripsi berbeda dengan dokumen ini, dokumen ini yang benar')
     A('> karena diturunkan langsung dari artefak pipeline.')
     A('')

@@ -19,7 +19,7 @@ Mengapa modul ini ada:
    asal-usul yang dapat diverifikasi ulang - melanggar prinsip repo ini.
 
 Sumber data:
-   _fix_final/topic_distribution_final.csv  (matriks theta final, 285 dokumen)
+   outputs/topics/topic_distribution_final.csv  (matriks theta final, 285 dokumen)
    model/topic_labels.csv                   (label resmi per topik)
 
 Jalankan:

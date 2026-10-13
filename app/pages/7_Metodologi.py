@@ -11,9 +11,9 @@ M = artifacts.load_metrics()
 # ── Paths Data Resmi ────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-forecast_path = os.path.join(REPO, "_stats_forecast", "forecast_table.csv")
-labels_path = os.path.join(REPO, "_label_work", "labels.json")
-eval_path = os.path.join(REPO, "_fix_final", "evaluation_summary.csv")
+forecast_path = os.path.join(REPO, "outputs/forecast", "forecast_table.csv")
+labels_path = os.path.join(REPO, "outputs/model", "labels.json")
+eval_path = os.path.join(REPO, "outputs", "model", "evaluation_summary.csv")
 
 # SHA256 forecast_table.csv untuk footer
 sha256_hash = ""
@@ -116,9 +116,9 @@ eval_table_data = {
 }
 st.dataframe(pd.DataFrame(eval_table_data), use_container_width=True, hide_index=True)
 
-_n_cfg = len(pd.read_csv(os.path.join(REPO, "model", "hyperparameter_results.csv"),
+_n_cfg = len(pd.read_csv(os.path.join(REPO, "outputs", "model", "hyperparameter_results.csv"),
                           encoding="utf-8-sig")) if os.path.exists(
-    os.path.join(REPO, "model", "hyperparameter_results.csv")) else 140
+    os.path.join(REPO, "outputs", "model", "hyperparameter_results.csv")) else 140
 
 # K dan C_V resmi dibaca dari artefak (bukan hard-code)
 _M = artifacts.load_metrics()
@@ -137,7 +137,7 @@ st.caption(
 )
 
 # C_V per-K dihitung dari artefak, bukan ditulis manual
-_hp_path = os.path.join(REPO, "model", "hyperparameter_results.csv")
+_hp_path = os.path.join(REPO, "outputs", "model", "hyperparameter_results.csv")
 _k_rows = []
 if os.path.exists(_hp_path):
     _hp = pd.read_csv(_hp_path, encoding="utf-8-sig")

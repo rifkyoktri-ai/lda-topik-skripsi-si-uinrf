@@ -3,7 +3,7 @@
 _Dihitung otomatis oleh `src/assignment_audit.py` - jangan diedit manual._
 
 **Sumber data:** `topic_distribution_final.csv`
-**Tanggal pembuatan:** 13-10-2026 14:51
+**Tanggal pembuatan:** 13-10-2026 18:55
 
 Angka pada bagian Keterbatasan Bab IV yang merujuk keyakinan penugasan dan fragmentasi dokumen analitik diturunkan dari laporan ini.
 

@@ -10,15 +10,15 @@ M = artifacts.load_metrics()
 
 # ── Load data resmi ─────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-counts_df = pd.read_csv(os.path.join(REPO, "_fix_final", "topic_counts_final.csv"))
+counts_df = pd.read_csv(os.path.join(REPO, "outputs", "topics", "topic_counts_final.csv"))
 
-with open(os.path.join(REPO, "_label_work", "labels.json"), "r", encoding="utf-8") as f:
+with open(os.path.join(REPO, "outputs/model", "labels.json"), "r", encoding="utf-8") as f:
     raw_labels = json.load(f)
 
 labels_dict = {int(item["topic_id"]): item["label"] for item in raw_labels}
 
 # ── Nilai turunan (dihitung, bukan diketik) ─────────────────────────────────
-_dist = pd.read_csv(os.path.join(REPO, "_fix_final", "topic_distribution_final.csv"))
+_dist = pd.read_csv(os.path.join(REPO, "outputs", "topics", "topic_distribution_final.csv"))
 TH_AWAL, TH_AKHIR = int(_dist["Tahun"].min()), int(_dist["Tahun"].max())
 RENTANG = f"{TH_AWAL}\u2013{TH_AKHIR}"
 N_DOC = artifacts.idr(M["Total_Documents"], 0)

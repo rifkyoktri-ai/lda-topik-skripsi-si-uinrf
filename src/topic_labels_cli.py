@@ -1,7 +1,7 @@
 """
 topic_labels_cli.py — Validasi integritas label topik terhadap model LDA.
 
-Memastikan fingerprint SHA-256 pada `_label_work/labels.json` masih cocok
+Memastikan fingerprint SHA-256 pada `outputs/model/labels.json` masih cocok
 dengan top-10 kata pada `model/lda_model.gensim`. Gagal keras (ValueError)
 bila ada ketidakcocokan, jumlah topik beda, atau status bukan "disetujui".
 

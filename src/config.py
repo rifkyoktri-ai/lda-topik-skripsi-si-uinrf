@@ -31,8 +31,16 @@ CORPUS_PATH = INTERMEDIATE_DIR / "corpus.pkl"
 PHRASER_BIGRAM = INTERMEDIATE_DIR / "phraser_bigram.pkl"
 PHRASER_TRIGRAM = INTERMEDIATE_DIR / "phraser_trigram.pkl"
 
-# Model
-MODEL_DIR = REPO / "model"
+# ── ARTEFAK HASIL ────────────────────────────────────────────────────────────
+# Dihasilkan pipeline, tapi WAJIB ikut commit agar skripsi dapat direproduksi.
+# (lihat catatan di README bagian outputs/)
+OUTPUTS_DIR = REPO / "outputs"
+MODEL_DIR = OUTPUTS_DIR / "model"
+TOPICS_DIR = OUTPUTS_DIR / "topics"
+AUDIT_DIR = OUTPUTS_DIR / "audit"
+STATS_DIR = OUTPUTS_DIR / "forecast"
+
+# ── MODEL ────────────────────────────────────────────────────────────────────
 LDA_MODEL = MODEL_DIR / "lda_model.gensim"
 LDA_ID2WORD = MODEL_DIR / "lda_model.gensim.id2word"   # dictionary vocab model
 HYPERPARAMS_CSV = MODEL_DIR / "hyperparameter_results.csv"
@@ -43,25 +51,25 @@ EVAL_METRICS_CSV = MODEL_DIR / "evaluation_metrics.csv"
 EXPERIMENT_HISTORY = MODEL_DIR / "experiment_history.csv"
 HUMAN_VALIDATION_CSV = MODEL_DIR / "human_topic_validation.csv"
 
+# Artefak hasil per tahap
+TOPIC_COUNTS_FINAL = TOPICS_DIR / "topic_counts_final.csv"
+TOPIC_DIST_FINAL = TOPICS_DIR / "topic_distribution_final.csv"
+TOPIC_BY_YEAR_FINAL = TOPICS_DIR / "topic_by_year_final.csv"
+TOPIC_SENSITIVITY = TOPICS_DIR / "topic_by_year_sensitivity.csv"
+TOP_WORDS_FINAL = TOPICS_DIR / "top_words_final.csv"
+DATASET_CORRECTED = TOPICS_DIR / "dataset_corrected.csv"
+CORPUS_CORRECTED = TOPICS_DIR / "corpus_corrected.pkl"
+EVAL_SUMMARY_CSV = MODEL_DIR / "evaluation_summary.csv"
+
 # Audit keyakinan penugasan dokumen
-ASSIGNMENT_AUDIT_MD = REPO / "docs" / "assignment_audit.md"
+ASSIGNMENT_AUDIT_MD = AUDIT_DIR / "assignment_audit.md"
+EXCLUDED_DOCUMENTS = AUDIT_DIR / "excluded_documents.csv"
+DATA_LINEAGE_BY_YEAR = AUDIT_DIR / "data_lineage_by_year.csv"
 
-# Artefak final (dibaca dashboard)
-FIX_FINAL_DIR = REPO / "_fix_final"
-TOPIC_COUNTS_FINAL = FIX_FINAL_DIR / "topic_counts_final.csv"
-TOPIC_DIST_FINAL = FIX_FINAL_DIR / "topic_distribution_final.csv"
-TOPIC_BY_YEAR_FINAL = FIX_FINAL_DIR / "topic_by_year_final.csv"
-TOPIC_SENSITIVITY = FIX_FINAL_DIR / "topic_by_year_sensitivity.csv"
-TOP_WORDS_FINAL = FIX_FINAL_DIR / "top_words_final.csv"
-EVAL_SUMMARY_CSV = FIX_FINAL_DIR / "evaluation_summary.csv"
-DATASET_CORRECTED = FIX_FINAL_DIR / "dataset_corrected.csv"
-
-# Label
-LABEL_WORK_DIR = REPO / "_label_work"
-LABELS_JSON = LABEL_WORK_DIR / "labels.json"
+# Label (sumber kebenaran nama topik)
+LABELS_JSON = MODEL_DIR / "labels.json"
 
 # Statistik & proyeksi
-STATS_DIR = REPO / "_stats_forecast"
 FORECAST_CSV = STATS_DIR / "forecast_table.csv"
 BACKTEST_CSV = STATS_DIR / "backtest_results.csv"
 SHARE_INTERVALS = STATS_DIR / "share_intervals.csv"
@@ -69,16 +77,13 @@ PER_TOPIC_TESTS = STATS_DIR / "per_topic_tests.csv"
 COMPOSITION_REPORT = STATS_DIR / "composition_tests_report.md"
 SENSITIVITY_REPORT = STATS_DIR / "sensitivity_report.md"
 BACKTEST_SUMMARY = STATS_DIR / "backtest_summary.md"
-EVAL_NOTES = STATS_DIR / "EVAL_NOTES.md"
-
-# Eksperimen
-EXPERIMENTS_DIR = REPO / "experiments"
-
-# Dokumentasi
+# Dokumentasi (murni .md - tidak ada .csv/.png di sini)
 DOCS_DIR = REPO / "docs"
-DATA_LINEAGE_CSV = DOCS_DIR / "data_lineage_by_year.csv"
-EXCLUDED_DOCS_CSV = DOCS_DIR / "excluded_documents.csv"
+EVAL_NOTES = DOCS_DIR / "EVAL_NOTES.md"
+DATA_LINEAGE_CSV = AUDIT_DIR / "data_lineage_by_year.csv"
+EXCLUDED_DOCS_CSV = AUDIT_DIR / "excluded_documents.csv"
 
+# Dibuat saat runtime, tidak perlu sudah ada
 LOGS_DIR = REPO / "logs"
 
 
@@ -143,8 +148,8 @@ PCT_THETA_UNDER_050 = 13.33
 
 def ensure_dirs():
     """Pastikan semua direktori output ada."""
-    for d in (LOGS_DIR, EXPERIMENTS_DIR, DOCS_DIR, MODEL_DIR, FIX_FINAL_DIR,
-              STATS_DIR, LABEL_WORK_DIR, INTERMEDIATE_DIR):
+    for d in (LOGS_DIR, DOCS_DIR, MODEL_DIR, TOPICS_DIR, STATS_DIR,
+              AUDIT_DIR, INTERMEDIATE_DIR):
         d.mkdir(parents=True, exist_ok=True)
 
 

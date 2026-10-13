@@ -20,19 +20,31 @@ experiments/
 *.backup2.docx
 *.backup_tables.docx
 
-# ── Binary model (di-ignore secara umum) ────────────────────────────────────
+# ── Binary besar (di-ignore secara umum) ─────────────────────────────────────
 *.gensim
 *.gensim.*
-corpus.pkl
 *.npy
+*.pkl
 
-# ...KECUALI artefak model final yang dibutuhkan untuk reproduksi ────────────
+# ...KECUALI artefak yang WAJIB ikut commit agar skripsi dapat direproduksi.
+# CATATAN: pola '!' harus selalu ditulis SESUDAH pola generalnya di atas.
+# Kalau folder hasil berpindah, negate di sini WAJIB ikut diperbarui juga,
+# jika tidak file model diam-diam lepas dari git.
+# Jaring pengamannya: tests/test_structure.py (test_artefak_model_tertrack).
+!outputs/model/lda_model.gensim
+!outputs/model/lda_model.gensim.expElogbeta.npy
+!outputs/model/lda_model.gensim.id2word
+!outputs/model/lda_model.gensim.state
+!outputs/topics/corpus_corrected.pkl
+!data/intermediate/dictionary.gensim
+!data/intermediate/corpus.pkl
+
+# ...selama transisi, path lama masih perlu pengecualian ───────────────────
 !model/lda_model.gensim
 !model/lda_model.gensim.expElogbeta.npy
 !model/lda_model.gensim.id2word
 !model/lda_model.gensim.state
-!data/intermediate/dictionary.gensim
-!data/intermediate/corpus.pkl
+!_fix_final/corpus_corrected.pkl
 
 # ── Sampah scraper (aset CSS/JS/GIF hasil "Save Page As") ──────────────────
 data/raw/**/*_files/

@@ -294,7 +294,7 @@ def plot_topic_trend(df_result: pd.DataFrame):
 
     # Catatan: tabel tren proporsi per TIDAK ditulis ke model/ sebagai sumber
     # kebenaran. Sumber resmi tren & proyeksi adalah
-    # `_fix_final/topic_by_year_final.csv` dan `_stats_forecast/forecast_table.csv`
+    # `outputs/topics/topic_by_year_final.csv` dan `outputs/forecast/forecast_table.csv`
     # yang dipakai dashboard. Lihat GROUND_TRUTH.md.
 
 
@@ -438,11 +438,11 @@ def main():
     plot_topic_trend(df_result)
 
     # -------------------------------------------------------------------------
-    # PELABELAN TOPIK — Human-in-the-Loop (label terkunci di _label_work/labels.json)
+    # PELABELAN TOPIK — Human-in-the-Loop (label terkunci di outputs/model/labels.json)
     # -------------------------------------------------------------------------
     # Label TIDAK lagi dihasilkan otomatis (KeyBERT). Label ditetapkan oleh
     # peneliti melalui analisis interpretatif top-15 words, divalidasi bersama
-    # dosen pembimbing, lalu dikunci di _label_work/labels.json dengan
+    # dosen pembimbing, lalu dikunci di outputs/model/labels.json dengan
     # fingerprint SHA-256 dari top-10 kata tiap topik.
     # validate_labels() di awal main() menjamin model ini masih cocok dengan label.
     logger.info("  Labeling method: Human-in-the-Loop (label terkunci + fingerprint SHA-256)")

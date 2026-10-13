@@ -10,9 +10,9 @@ import json, os
 # ── Load Data ───────────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-labels_path = os.path.join(REPO, "_label_work", "labels.json")
-words_path = os.path.join(REPO, "_fix_final", "top_words_final.csv")
-dist_path = os.path.join(REPO, "_fix_final", "topic_distribution_final.csv")
+labels_path = os.path.join(REPO, "outputs/model", "labels.json")
+words_path = os.path.join(REPO, "outputs", "topics", "top_words_final.csv")
+dist_path = os.path.join(REPO, "outputs", "topics", "topic_distribution_final.csv")
 
 with open(labels_path, 'r', encoding='utf-8') as f:
     labels = json.load(f)
