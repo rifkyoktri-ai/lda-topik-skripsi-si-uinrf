@@ -1,9 +1,9 @@
 """
-build_final.py — Regenerasi artefak `_fix_final/` dari model LDA tersimpan.
+build_final.py — Regenerasi artefak `outputs/` dari model LDA tersimpan.
 
 MASALAH YANG DISOLUSIKAN
 -------------------------
-`_fix_final/*.csv` sebelumnya dibuat manual tanpa script penghasilnya, sehingga
+`outputs/*.csv` sebelumnya dibuat manual tanpa script penghasilnya, sehingga
 tidak reproducible. Modul ini menutup celah itu.
 
 METODOLOGI (penting)
@@ -18,11 +18,11 @@ versi yang lebih benar dan sekarang dapat direproduksi ulang.
 
 FILES YANG DIHASILKAN
 ---------------------
-  _fix_final/topic_distribution_final.csv   (285 baris + matriks theta 1..8)
-  _fix_final/topic_counts_final.csv         (jumlah & persentase per topik)
-  _fix_final/topic_by_year_final.csv        (matriks tahun x topik + proporsi)
-  _fix_final/top_words_final.csv            (kata kunci per topik)
-  _fix_final/evaluation_summary.csv         (rekap metrik model)
+  outputs/topics/topic_distribution_final.csv   (285 baris + matriks theta 1..8)
+  outputs/topics/topic_counts_final.csv         (jumlah & persentase per topik)
+  outputs/topics/topic_by_year_final.csv        (matriks tahun x topik + proporsi)
+  outputs/topics/top_words_final.csv            (kata kunci per topik)
+  outputs/model/evaluation_summary.csv         (rekap metrik model)
 """
 import ast
 import sys
@@ -211,7 +211,7 @@ def run(write=True, verbose=True):
                       f"-> Topik {int(r.topik_dominan_baru)}")
 
     if write:
-        C.FIX_FINAL_DIR.mkdir(parents=True, exist_ok=True)
+        C.TOPICS_DIR.mkdir(parents=True, exist_ok=True)
         dist.to_csv(C.TOPIC_DIST_FINAL, index=False, encoding="utf-8-sig")
         counts.to_csv(C.TOPIC_COUNTS_FINAL, index=False, encoding="utf-8-sig")
         by_year.to_csv(C.TOPIC_BY_YEAR_FINAL, index=False, encoding="utf-8-sig")
@@ -219,7 +219,7 @@ def run(write=True, verbose=True):
         evals.to_csv(C.EVAL_SUMMARY_CSV, index=False, encoding="utf-8-sig")
         if verbose:
             print()
-            print(f"  [OK] 5 artefak ditulis ke {C.FIX_FINAL_DIR.relative_to(C.REPO)}")
+            print(f"  [OK] 5 artefak ditulis ke {C.TOPICS_DIR.relative_to(C.REPO)}")
 
     return {"distribution": dist, "counts": counts, "by_year": by_year,
             "top_words": top_words, "evaluation": evals, "theta": theta}

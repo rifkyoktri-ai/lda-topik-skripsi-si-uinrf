@@ -13,14 +13,19 @@ from gensim.models import LdaModel
 import chart_helpers
 importlib.reload(chart_helpers)
 
-REPO      = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-FIX_DIR   = os.path.join(REPO, "_fix_final")
-LABEL_DIR = os.path.join(REPO, "_label_work")
-STATS_DIR = os.path.join(REPO, "_stats_forecast")
-MODEL_DIR = os.path.join(REPO, "model")
+REPO       = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+OUTPUT_DIR = os.path.join(REPO, "outputs")
+TOPICS_DIR = os.path.join(OUTPUT_DIR, "topics")
+MODEL_DIR  = os.path.join(OUTPUT_DIR, "model")
+FORECAST_DIR = os.path.join(OUTPUT_DIR, "forecast")
+AUDIT_DIR  = os.path.join(OUTPUT_DIR, "audit")
+# alias kompatibilitas untuk halaman yang masih memakainya
+FIX_DIR    = TOPICS_DIR
+LABEL_DIR  = MODEL_DIR
+STATS_DIR  = FORECAST_DIR
 
-FORECAST_FILE = os.path.join(STATS_DIR, "forecast_table.csv")
-DIST_FILE     = os.path.join(FIX_DIR, "topic_distribution_final.csv")
+FORECAST_FILE = os.path.join(FORECAST_DIR, "forecast_table.csv")
+DIST_FILE     = os.path.join(TOPICS_DIR, "topic_distribution_final.csv")
 
 
 def rentang_tahun() -> str:
@@ -53,14 +58,14 @@ def load_metrics() -> dict:
     Baca metrik resmi dari artefak - JANGAN hard-code di halaman.
 
     Sumber:
-      _fix_final/evaluation_summary.csv        -> alpha, eta, C_V, vocab, dll
-      _stats_forecast/composition_tests_report.md -> chi-square, p, Cramer's V
+      outputs/model/evaluation_summary.csv        -> alpha, eta, C_V, vocab, dll
+      outputs/forecast/composition_tests_report.md -> chi-square, p, Cramer's V
 
     Mengembalikan dict; kunci yang tidak ditemukan simply tidak ada.
     """
     out = {}
 
-    ev = os.path.join(FIX_DIR, "evaluation_summary.csv")
+    ev = os.path.join(MODEL_DIR, "evaluation_summary.csv")
     if os.path.exists(ev):
         df = pd.read_csv(ev, encoding="utf-8-sig")
         for _, r in df.iterrows():

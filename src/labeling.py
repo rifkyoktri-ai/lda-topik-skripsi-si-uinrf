@@ -1,6 +1,6 @@
 """
 Skrip Perubahan & Pembaruan auto_labeling.py
-Menggunakan label terkunci dari _label_work/labels.json dengan pemindaian validasi fingerprint.
+Menggunakan label terkunci dari outputs/model/labels.json dengan pemindaian validasi fingerprint.
 """
 import json
 import warnings
@@ -20,7 +20,7 @@ def load_approved_labels(
     validate: bool = True
 ) -> dict:
     """
-    Memuat label resmi yang telah disetujui dari _label_work/labels.json.
+    Memuat label resmi yang telah disetujui dari outputs/model/labels.json.
 
     Args:
         labels_path: Path ke berkas labels.json.
@@ -111,7 +111,7 @@ def export_topic_labels_json(
     Berkas ini sebelumnya tidak ditulis siapa pun dan masih memuat label
     hasil auto-labeling lama (label topik 7 berisi label milik topik 5),
     sehingga menyesatkan. Sekarang label_final diambil dari
-    _label_work/labels.json agar identik dengan topic_labels.csv.
+    outputs/model/labels.json agar identik dengan topic_labels.csv.
     """
     num_docs = {}
     if dist_df is not None and 'topik_dominan' in dist_df.columns:

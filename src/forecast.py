@@ -17,9 +17,9 @@ if __package__ in (None, ""):                      # izinkan `python src/forecas
 from . import config as C                          # satu sumber kebenaran path
 
 BASE_DIR = str(C.REPO)
-FIX_FINAL_DIR = str(C.FIX_FINAL_DIR)
-LABEL_WORK_DIR = str(C.LABEL_WORK_DIR)
-OUTPUT_DIR = str(C.STATS_DIR)                      # artefak statistik -> _stats_forecast/
+TOPICS_DIR = str(C.TOPICS_DIR)
+MODEL_DIR = str(C.MODEL_DIR)
+OUTPUT_DIR = str(C.STATS_DIR)                      # artefak statistik -> outputs/forecast/
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def load_data():
