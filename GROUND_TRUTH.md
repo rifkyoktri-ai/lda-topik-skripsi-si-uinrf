@@ -7,7 +7,7 @@
 > Jika angka di skripsi berbeda dengan dokumen ini, dokumen ini yang benar
 > karena diturunkan langsung dari artefak pipeline.
 
-_Terakhir dibuat: 2026-10-13 11:32_
+_Terakhir dibuat: 2026-10-13 14:12_
 
 ---
 
@@ -64,7 +64,7 @@ pie title Distribusi 8 Topik Skripsi SI (285 Dokumen)
     "T3: Analisis Kualitas Layanan & Risiko SI (16,1%)" : 46
     "T5: Manajemen Risiko TI & Analitik Data (14,4%)" : 41
     "T4: Kepuasan Pengguna Akhir (EUCS & TAM) (11,9%)" : 34
-    "T7: Rancang Bangun SI Berbasis Web & Mobile (11,6%)" : 33
+    "T7: Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna (11,6%)" : 33
     "T1: Audit TI & Evaluasi Kesuksesan SI (11,2%)" : 32
     "T2: Pengembangan & Analisis Sistem Heterogen (10,2%)" : 29
     "T8: Keamanan Informasi & SI Institusi Pendidikan (7,4%)" : 21
@@ -78,7 +78,7 @@ pie title Distribusi 8 Topik Skripsi SI (285 Dokumen)
 | **4** | Kepuasan Pengguna Akhir (EUCS & TAM) | 34 | 11,93% | Tinggi |
 | **5** | Manajemen Risiko TI & Analitik Data | 41 | 14,39% | Sedang |
 | **6** | Pengembangan & Perencanaan Strategis SI | 49 | 17,19% | Sedang |
-| **7** | Rancang Bangun SI Berbasis Web & Mobile | 33 | 11,58% | Sedang |
+| **7** | Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna | 33 | 11,58% | Rendah |
 | **8** | Keamanan Informasi & SI Institusi Pendidikan | 21 | 7,37% | Rendah |
 
 > Total: **285 dokumen** (harus sama dengan jumlah dokumen korpus).
@@ -95,7 +95,7 @@ pie title Distribusi 8 Topik Skripsi SI (285 Dokumen)
 | 4 | Kepuasan Pengguna Akhir (EUCS & TAM) | 0.5 | 0,3910 | 1,0000 | Tidak |
 | 5 | Manajemen Risiko TI & Analitik Data | -0.6 | 0,2848 | 1,0000 | Tidak |
 | 6 | Pengembangan & Perencanaan Strategis SI | 0.6 | 0,2848 | 1,0000 | Tidak |
-| 7 | Rancang Bangun SI Berbasis Web & Mobile | -0.4 | 0,5046 | 1,0000 | Tidak |
+| 7 | Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna | -0.4 | 0,5046 | 1,0000 | Tidak |
 | 8 | Keamanan Informasi & SI Institusi Pendidikan | 0.6 | 0,2848 | 1,0000 | Tidak |
 
 > **Tidak ada topik** yang memiliki tren signifikan setelah koreksi Bonferroni.

@@ -13,7 +13,7 @@ approved_labels = {
     4: ('Kepuasan Pengguna Akhir (EUCS & TAM)', 'Tinggi', 'Topik ini secara spesifik mengelompokkan penelitian evaluasi kepuasan pengguna (EUCS) dan analisis penerimaan aplikasi digital.'),
     5: ('Manajemen Risiko TI & Analitik Data', 'Sedang', 'Topik ini memuat studi manajemen risiko teknologi informasi serta penerapan metode analitik data mentah (data mining, prediksi penjualan, dan NLP).'),
     6: ('Pengembangan & Perencanaan Strategis SI', 'Sedang', 'Topik ini mencakup skripsi mengenai perencanaan strategis sistem informasi, sistem pendukung keputusan seleksi, serta rancang bangun SI instansi pemerintah.'),
-    7: ('Rancang Bangun SI Berbasis Web & Mobile', 'Sedang', 'Topik ini mengelompokkan rancang bangun sistem informasi berbasis web/mobile serta evaluasi perilaku adopsi dan privasi pengguna.'),
+    7: ('Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna', 'Rendah', 'Topik ini memuat skripsi yang berfokus pada metode pengembangan perangkat lunak, pengelolaan data, serta perancangan antarmuka pengguna. Kata kunci terkuatnya adalah extreme programming, pengelolaan data, serta user interface, desain, dan android. Label sebelumnya "Rancang Bangun SI Berbasis Web & Mobile" tidak lagi digunakan karena kata "sistem", "informasi", "aplikasi", "web", dan "implementasi" telah dihapus dari kosakata model oleh filter_extremes(no_above=0,40), sehingga sinyal rancang bangun tidak lagi tersedia secara diskriminatif.'),
     8: ('Keamanan Informasi & SI Institusi Pendidikan', 'Rendah', 'Topik ini merupakan kelompok topik berukuran paling kecil yang bersifat keranjang sisa, mencakup audit keamanan informasi, segmentasi pelanggan K-Means, dan sistem informasi sekolah.')
 }
 

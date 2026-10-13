@@ -12,7 +12,7 @@
 - **Topik 4 (Kepuasan Pengguna Akhir (EUCS & TAM))**: WMA Full = 13.59%, WMA Tanpa-Judul-Saja = 11.85% (Selisih: 1.74 pp)
 - **Topik 5 (Manajemen Risiko TI & Analitik Data)**: WMA Full = 13.43%, WMA Tanpa-Judul-Saja = 14.22% (Selisih: 0.79 pp)
 - **Topik 6 (Pengembangan & Perencanaan Strategis SI)**: WMA Full = 17.57%, WMA Tanpa-Judul-Saja = 18.46% (Selisih: 0.89 pp)
-- **Topik 7 (Rancang Bangun SI Berbasis Web & Mobile)**: WMA Full = 10.95%, WMA Tanpa-Judul-Saja = 9.74% (Selisih: 1.22 pp)
+- **Topik 7 (Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna)**: WMA Full = 10.95%, WMA Tanpa-Judul-Saja = 9.74% (Selisih: 1.22 pp)
 - **Topik 8 (Keamanan Informasi & SI Institusi Pendidikan)**: WMA Full = 7.84%, WMA Tanpa-Judul-Saja = 7.74% (Selisih: 0.10 pp)
 
 ## 3. Kesimpulan Uji Sensitivitas

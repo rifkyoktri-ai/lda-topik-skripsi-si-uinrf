@@ -99,6 +99,45 @@ def export_human_validation_dataset(
     return export_df
 
 
+def export_topic_labels_json(
+    topic_labels_map: dict,
+    lda_model: LdaModel,
+    dist_df: pd.DataFrame | None = None,
+    output_path: str = str(C.TOPIC_LABELS_JSON),
+) -> None:
+    """
+    Menulis cerminan JSON dari label yang telah disetujui.
+
+    Berkas ini sebelumnya tidak ditulis siapa pun dan masih memuat label
+    hasil auto-labeling lama (label topik 7 berisi label milik topik 5),
+    sehingga menyesatkan. Sekarang label_final diambil dari
+    _label_work/labels.json agar identik dengan topic_labels.csv.
+    """
+    num_docs = {}
+    if dist_df is not None and 'topik_dominan' in dist_df.columns:
+        num_docs = dist_df['topik_dominan'].value_counts().to_dict()
+
+    payload = {}
+    for tid_str, info in topic_labels_map.items():
+        tid = info['topic_id']
+        top_words = [w for w, _ in lda_model.show_topic(tid - 1, topn=10)]
+        payload[tid_str] = {
+            'topic_id': tid,
+            'label_final': info['label_final'],
+            'description': info['description'],
+            'confidence': info['confidence'],
+            'status': info['status'],
+            'top_words': top_words,
+            'num_docs': int(num_docs.get(tid, 0)),
+        }
+
+    out_file = Path(output_path)
+    out_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_file, 'w', encoding='utf-8') as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+    print(f"  [LABEL JSON] Cerminan label disetujui ditulis ke: {out_file}")
+
+
 def run_auto_labeling():
     parser = argparse.ArgumentParser(description="Auto Labeling Topik LDA & Expert Validation Exporter")
     parser.add_argument("--model_path", type=str, default=str(C.LDA_MODEL), help="Path ke file model LDA")
@@ -133,6 +172,12 @@ def run_auto_labeling():
     df_labels = pd.DataFrame(labels_rows)
     df_labels.to_csv(output_path, index=False)
     print(f"✅ Topic labels CSV successfully created at -> {output_path}")
+
+    # Cerminan JSON agar topic_labels.json tidak lagi basi/merusak
+    dist_df = None
+    if Path(args.dist_path).exists():
+        dist_df = pd.read_csv(args.dist_path, encoding='utf-8-sig')
+    export_topic_labels_json(topic_labels_map, lda_model, dist_df)
 
 
 if __name__ == "__main__":

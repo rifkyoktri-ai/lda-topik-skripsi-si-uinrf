@@ -49,10 +49,10 @@
   },
   {
     "topic_id": 7,
-    "label": "Rancang Bangun SI Berbasis Web & Mobile",
-    "deskripsi": "Topik ini mengelompokkan rancang bangun sistem informasi berbasis web/mobile serta evaluasi perilaku adopsi dan privasi pengguna.",
+    "label": "Metode Pengembangan Perangkat Lunak & Antarmuka Pengguna",
+    "deskripsi": "Topik ini memuat skripsi yang berfokus pada metode pengembangan perangkat lunak, pengelolaan data, serta perancangan antarmuka pengguna. Kata kunci terkuatnya adalah extreme programming, pengelolaan data, serta user interface, desain, dan android. Label sebelumnya \"Rancang Bangun SI Berbasis Web & Mobile\" tidak lagi digunakan karena kata \"sistem\", \"informasi\", \"aplikasi\", \"web\", dan \"implementasi\" telah dihapus dari kosakata model oleh filter_extremes(no_above=0,40), sehingga sinyal rancang bangun tidak lagi tersedia secara diskriminatif.",
     "top_words_fingerprint": "7e71122a9a4a534dc3ead4b747542a887650f34d170e4cccd5080c7103fe9a8a",
-    "tingkat_kepercayaan": "Sedang",
+    "tingkat_kepercayaan": "Rendah",
     "status": "disetujui"
   },
   {
