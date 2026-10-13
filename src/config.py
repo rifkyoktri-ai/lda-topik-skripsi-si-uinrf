@@ -43,6 +43,9 @@ EVAL_METRICS_CSV = MODEL_DIR / "evaluation_metrics.csv"
 EXPERIMENT_HISTORY = MODEL_DIR / "experiment_history.csv"
 HUMAN_VALIDATION_CSV = MODEL_DIR / "human_topic_validation.csv"
 
+# Audit keyakinan penugasan dokumen
+ASSIGNMENT_AUDIT_MD = REPO / "docs" / "assignment_audit.md"
+
 # Artefak final (dibaca dashboard)
 FIX_FINAL_DIR = REPO / "_fix_final"
 TOPIC_COUNTS_FINAL = FIX_FINAL_DIR / "topic_counts_final.csv"

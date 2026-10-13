@@ -7,7 +7,7 @@
 > Jika angka di skripsi berbeda dengan dokumen ini, dokumen ini yang benar
 > karena diturunkan langsung dari artefak pipeline.
 
-_Terakhir dibuat: 2026-10-13 14:34_
+_Terakhir dibuat: 2026-10-13 14:58_
 
 ---
 
