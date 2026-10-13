@@ -1,169 +1,200 @@
-# 📊 Pemetaan Topik Penelitian Skripsi Sistem Informasi (LDA K=8)
+# 📊 Pemetaan Topik Penelitian Skripsi Sistem Informasi — LDA K=8
 
 > **Program Studi Sistem Informasi · UIN Raden Fatah Palembang · 2021–2025**
-> Analisis 285 skripsi dengan Latent Dirichlet Allocation (LDA) + proyeksi Weighted Moving Average (WMA),
-> disajikan sebagai dashboard interaktif berbasis Streamlit.
+> Analisis 285 skripsi dengan Latent Dirichlet Allocation (LDA) + proyeksi
+> Weighted Moving Average (WMA), disajikan sebagai dashboard interaktif.
 
 ---
 
-## 🎯 Prinsip Repositori
+## 1. Apa yang diteliti?
 
-> **Setiap artefak hasil harus bisa ditunjuk: notebook mana yang membuatnya, dan siapa yang memakainya.**
+285 dokumen abstrak skripsi dipetakan ke **8 topik** menggunakan LDA,
+lalu **diperkirakan** komposisinya untuk 2026–2027.
 
-Peta lengkap ada di bagian [🗺️ Peta Artefak](#️-peta-artefak) di bawah.
+| | |
+|:--|:--|
+| Jumlah dokumen | **285** (dari 312 entri repositori) |
+| Rentang tahun | 2021–2025 |
+| Jumlah topik $K$ | **8** |
+| Model | Gensim LDA, α=auto, η=auto, 30 passes, 500 iterasi, seed 42 |
+| Koherensi $C_V$ | **0,4256** |
+
+🔢 **[Rujukan angka resmi: `GROUND_TRUTH.md`](GROUND_TRUTH.md)** — file itu
+dihasilkan otomatis oleh `src/ground_truth.py` dari artefak, jadi tidak
+bisa berbeda dengan data sebenarnya.
 
 ---
 
-## 📂 Struktur
+## 2. Datanya dari mana?
 
 ```
-├── notebooks/          ← LAPISAN LAPORAN (CRISP-DM, .ipynb)
-├── src/                ← MESIN (modul .py, logika inti)
-├── app/                ← Deployment (Streamlit, 8 halaman)
-├── tests/              ← verifikasi otomatis
-│
-├── data/               ← data korpus (312 → 309 → 285 dokumen)
-├── model/              ← model LDA + artefak eager
-├── _fix_final/         ← artefak final (dashboard)
-├── _label_work/        ← label 8 topik (terkunci)
-├── _stats_forecast/    ← statistik & proyeksi WMA
-└── docs/               ← laporan analisis
+Halaman indeks repositori (5 berkas HTML)
+   → 312 entri skripsi
+        → 309 lolos validasi
+             → 285 lolos prapemrosesan  ← dipakai model
 ```
 
----
+Rincian 27 dokumen yang tidak dipakai (`outputs/audit/excluded_documents.csv`):
 
-## 🔬 Alur CRISP-DM (Notebook)
+| Alasan | Jumlah |
+|:--|--:|
+| Token < 5 setelah stopword & stemming | 20 |
+| Judul duplikat | 4 |
+| Tidak valid | 3 |
+| **Total** | **27** |
 
-| # | Notebook | Fase | Hasil Utama |
-|:-:|:---|:---|:---|
-| 01 | `01_business_understanding.ipynb` | Business Understanding | `data/raw/thesis_scraped.csv` (312) |
-| 02 | `02_data_understanding.ipynb` | Data Understanding | `data/processed/thesis_for_pipeline.csv` (309) |
-| 03 | `03_data_preparation.ipynb` | Data Preparation | `data/intermediate/*` (285 dok, 1.849 vocab) |
-| 04 | `04_modeling_lda.ipynb` | Modeling | `model/lda_model.gensim` (K=8) |
-| 04b | `04b_grid_search.ipynb` | Modeling | `model/hyperparameter_results.csv` (84 konfig) |
-| 05 | `05_evaluation_lda.ipynb` | Evaluation | `experiments/*` |
-| 06 | `06_evaluation_forecast.ipynb` | Evaluation | `_stats_forecast/*` |
-| 07 | `07_labeling.ipynb` | Modeling | `_label_work/labels.json` |
-| 08 | `08_build_final_artifacts.ipynb` | Evaluation | `_fix_final/*` ← **regenerasi artefak** |
-| — | `app/` | **Deployment** | Dashboard Streamlit |
+> 312 − 27 = **285** ✅
 
-> **Penting:** Notebook 04 membuat model, **Notebook 08 mengubahnya jadi artefak final**
-> menggunakan *inferensi penuh* (tanpa hold-out 80/20) agar setiap dokumen dinilai optimal.
+Rincian per tahun: `outputs/audit/data_lineage_by_year.csv`
 
 ---
 
-## 🚀 Menjalankan
+## 3. Bagaimana diproses?
 
-### Dashboard
+```
+  01 Business Understanding ─┐
+  02 Data Understanding    ─┼─→ data/raw/ · data/processed/
+  03 Data Preparation     ──┘        data/intermediate/  (285 dok, 1.849 vocab)
+        │
+        ├── 04 Modeling  ──────→ outputs/model/lda_model.gensim   (K=8)
+        ├── 04b Grid Search ────→ outputs/model/hyperparameter_results.csv (140 konfig)
+        │
+  05 Evaluation     ─────────→ metrik & eksperimen
+  06 Forecast       ─────────→ outputs/forecast/  (WMA, backtest, uji chi-square)
+  07 Labeling       ─────────→ outputs/model/labels.json  (nama 8 topik, terkunci)
+        │
+  08 Build Final Artifacts ─→ outputs/topics/  (distribusi, jumlah, per tahun)
+        │
+        └──→ app/  Dashboard Streamlit  (8 halaman)
+```
+
+| # | Notebook | Masukan → Keluaran |
+|:-:|:---|:---|
+| 01 | Business Understanding | HTML repositori → `data/raw/thesis_scraped.csv` |
+| 02 | Data Understanding | 312 → `data/processed/thesis_for_pipeline.csv` (309) |
+| 03 | Data Preparation | 309 → `data/intermediate/dataset_preprocessed.csv` (285) |
+| 04 | Modeling | korpus → **model LDA** (K=8) |
+| 04b | Grid Search | 140 konfigurasi, K=4…10 |
+| 05 | Evaluation | metrik koherensi, perplexity, kestabilan |
+| 06 | Evaluation & Forecast | proyeksi WMA + backtest + uji statistik |
+| 07 | Labeling | top-15 kata → **8 nama topik** (locked by SHA-256) |
+| 08 | Build Final Artifacts | model → artefak final (inferensi penuh) |
+
+> **Notebook 04 membuat model, Notebook 08 mengubahnya jadi artefak final**
+> memakai *inferensi penuh* (tanpa hold-out 80/20), supaya setiap dokumen
+> dinilai secara optimal.
+
+---
+
+## 4. Hasilnya apa?
+
+### 4.1 Delapan topik
+
+| # | Topik | Dokumen | (%) | Keyakinan |
+|:-:|:---|--:|--:|:--:|
+| 1 | Audit TI & Evaluasi Kesuksesan SI | 32 | 11,23% | Sedang |
+| 2 | Pengembangan & Analisis Sistem Heterogen | 29 | 10,18% | Rendah |
+| 3 | Analisis Kualitas Layanan & Risiko SI | 46 | 16,14% | Sedang |
+| 4 | Kepuasan Pengguna Akhir (EUCS & TAM) | 34 | 11,93% | Tinggi |
+| 5 | Manajemen Risiko TI & Analitik Data | 41 | 14,39% | Sedang |
+| 6 | Pengembangan & Perencanaan Strategis SI | 49 | 17,19% | Sedang |
+| 7 | Penerapan Metode & Framework Sistem Informasi | 33 | 11,58% | Rendah |
+| 8 | Keamanan Informasi & SI Institusi Pendidikan | 21 | 7,37% | Rendah |
+| | **Total** | **285** | **100%** | |
+
+### 4.2 Angka resmi
+
+| Angka | Nilai | Sumber file |
+|:--|:--|:--|
+| $C_V$ (model final) | **0,4256** | `outputs/model/evaluation_metrics.csv` |
+| $U_{mass}$ | −10,7533 | idem |
+| Log Perplexity | −7,4518 | idem |
+| Topic Diversity (10/15) | 0,7125 / 0,6917 | `src/config.py` |
+| Ukuran kosakata | 1.849 | `data/intermediate/dictionary.gensim` |
+| Chi-square homogenitas | χ² = 23,9361, df = 28 | `outputs/forecast/composition_tests_report.md` |
+| p-value | 0,6849 | idem |
+| Cramér's V | 0,1449 | idem |
+| p-permutasi | 0,6994 | idem |
+| MAE agregat WMA | 4,46 pp | `outputs/forecast/backtest_results.csv` |
+| Topik dengan tren signifikan | **0 dari 8** | `outputs/forecast/per_topic_tests.csv` |
+
+---
+
+## 5. Bagaimana cara memverifikasi?
+
+Semua perintah lewat **satu pintu masuk**:
+
 ```bash
-.\.venv\Scripts\activate
-pip install -r requirements.txt
-streamlit run app/main.py
-```
-→ `http://localhost:8501`
-
-### Notebook
-```bash
-jupyter lab notebooks/
-# atau jalankan dari terminal:
-python run_notebook.py notebooks/08_build_final_artifacts.ipynb
+python run.py              # daftar perintah
+python run.py test         # 24 unit test
+python run.py structure    # 13 pemeriksaan bentuk repo
+python run.py notebook-fast # jalankan pipeline tanpa latih ulang (~2 menit)
+python run.py dashboard    # dashboard Streamlit
 ```
 
-### Pipeline Lengkap (urutan)
-```bash
-python run_notebook.py notebooks/01_business_understanding.ipynb
-python run_notebook.py notebooks/02_data_understanding.ipynb
-python run_notebook.py notebooks/03_data_preparation.ipynb
-python -m src.grid_search              # opsional (~10 menit)
-python -m src.modeling                 # opsional (~5 menit)
-python -m src.evaluation_lda           # opsional (~10 menit)
-python -m src.topic_labels_cli         # validasi label
-python -m src.labeling                 # ekspor label CSV
-python run_notebook.py notebooks/06_evaluation_forecast.ipynb
-python run_notebook.py notebooks/08_build_final_artifacts.ipynb
-```
+**40 test berjalan otomatis** dan mencakup:
+pipeline & prapemrosesan · integritas korpus · fingerprint label ·
+matematika WMA · sinkronisasi metrik · bentuk repo.
 
-### Verifikasi
-```bash
-python run_tests.py              # 5 unit test + fingerprint label
-python -m src.topic_labels_cli   # validasi fingerprint
-```
+> Jika `make` terpasang di sistem Anda, `make test` melakukan hal yang sama.
 
 ---
 
-## 📊 Metrik Terverifikasi
+## 🗺️ Dari mana asal setiap angka?
 
-| Metrik | Nilai | Cara Verifikasi |
-|:---|---:|:---|
-| Jumlah dokumen | **285** | 2021:29 · 2022:78 · 2023:46 · 2024:47 · 2025:85 |
-| Ukuran kosakata | **1.849** | `data/intermediate/dictionary.gensim` |
-| Jumlah topik $K$ | **8** | (alpha=auto, eta=auto) |
-| Coherence $C_V$ | **0,4256** | dihitung ulang dari `model/lda_model.gensim` |
-| $U_{mass}$ | −10,7533 | *Online Variational Bayes* |
-| Log Perplexity | −7,4518 | *Online Variational Bayes* |
-| Topic Diversity | 0,7125 / 0,6917 | *Online Variational Bayes* |
-| Passes / Iterations | 30 / 500 | *Online Variational Bayes* |
-| $\alpha$ / $\eta$ / seed | auto / auto / 42 | *Online Variational Bayes* |
+Pertanyaan "angka ini dari mana?" bisa dijawab hanya dengan melihat nama file.
 
-Semua angka **dapat direproduksi ulang** dengan menjalankan notebook terkait.
-Rujukan resmi: [`GROUND_TRUTH.md`](GROUND_TRUTH.md)
+| Angka di naskah | File sumber | Dibuat oleh |
+|:---|:---|:---|
+| 312 entri repositori | `data/raw/thesis_scraped.csv` | Notebook 01 |
+| 309 → 285, 27 terbuang | `outputs/audit/data_lineage_by_year.csv` | Notebook 02 |
+| Alasan 27 dokumen dibuang | `outputs/audit/excluded_documents.csv` | Notebook 02 |
+| 1.849 kosakata | `data/intermediate/dictionary.gensim` | Notebook 03 |
+| 140 konfigurasi grid | `outputs/model/hyperparameter_results.csv` | `src/grid_search.py` |
+| $C_V$ = 0,4256 | `outputs/model/evaluation_metrics.csv` | `src/modeling.py` |
+| Nama 8 topik | `outputs/model/labels.json` | `src/make_labels.py` → `src/labeling.py` |
+| Jumlah dokumen per topik | `outputs/topics/topic_counts_final.csv` | Notebook 08 |
+| Kata kunci per topik | `outputs/topics/top_words_final.csv` | Notebook 08 |
+| Proporsi per tahun | `outputs/topics/topic_by_year_final.csv` | Notebook 08 |
+| χ², p, V | `outputs/forecast/composition_tests_report.md` | `src/forecast.py` |
+| Proyeksi 2026–2027 | `outputs/forecast/forecast_table.csv` | `src/forecast.py` |
+| MAE backtest | `outputs/forecast/backtest_results.csv` | `src/forecast.py` |
+| Uji tren per topik | `outputs/forecast/per_topic_tests.csv` | `src/forecast.py` |
+| Keyakinan penugasan dokumen | `outputs/audit/assignment_audit.md` | `src/assignment_audit.py` |
+| **Semua angka resmi sekaligus** | **`GROUND_TRUTH.md`** | `src/ground_truth.py` |
 
 ---
 
-## 🗺️ Peta Artefak
+## 📂 Struktur folder
 
-> Setiap artefak → siapa pembuatnya → siapa pemakainya.
+```
+├── data/{raw,interim,processed}   ← DATA (sumber → antara → siap)
+├── src/        (18 modul)         ← MESIN
+├── notebooks/  (9)                ← LAPISAN LAPORAN (CRISP-DM)
+├── outputs/                      ← HASIL pipeline
+│   ├── model/    model LDA, metrik, nama topik
+│   ├── topics/   distribusi, jumlah, kata kunci, per tahun
+│   ├── forecast/ proyeksi, backtest, uji statistik
+│   └── audit/    keyakinan penugasan, lineage, dokumen terbuang
+├── app/        (11)               ← Dashboard Streamlit (8 halaman)
+├── tests/      (5)                ← 40 unit test
+├── docs/       (murni .md)        ← dokumentasi
+└── thesis/                        ← naskah skripsi (.docx)
+```
 
-### Data
+### ⚠️ Mengapa `outputs/` ikut di-*commit*?
 
-| Artefak | Dibuat oleh | Consumed by |
-|:---|:---|:---|
-| `data/raw/html_source/2021-2025.html` | Save Page As repositori | Notebook 01 |
-| `data/raw/thesis_scraped.csv` | Notebook 01 | Notebook 02, 03 |
-| `data/processed/thesis_for_pipeline.csv` | Notebook 02 | Notebook 03 |
-| `data/intermediate/dataset_preprocessed.csv` | Notebook 03 | Notebook 04, 04b, 05, 08 |
-| `data/intermediate/dictionary.gensim` | Notebook 03 | Notebook 04, 04b, 08 |
-| `data/intermediate/corpus.pkl` | Notebook 03 | Notebook 04, 05, 08 |
-| `docs/data_lineage_by_year.csv` | Notebook 02 | Lampiran Bab III |
-| `docs/excluded_documents.csv` | Notebook 02 | Lampiran Bab III |
+Dalam konvensi umum, folder `outputs/` justru **diabaikan** git karena isinya
+sampah sementara. **Di repo ini lain.**
 
-### Model
+Semua isi `outputs/` adalah **hasil perhitungan yang dipakai langsung di
+naskah skripsi**. Kalau tidak ikut di-*commit*, maka:
+- orang yang clone repo tidak bisa memverifikasi satu pun angka
+- dashboard kosong
+- skripsi tidak dapat direproduksi
 
-| Artefak | Dibuat oleh | Consumed by |
-|:---|:---|:---|
-| `model/hyperparameter_results.csv` | `src.grid_search` | Notebook 04b |
-| `model/lda_model.gensim` | `src.modeling` | Notebook 05, 07, 08, app |
-| `model/topic_distribution.csv` | `src.modeling` | Referensi perbandingan |
-| `model/topic_labels.csv` / `.json` | `src.labeling` | Notebook 07, app |
-| `model/evaluation_metrics.csv` | `src.modeling` | Dokumentasi |
-| `model/lda_visualization.html` | `src.modeling` | Lampiran Bab IV |
-| `experiments/*` | `src.evaluation_lda` | Lampiran Bab IV |
-
-### Label
-
-| Artefak | Dibuat oleh | Consumed by |
-|:---|:---|:---|
-| `_label_work/labels.json` | Notebook 07 (`src.labeling`) | Notebook 04, 06, 08, app |
-
-### Statistik & Proyeksi
-
-| Artefak | Dibuat oleh | Consumed by |
-|:---|:---|:---|
-| `_stats_forecast/forecast_table.csv` | Notebook 06 | app (halaman Proyeksi) |
-| `_stats_forecast/backtest_results.csv` | Notebook 06 | Lampiran Bab IV |
-| `_stats_forecast/share_intervals.csv` | Notebook 06 | app (halaman Tren) |
-| `_stats_forecast/per_topic_tests.csv` | Notebook 06 | Lampiran Bab IV |
-| `_stats_forecast/composition_tests_report.md` | Notebook 06 | Lampiran Bab IV |
-
-### Artefak Final
-
-| Artefak | Dibuat oleh | Consumed by |
-|:---|:---|:---|
-| `_fix_final/topic_distribution_final.csv` | **Notebook 08** | app, tests |
-| `_fix_final/topic_counts_final.csv` | **Notebook 08** | app (Beranda, Distribusi) |
-| `_fix_final/topic_by_year_final.csv` | **Notebook 08** | Notebook 06, app (Tren) |
-| `_fix_final/top_words_final.csv` | **Notebook 08** | Notebook 07 |
-| `_fix_final/evaluation_summary.csv` | **Notebook 08** | app (Metodologi) |
+Karena itu `.gitignore` mengecualikannya secara eksplisit, dan
+`tests/test_structure.py` mengecek hal itu setiap kali test dijalankan.
 
 ---
 
@@ -171,21 +202,23 @@ Rujukan resmi: [`GROUND_TRUTH.md`](GROUND_TRUTH.md)
 
 | Modul | Peran |
 |:---|:---|
-| `config.py` | Semua path & parameter — **satu sumber kebenaran** |
+| `config.py` | **Semua path & parameter — satu sumber kebenaran** |
 | `scraping.py` | Ekstraksi HTML → CSV (Notebook 01) |
-| `data_lineage.py` | Jejak lineage + dokumen tereliminasi (Notebook 02) |
+| `data_lineage.py` | Jejak lineage + dokumen terbuang (Notebook 02) |
 | `preprocessing.py` | 7 tahap prapemrosesan teks (Notebook 03) |
-| `grid_search.py` | Grid search 84 konfigurasi (Notebook 04b) |
+| `grid_search.py` | 140 konfigurasi, K=4…10 (Notebook 04b) |
 | `modeling.py` | Pelatihan LDA final (Notebook 04) |
-| `labeling.py` | Human-in-the-Loop labeling (Notebook 07) |
 | `evaluation_lda.py` | Multi-seed, sweep K, perplexity (Notebook 05) |
 | `forecast.py` | Chi-square, Wilson, WMA, backtest (Notebook 06) |
-| `build_final.py` | **Regenerasi artefak final** (Notebook 08) |
-| `ground_truth.py` | **Generate `GROUND_TRUTH.md` dari artefak** |
-| `indonesian_stopwords.py` | Daftar stopword + domain SI |
+| `make_labels.py` | Sumber kebenaran nama 8 topik (Notebook 07) |
+| `labeling.py` | Ekspor label + validasi fingerprint (Notebook 07) |
 | `topic_labels.py` | Validasi fingerprint SHA-256 |
-| `topic_labels_cli.py` | CLI wrapper validasi label |
+| `build_final.py` | Regenerasi artefak final (Notebook 08) |
+| `ground_truth.py` | Generate `GROUND_TRUTH.md` dari artefak |
+| `assignment_audit.py` | Hitung ulang laporan keyakinan penugasan |
+| `indonesian_stopwords.py` | Stopword bahasa Indonesia + domain SI |
 | `data_manager.py` | Helper normalisasi indeks topik |
+| `topic_labels_cli.py` | CLI validasi label |
 
 ---
 
@@ -194,40 +227,64 @@ Rujukan resmi: [`GROUND_TRUTH.md`](GROUND_TRUTH.md)
 | Berkas | Isi |
 |:---|:---|
 | [`GROUND_TRUTH.md`](GROUND_TRUTH.md) | 🔒 **Rujukan resmi** angka & metrik |
-| [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) | 🔒 Kamus data & definisi kolom |
-| `docs/stability_report.md` | Analisis kestabilan multi-seed |
-| `docs/perplexity_report.md` | Analisis perplexity |
-| `docs/topic_quality.md` | Mutu & koherensi topik |
-| `docs/assignment_confidence.md` | Keyakinan penugasan dokumen |
-| `_stats_forecast/EVAL_NOTES.md` | Panduan klaim untuk Bab V |
+| [`docs/DATA_DICTIONARY.md`](docs/DATA_DICTIONARY.md) | 🔒 Kamus data & definisi kolom |
+| [`docs/EVAL_NOTES.md`](docs/EVAL_NOTES.md) | Panduan klaim untuk Bab V |
+| [`docs/README_artefak_final.md`](docs/README_artefak_final.md) | Cara artefak final dibangun |
+| [`docs/exploration/`](docs/exploration/) | Laporan lama — **bukan angka skripsi** |
+
+> ⚠️ Isi `docs/exploration/` berasal dari eksplorasi awal dan **tidak
+> reproducible**. Jangan dipakai sebagai rujukan angka.
 
 ---
 
-## ⚖️ Catatan Metodologis
+## ⚖️ Catatan metodologis
 
-1. **Inferensi penuh (Notebook 08).** `src.modeling` melatih pada 228 dokumen
-   (80%) lalu memprediksi 285 — dokumen di hold-out (20%) bisa "lompat" topik.
-   Notebook 08 menghitung ulang dengan *inferensi penuh* sehingga konsisten.
+1. **Inferensi penuh (Notebook 08).** `src/modeling.py` melatih pada 228
+   dokumen (80%) lalu memprediksi 285 — dokumen di hold-out bisa "lompat"
+   topik. Notebook 08 menghitung ulang dengan *inferensi penuh*.
 
-2. **Pemilihan K=8.** Grid search menunjukkan K=9 mencapai $C_V$ tertinggi
-   (0,4314). K=8 dipilih atas pertimbangan gabungan: jumlah dokumen per topik
-   lebih memadai (min. 21) dan struktur topik lebih mudah diinterpretasikan.
+2. **Pemilihan K=8, bukan K=9.** Grid search menunjukkan K=9 mencapai $C_V$
+   tertinggi (0,4314) vs K=8 (0,3941) pada tahap grid. K=8 tetap dipilih atas
+   pertimbangan gabungan: jumlah dokumen per topik lebih memadai (min. 21),
+   $U_{mass}$ dan Topic Diversity lebih baik, dan strukturnya lebih mudah
+   diinterpretasikan. Nilai $C_V$ final (0,4256) berasal dari pelatihan ulang
+   dengan 30 passes — **bukan** dari grid search.
 
-3. **Proyeksi WMA bersifat indikatif.** Hanya tersedia 5 titik historis (2021–2025).
-   Walk-forward backtest menunjukkan WMA **tidak** mengalahkan baseline rerata
-   historis untuk 7 dari 8 topik, sehingga proyeksi hanya indikatif.
+3. **Proyeksi WMA bersifat indikatif.** Hanya tersedia 5 titik historis.
+   Walk-forward backtest menunjukkan WMA **tidak** lebih akurat dari rata-rata
+   historis untuk **5 dari 8** topik; hanya Topics 5, 7, dan 8 lebih baik.
+   Karena itu proyeksi hanya dipakai sebagai gambaran indikatif.
 
-4. **Pelabelan Human-in-the-Loop.** Label ditetapkan oleh peneliti melalui
-   analisis top-15 words, divalidasi dosen pembimbing, lalu dikunci dengan
+4. **Pelabelan Human-in-the-Loop.** Label ditetapkan oleh peneliti lewat
+   analisis top-15 kata, divalidasi dosen pembimbing, lalu dikunci dengan
    fingerprint SHA-256 agar tidak pernah melayang ke model berbeda.
+
+5. **Pelabelan dapat Direvisi.** Nama topik bisa diubah bila merepresentasikan
+   isi. Topik 7 pernah diubah dua kali setelah pengujian terhadap kata kunci
+   asli model — lihat `outputs/model/labels.json`.
+
+6. **Keterbatasan penugasan dokumen.** 58 dokumen (20,4%) memiliki nilai
+   probabilitas maksimum di bawah 0,60, artinya model tidak yakin terhadap
+   penugasannya. Rincian: `outputs/audit/assignment_audit.md`.
+
+---
+
+## 🚨 Peringatan
+
+> **Jangan menjalankan `python -m src.modeling`.**
+
+Nilai $C_V$ = 0,4256 **tidak reproducible**: melatih ulang K=8 dengan
+parameter identik menghasilkan 0,3817. Menjalankan perintah itu akan
+menimpa model kanonik dan membuat seluruh angka skripsi tidak cocok.
+Rincian penyebabnya ada di `outputs/model/README.md`.
 
 ---
 
 ## 📄 Deployment
 
 ```bash
-# Streamlit Community Cloud
 git push
-# Settings → Main file path: app/main.py
+# Streamlit Community Cloud → Settings → Main file path: app/main.py
 ```
-Panduan lengkap: [`DEPLOY.md`](DEPLOY.md)
+
+Panduan lengkap: [`docs/DEPLOY.md`](docs/DEPLOY.md) · `runtime.txt` wajib ada.
