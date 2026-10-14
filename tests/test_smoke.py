@@ -26,6 +26,7 @@ Jalankan:
     python tests/test_smoke.py
 """
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -222,6 +223,81 @@ class TestExperimen(unittest.TestCase):
             r.returncode, 0,
             "outputs/experiments/ masih di-gitignore; keluarannya tidak "
             "akan pernah ikut ter-commit")
+
+
+class TestKonsistensiNotebook(unittest.TestCase):
+    """
+    Notebook tidak boleh menyebut angka yang bertentangan dengan artefak.
+
+    Kasus nyata: Notebook 04b masih menulis "Total: 7 x 4 x 3 = 84
+    konfigurasi" dan judul grafik 'Grid Search 84 Konfigurasi' yang
+    ter-hardcode - padahal hyperparameter_results.csv sudah berisi 140
+    baris. Salahnya tertanam di notebook DAN tidak hilang meski
+    dijalankan ulang, karena angkanya ditulis manual, bukan diturunkan
+    dari data.
+    """
+
+    def _teks_notebook(self, nama):
+        import glob as _glob
+        p = ROOT / "notebooks" / nama
+        self.assertTrue(p.exists(), "Notebook %s tidak ada" % nama)
+        nb = json.loads(p.read_text(encoding="utf-8"))
+        sumber = []
+        for c in nb["cells"]:
+            s = c.get("source", [])
+            sumber.append(s if isinstance(s, str) else "".join(s))
+        return "\n".join(sumber)
+
+    def test_jumlah_konfigurasi_grid_cocok(self):
+        """
+        Notebook 04b tidak boleh menyebut jumlah konfigurasi yang berbeda
+        dengan isi hyperparameter_results.csv.
+        """
+        import pandas as pd
+
+        n_asli = len(pd.read_csv(C.HYPERPARAMS_CSV, encoding="utf-8-sig"))
+        teks = self._teks_notebook("04b_grid_search.ipynb")
+
+        # Semua sebutan "<angka> konfigurasi" harus sama dengan n_asli.
+        # Dikecualikan "N Konfigurasi Teratas" - itu tabel peringkat atas,
+        # bukan jumlah konfigurasi grid.
+        ditemukan = []
+        for m in re.finditer(r"(\d{1,4})\s+konfigurasi(.{0,20})", teks, re.I):
+            if re.match(r"\s*teratas", m.group(2), re.I):
+                continue
+            ditemukan.append(int(m.group(1)))
+        salah = [n for n in ditemukan if n != n_asli]
+        self.assertFalse(
+            salah,
+            "Notebook 04b menyebut %s konfigurasi, sedangkan %s berisi "
+            "%d baris. Jalankan ulang: python run_notebook.py "
+            "notebooks/04b_grid_search.ipynb"
+            % (sorted(set(salah)), C.HYPERPARAMS_CSV.name, n_asli))
+
+    def test_judul_grafik_bukan_hardcode(self):
+        """Angka pada judul grafik harus diturunkan dari data."""
+        teks = self._teks_notebook("04b_grid_search.ipynb")
+        self.assertNotRegex(
+            teks, r"set_title\(['\"][^'\"]*\d{2,4}\s*Konfigurasi",
+            "Judul grafik masih mengetik angka secara manual. "
+            "Gunakan f-string, misalnya f'Grid Search {len(hp)} Konfigurasi'.")
+
+    def test_tidak_ada_path_lama_di_notebook(self):
+        """Tidak boleh ada path pra-restrukturisasi di notebook."""
+        pola = re.compile(r"(?<![/\w])(_fix_final|_label_work|_stats_forecast)/"
+                          r"|(?<![/\w])model/(lda_model|hyperparameter|"
+                          r"topic_labels|evaluation_metrics|experiment_history)")
+        salah = []
+        for f in sorted((ROOT / "notebooks").glob("*.ipynb")):
+            nb = json.loads(f.read_text(encoding="utf-8"))
+            for c in nb["cells"]:
+                s = c.get("source", [])
+                teks = s if isinstance(s, str) else "".join(s)
+                for m in pola.finditer(teks):
+                    salah.append("%s: %s" % (f.name, m.group(0)))
+        self.assertFalse(salah,
+                         "Path lama masih ada di notebook:\n  "
+                         + "\n  ".join(salah))
 
 
 if __name__ == "__main__":
