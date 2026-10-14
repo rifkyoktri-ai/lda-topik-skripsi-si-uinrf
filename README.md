@@ -227,6 +227,7 @@ Karena itu `.gitignore` mengecualikannya secara eksplisit, dan
 
 | Berkas | Isi |
 |:---|:---|
+| [`docs/PANDUAN_DEFENSE.md`](docs/PANDUAN_DEFENSE.md) | 🎓 **Panduan menjawab pertanyaan penguji** |
 | [`GROUND_TRUTH.md`](GROUND_TRUTH.md) | 🔒 **Rujukan resmi** angka & metrik |
 | [`docs/DATA_DICTIONARY.md`](docs/DATA_DICTIONARY.md) | 🔒 Kamus data & definisi kolom |
 | [`docs/EVAL_NOTES.md`](docs/EVAL_NOTES.md) | Panduan klaim untuk Bab V |
