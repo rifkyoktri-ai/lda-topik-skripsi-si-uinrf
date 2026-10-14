@@ -1,4 +1,4 @@
-# Peta Artefak `_fix_final/`
+# Peta Artefak `outputs/`
 
 Folder ini berisi **artefak final** yang dipakai skripsi dan dashboard.
 Semua file di sini dapat diregenerasi dari `model/lda_model.gensim` +

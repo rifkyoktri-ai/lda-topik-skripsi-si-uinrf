@@ -7,9 +7,13 @@ __pycache__/
 *.pyo
 
 # ── Runtime output ──────────────────────────────────────────────────────────
+# Runtime output
 logs/
-experiments/
 *.log
+# Catatan: folder 'experiments/' TIDAK diabaikan lagi. Dulu ada di sini
+# karena src/evaluation_lda.py menulis ke Path("experiments") relatif di root.
+# Sekarang Semua keluaran ke outputs/experiments/ lewat config.py dan ikut
+# ter-commit, konsisten dengan folder hasil lainnya.
 
 # ── Office lock files ───────────────────────────────────────────────────────
 ~$*.xlsx

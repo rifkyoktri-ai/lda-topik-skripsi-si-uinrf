@@ -74,6 +74,12 @@ FIGURES_DIR = OUTPUTS_DIR / "figures"
 WORDCLOUD_DIR = FIGURES_DIR / "wordclouds"
 
 # Statistik & proyeksi
+# Eksperimen evaluasi (kestabilan multi-seed, sweep K).
+# Dulu ditulis ke folder 'experiments/' RELATIF di root repo. Itu melanggar
+# prinsip config.py sebagai satu sumber path, dan foldernya ada di .gitignore
+# sehingga keluarannya tidak pernah ikut ter-commit.
+EXPERIMENTS_DIR = OUTPUTS_DIR / "experiments"
+
 FORECAST_CSV = STATS_DIR / "forecast_table.csv"
 BACKTEST_CSV = STATS_DIR / "backtest_results.csv"
 SHARE_INTERVALS = STATS_DIR / "share_intervals.csv"

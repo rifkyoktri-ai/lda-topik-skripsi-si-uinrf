@@ -3,7 +3,10 @@ Skrip Evaluasi Model & Robustness Study (TUGAS A - E)
 Menjalankan studi kestabilan multi-seed, sweep K, perplexity train/test,
 kualitas topik, dan distribusi proporsi per tahun.
 
-Semua keluaran ditulis ke folder `experiments/` agar direktori root tetap bersih.
+Semua keluaran ditulis ke folder `outputs/experiments/` (lihat EXPERIMENTS_DIR
+di src/config.py). Sebelumnya ditulis ke Path("experiments") relatif di root
+repo, yang melanggar prinsip config.py sebagai satu sumber path dan membuat
+folder itu ter-tambah di .gitignore sehingga keluarannya tidak ter-commit.
 """
 import ast
 import sys
@@ -32,8 +35,10 @@ FINAL_PASSES = 30
 FINAL_ITERATIONS = 500
 FINAL_SEED = 42
 
-EXP_DIR = Path("experiments")
-EXP_DIR.mkdir(parents=True, exist_ok=True)
+# Folder keluaran. Sengaja TIDAK dibuat di level modul - hanya saat fungsi
+# run_evaluasi() benar-benar dipanggil. Membuatnya saat import membuat
+# folder kosong yang menggagalkan pemeriksaan struktur repo.
+EXP_DIR = C.EXPERIMENTS_DIR
 
 DATA_PATH = C.PREPROCESSED_CSV
 DICT_PATH = C.DICTIONARY_PATH
@@ -42,6 +47,7 @@ DICT_PATH = C.DICTIONARY_PATH
 def main():
     """Evaluasi komprehensif: stabilitas multi-seed, sweep K, perplexity,
     kualitas topik, dan distribusi proporsi per tahun."""
+    EXP_DIR.mkdir(parents=True, exist_ok=True)
     DATA_PATH = C.PREPROCESSED_CSV
     DICT_PATH = C.DICTIONARY_PATH
     df = pd.read_csv(DATA_PATH)

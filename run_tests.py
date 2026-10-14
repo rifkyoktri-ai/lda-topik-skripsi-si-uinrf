@@ -137,6 +137,19 @@ def _run_structure():
     return result.wasSuccessful(), result.testsRun
 
 
+def _run_smoke():
+    """Verifikasi tambahan: semua modul src/ benar-benar bisa dijalankan."""
+    from tests import test_smoke as ts
+    loader3 = unittest.TestLoader()
+    suite3 = unittest.TestSuite()
+    for name in dir(ts):
+        obj = getattr(ts, name)
+        if isinstance(obj, type) and issubclass(obj, unittest.TestCase):
+            suite3.addTests(loader3.loadTestsFromTestCase(obj))
+    result = unittest.TextTestRunner(verbosity=0).run(suite3)
+    return result.wasSuccessful(), result.testsRun
+
+
 if __name__ == "__main__":
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -170,7 +183,16 @@ if __name__ == "__main__":
         print("[GAGAL] Struktur repo bermasalah - jalankan: python run.py structure")
     print("=" * 62)
 
-    total = result.testsRun + sync_n + struct_n
-    if not result.wasSuccessful() or not label_ok or not sync_ok or not struct_ok:
+    smoke_ok, smoke_n = _run_smoke()
+    if smoke_ok:
+        print(f"[OK] {smoke_n} uji asap: semua modul bisa dijalankan")
+    else:
+        print("[GAGAL] Ada modul yang tidak jalan - jalankan: "
+              "python run.py smoke")
+    print("=" * 62)
+
+    total = result.testsRun + sync_n + struct_n + smoke_n
+    if (not result.wasSuccessful() or not label_ok or not sync_ok
+            or not struct_ok or not smoke_ok):
         sys.exit(1)
     print(f"\nSELURUH {total} UNIT TEST LULUS.")

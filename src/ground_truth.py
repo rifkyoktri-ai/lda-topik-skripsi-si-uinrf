@@ -76,7 +76,7 @@ def main():
     A('> **DIBUANG OTOMATIS oleh `src/ground_truth.py`.** Jangan diedit manual.')
     A('> Regenerasi: `python -m src.ground_truth`')
     A('>')
-    A('> Sumber angka: artefak di `outputs/`, `outputs/forecast/`, dan `outputs/model/`.')
+    A('> Sumber angka: artefak di `outputs/model/`, `outputs/topics/`, `outputs/forecast/`, dan `outputs/audit/`.')
     A('> Jika angka di skripsi berbeda dengan dokumen ini, dokumen ini yang benar')
     A('> karena diturunkan langsung dari artefak pipeline.')
     A('')

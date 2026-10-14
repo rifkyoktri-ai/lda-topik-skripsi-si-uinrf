@@ -18,8 +18,8 @@
 Seluruh **artefak turunan** dihitung ulang dari model ini dan konsisten:
 
 ```bash
-python -m src.build_final     # -> _fix_final/  (C_V, distribusi topik, per tahun)
-python -m src.forecast        # -> _stats_forecast/  (WMA, chi-square, backtest)
+python -m src.build_final     # -> outputs/  (C_V, distribusi topik, per tahun)
+python -m src.forecast        # -> outputs/forecast/  (WMA, chi-square, backtest)
 python -m src.ground_truth    # -> GROUND_TRUTH.md
 python run_tests.py           # fingerprint label
 ```

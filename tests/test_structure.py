@@ -173,7 +173,7 @@ class TestEntrypoint(unittest.TestCase):
     def test_pintu_masuk_terdaftar(self):
         txt = (ROOT / "run.py").read_text(encoding="utf-8")
         for cmd in ("test", "notebook", "audit", "dashboard", "all",
-                    "figures"):
+                    "figures", "labels", "smoke"):
             self.assertIn('"%s"' % cmd, txt,
                           "perintah %r tidak terdaftar di run.py" % cmd)
 

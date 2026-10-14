@@ -23,8 +23,8 @@ repositori (332 terdaftar)
          └─> data/processed/thesis_for_pipeline.csv  309 dokumen (filter awal)
                └─> data/intermediate/dataset_preprocessed.csv  285 dokumen (korpus bersih)
                      ├─> model/lda_model.gensim .... K=8, C_V=0,4256
-                     └─> _fix_final/*.csv .......... artefak resmi dashboard
-                           └─> _stats_forecast/*.csv  statistik & proyeksi
+                     └─> outputs/*.csv .......... artefak resmi dashboard
+                           └─> outputs/forecast/*.csv  statistik & proyeksi
 ```
 
 | Tahap | Jumlah | Penyebab pengurangan |
@@ -74,7 +74,7 @@ Berkas pendukung di direktori yang sama:
 - `topik_dominan` (integer): ID topik dominan 1-based (1–8).
 - `prob_dominan` (float): Probabilitas keanggotaan topik dominan (0.0–1.0).
 
-### E. `_label_work/labels.json` (8 entri) & `model/topic_labels.csv` (8 baris)
+### E. `outputs/model/labels.json` (8 entri) & `model/topic_labels.csv` (8 baris)
 *Definisi label topik resmi — Human-in-the-Loop, terkunci dengan fingerprint SHA-256.*
 - `topic_id` (integer): ID topik 1-based (1–8).
 - `label` (string): Label final hasil analisis interpretatif peneliti atas top-15 words.
@@ -85,17 +85,17 @@ Berkas pendukung di direktori yang sama:
 
 Fingerprint divalidasi oleh `src/topic_labels.py::validate_labels()` dan dijalankan otomatis di `src/modeling.py` serta `run_tests.py`.
 
-### F. `_fix_final/topic_counts_final.csv` (8 baris)
+### F. `outputs/topics/topic_counts_final.csv` (8 baris)
 *Distribusi dokumen per topik — sumber angka pada halaman Beranda & Distribusi Topik.*
 - `topik_dominan` (integer): 1–8
 - `jumlah_dokumen` (integer): 32/30/46/33/41/49/33/21 — total **285**
 - `persentase` (float): Persentase terhadap 285 dokumen.
 
-### G. `_fix_final/topic_distribution_final.csv` (285 baris)
+### G. `outputs/topics/topic_distribution_final.csv` (285 baris)
 *Distribusi dokumen per topik versi final (reparan 1 dokumen pada Topik 2 & 4).*
 - `ID`, `Judul`, `Tahun`, `topik_dominan` (1-based), `prob_dominan`
 
-### H. `_fix_final/topic_by_year_final.csv` (5 baris)
+### H. `outputs/topics/topic_by_year_final.csv` (5 baris)
 *Matriks kontingensi jumlah dokumen per tahun × per topik — sumber halaman Tren Per Tahun.*
 - `Tahun` (integer): 2021–2025
 - Kolom `1`–`8`: jumlah dokumen per topik
@@ -103,7 +103,7 @@ Fingerprint divalidasi oleh `src/topic_labels.py::validate_labels()` dan dijalan
 - `jumlah_judul_saja` (integer): dokumen yang abstraknya tidak tersedia sehingga judul dipakai sebagai pengganti — total 38
 - `proporsi_topik_1` … `proporsi_topik_8` (float): proporsi (%) tiap topik terhadap total tahun tersebut
 
-### I. `_stats_forecast/forecast_table.csv` (8 baris)
+### I. `outputs/forecast/forecast_table.csv` (8 baris)
 *Tabel proyeksi WMA 2026–2027 — sumber halaman Proyeksi.*
 - `topik_id` (integer): 1–8
 - `label` (string): Label topik dari `labels.json`
@@ -118,18 +118,18 @@ Fingerprint divalidasi oleh `src/topic_labels.py::validate_labels()` dan dijalan
 - `keandalan` (string): Interpretasi perbandingan terhadap baseline
 - `catatan` (string): Catatan interpretatif
 
-### J. `_stats_forecast/backtest_results.csv` (24 baris)
+### J. `outputs/forecast/backtest_results.csv` (24 baris)
 *Hasil walk-forward backtest MAE (tahun target 2023, 2024, 2025) untuk 8 topik × 3 metode.*
 - `topik_id`, `metode` (`WMA` | `Rata-rata Historis` | `Naive`)
 - `mae_pp` (float): Mean Absolute Error dalam poin persentase
 - `mae_relatif` (float): MAE dibagi rata-rata proporsi 5 tahun
 - `rasio_vs_baseline` (float): MAE metode ÷ MAE rata-rata historis
 
-### K. `_stats_forecast/share_intervals.csv` (40 baris)
+### K. `outputs/forecast/share_intervals.csv` (40 baris)
 *Interval Keyakinan Wilson 95% untuk proporsi tiap topik per tahun.*
 - `topik_id`, `tahun`, `k_count`, `n_total`, `share_pct`, `ci_lower_pct`, `ci_upper_pct`
 
-### L. `_fix_final/evaluation_summary.csv`
+### L. `outputs/model/evaluation_summary.csv`
 *Rekapitulasi metrik evaluasi model final — sumber halaman Metodologi.*
 - `Metrik`, `Nilai`, `Protokol_Keterangan`
 

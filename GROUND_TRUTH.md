@@ -3,11 +3,11 @@
 > **DIBUANG OTOMATIS oleh `src/ground_truth.py`.** Jangan diedit manual.
 > Regenerasi: `python -m src.ground_truth`
 >
-> Sumber angka: artefak di `_fix_final/`, `_stats_forecast/`, dan `_label_work/`.
+> Sumber angka: artefak di `outputs/model/`, `outputs/topics/`, `outputs/forecast/`, dan `outputs/audit/`.
 > Jika angka di skripsi berbeda dengan dokumen ini, dokumen ini yang benar
 > karena diturunkan langsung dari artefak pipeline.
 
-_Terakhir dibuat: 2026-10-13 14:58_
+_Terakhir dibuat: 2026-10-14 08:39_
 
 ---
 

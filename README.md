@@ -126,13 +126,14 @@ Semua perintah lewat **satu pintu masuk**:
 
 ```bash
 python run.py              # daftar perintah
-python run.py test         # 24 unit test
+python run.py test         # 34 unit test
+  python run.py smoke         # 10 uji asap: semua modul jalan
 python run.py structure    # 13 pemeriksaan bentuk repo
 python run.py notebook-fast # jalankan pipeline tanpa latih ulang (~2 menit)
 python run.py dashboard    # dashboard Streamlit
 ```
 
-**40 test berjalan otomatis** dan mencakup:
+**50 test berjalan otomatis** dan mencakup:
 pipeline & prapemrosesan · integritas korpus · fingerprint label ·
 matematika WMA · sinkronisasi metrik · bentuk repo.
 
@@ -177,7 +178,7 @@ Pertanyaan "angka ini dari mana?" bisa dijawab hanya dengan melihat nama file.
 │   ├── forecast/ proyeksi, backtest, uji statistik
 │   └── audit/    keyakinan penugasan, lineage, dokumen terbuang
 ├── app/        (11)               ← Dashboard Streamlit (8 halaman)
-├── tests/      (5)                ← 40 unit test
+├── tests/      (6)                ← 50 unit test + uji asap
 ├── docs/       (murni .md)        ← dokumentasi
 └── thesis/                        ← naskah skripsi (.docx)
 ```

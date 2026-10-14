@@ -52,6 +52,8 @@ BANTUAN = """
   python run.py notebook-fast 01-03 + 05-08 (lewati training, ~2 menit)
   python run.py audit         regenerate outputs/audit/assignment_audit.md
   python run.py figures       bangkitkan ulang wordcloud 8 topik
+  python run.py labels        regenerate outputs/model/labels.json
+  python run.py smoke         uji asap: semua modul bisa dijalankan
   python run.py structure     validasi struktur repo
   python run.py dashboard     dashboard Streamlit
   python run.py all           test -> notebook-fast -> audit
@@ -91,6 +93,10 @@ PERINTAH = {
                          "Audit keyakinan penugasan dokumen"),
     "figures": lambda: run(["-m", "src.make_figures"],
                            "Bangkitkan ulang wordcloud 8 topik"),
+    "labels": lambda: run(["-m", "src.make_labels"],
+                          "Regenerasi labels.json dari label yang disetujui"),
+    "smoke": lambda: run(["tests/test_smoke.py"],
+                          "Uji asap: semua modul bisa dijalankan"),
     "structure": lambda: run(["tests/test_structure.py"],
                              "Validasi struktur repo"),
     "dashboard": lambda: run(["-m", "streamlit", "run", "app/main.py"],
