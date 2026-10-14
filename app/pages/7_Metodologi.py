@@ -2,11 +2,21 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+import sys
 import hashlib
 import artifacts
 
 # Metrik resmi dibaca dari artefak (bukan hard-code)
 M = artifacts.load_metrics()
+
+# Nilai ringkas yang dipakai di beberapa tabel di halaman ini.
+# WAJIB didefinisikan di sini, sebelum dipakai - Python membaca
+# file dari atas ke bawah, jadi definisi yang diletakkan lebih
+# bawah akan memicu NameError saat tabel di atas dirender.
+_k_final = artifacts.metrik(M, "k")
+_cv_final = artifacts.idr(artifacts.metrik(M, "Coherence_Score_CV"), 4)
+N_DOC_TAMPIL = artifacts.idr(artifacts.metrik(M, "Total_Documents"), 0)
+RENTANG_TAHUN = artifacts.rentang_tahun()
 
 # ── Paths Data Resmi ────────────────────────────────────────────────────────
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -120,12 +130,8 @@ _n_cfg = len(pd.read_csv(os.path.join(REPO, "outputs", "model", "hyperparameter_
                           encoding="utf-8-sig")) if os.path.exists(
     os.path.join(REPO, "outputs", "model", "hyperparameter_results.csv")) else 140
 
-# K dan C_V resmi dibaca dari artefak (bukan hard-code)
-_M = artifacts.load_metrics()
-_k_final = artifacts.metrik(_M, "k")
-_cv_final = artifacts.idr(artifacts.metrik(_M, "Coherence_Score_CV"), 4)
-N_DOC_TAMPIL = artifacts.idr(artifacts.metrik(_M, "Total_Documents"), 0)
-RENTANG_TAHUN = artifacts.rentang_tahun()
+# K dan C_V resmi sudah dibaca dari artefak di bagian atas halaman ini
+# (_k_final, _cv_final, N_DOC_TAMPIL, RENTANG_TAHUN)
 
 st.markdown(f"**Nilai C_V dari Grid Search ({_n_cfg} konfigurasi, K=4–10):**")
 st.caption(
@@ -183,20 +189,61 @@ st.caption(
 # ── BAGIAN 5 — Keterbatasan ──────────────────────────────────────────────────
 st.subheader("Keterbatasan Penelitian")
 
+# Angka WMA dihitung dari artefak, bukan ditulis manual. Sebelumnya
+# angka "7 dari 8" ditulis manual dan sudah basi: angka itu berasal
+# dari forecast_table.csv versi lama. Sekarang kalau datanya
+# diperbarui, angka di bawah ikut menyesuaikan sendiri.
+_wma_unggul = _tidak_unggul = _tidak_unggul_andal = _n_topik = 0
+if os.path.exists(forecast_path):
+    _fc = pd.read_csv(forecast_path, encoding="utf-8-sig")
+    _n_topik = len(_fc)
+    _r = _fc["rasio_vs_baseline"]
+    # kriteria MAE mentah: rasio < 1 berarti WMA tidak lebih buruk
+    _wma_unggul = int((_r < 1.0).sum())
+    _tidak_unggul = _n_topik - _wma_unggul
+    # kriteria keandalan: rasio < 0,95 berarti WMA benar-benar unggul
+    _tidak_unggul_andal = _n_topik - int((_r < 0.95).sum())
+
+# Jumlah dokumen yang abstraknya berbahasa Inggris dihitung ulang memakai
+# fungsi deteksi yang sama dengan prapemrosesan, supaya angka di sini
+# tidak bisa berbeda dari yang dipakai sistem.
+_n_dok_en = 0
+_dataset_path = os.path.join(REPO, "outputs", "topics", "dataset_corrected.csv")
+try:
+    if REPO not in sys.path:
+        sys.path.insert(0, REPO)
+    from src.preprocessing import is_english_abstract
+
+    if os.path.exists(_dataset_path):
+        _df = pd.read_csv(_dataset_path, encoding="utf-8-sig")
+        _abstrak = _df.get("Abstrak", pd.Series(dtype=str)).fillna("").astype(str)
+        _n_dok_en = int(sum(is_english_abstract(a) for a in _abstrak))
+except Exception:
+    _n_dok_en = 0
+
 st.write(
     "Penelitian ini memiliki beberapa keterbatasan. "
     "Pertama, hanya tersedia 5 titik data tahunan "
     "sehingga proyeksi WMA bersifat sangat indikatif. "
-    "Kedua, 38 dokumen menggunakan judul sebagai "
-    "pengganti abstrak karena abstrak tidak tersedia "
-    "dalam bahasa Indonesia, terkonsentrasi di "
-    "tahun 2021-2022. Ketiga, Topik 2 dan Topik 8 "
+    f"Kedua, {_n_dok_en} dokumen menggunakan judul sebagai "
+    "pengganti abstrak karena abstraknya tidak tersedia "
+    "dalam bahasa Indonesia. "
+    "Ketiga, Topik 2 dan Topik 8 "
     "bersifat heterogen dan merupakan keterbatasan "
     "model pada korpus dengan variasi metodologi "
     "yang luas. Keempat, WMA tidak terbukti lebih "
-    "akurat dari rata-rata historis untuk 7 dari 8 "
-    "topik berdasarkan backtest walk-forward."
+    f"akurat dari rata-rata historis untuk {_tidak_unggul} dari "
+    f"{_n_topik} topik berdasarkan backtest walk-forward."
 )
+
+if _n_topik:
+    st.caption(
+        f"Catatan: angka {_tidak_unggul} dihitung dengan membandingkan "
+        f"galat WMA terhadap baseline. Jika memakai ambang keandalan "
+        f"rasio 0,95, maka {_tidak_unggul_andal} dari {_n_topik} topik "
+        "yang tidak terukti lebih akurat. Selisihnya berasal dari topik "
+        "yang hasilnya seri."
+    )
 
 # ── FOOTER ───────────────────────────────────────────────────────────────────
 st.divider()

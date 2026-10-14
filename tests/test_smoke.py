@@ -25,6 +25,8 @@ JANJI TANPA EFEK SAMPING
 Jalankan:
     python tests/test_smoke.py
 """
+import ast
+import builtins
 import json
 import re
 import subprocess
@@ -42,10 +44,109 @@ from src import config as C  # noqa: E402
 MODUL = [p.stem for p in sorted((ROOT / "src").glob("*.py"))
          if p.name != "__init__.py"]
 
+HALAMAN = sorted((ROOT / "app").rglob("*.py"))
+
 
 def jalankan(args, **kw):
     return subprocess.run([sys.executable] + args, cwd=str(ROOT),
                           capture_output=True, text=True, timeout=600, **kw)
+
+
+class TestHalamanDashboard(unittest.TestCase):
+    """
+    Halaman dashboard harus bisa dieksekusi tanpa NameError.
+
+    INSIDEN
+        app/pages/7_Metodologi.py sempat gagal total saat dibuka:
+        NameError: name 'N_DOC_TAMPIL' is not defined.
+
+        Penyebabnya bukan salah ketik. Saat refactor menghapus angka
+        hard-code, definisi N_DOC_TAMPIL dan RENTANG_TAHUN dipindah ke
+        BAWAH pemakaiannya - baris 41 dan 74 memakai, baris 127 baru
+        mendefinisikan. Python membaca file dari atas ke bawah, jadi
+        halaman langsung crash.
+
+    MENGAPA PERLU DIJAGA
+        Test lain hanya memeriksa isi artefak. Tidak ada yang memeriksa
+        bahwa kode halaman dashboard masih bisa DIJALANKAN. Padahal
+        halaman itu yang dilihat penguji.
+
+    CARA KERJA
+        Analisis AST: cari nama variabel yang dipakai pada baris N
+        tetapi definisinya baru muncul pada baris M > N. Nama yang
+        hanya terikat oleh parameter fungsi, target loop, atau baris
+        yang sama diabaikan.
+    """
+
+    # Nama yang pasti sudah terikat: parameter fungsi, target loop,
+    # dan target list comprehension. Semua muncul di baris yang sama
+    # dengan pemakaiannya atau di baris sebelumnya.
+    DILEWARKAN = {
+        "m", "r", "fig", "df", "x", "i", "p", "t", "k", "v", "o", "col",
+        "tid", "item", "word", "words", "probs", "color", "label",
+        "labels_dict", "topic_id", "filtered", "sweep", "idx", "y",
+        "hex_str", "table_df", "df_counts", "df_by_year", "colors",
+        "selected_topics", "_base_layout", "_topic_color",
+    }
+
+    @staticmethod
+    def _nama_terikat(pohon, batas_baris=None):
+        """Kumpulan nama yang terikat. Tanpa batas = seluruh file."""
+        hasil = set()
+        for n in ast.walk(pohon):
+            baris = getattr(n, "lineno", None)
+            if baris is None:
+                continue
+            if batas_baris is not None and baris > batas_baris:
+                continue
+            if isinstance(n, (ast.Import, ast.ImportFrom)):
+                for a in n.names:
+                    hasil.add((a.asname or a.name).split(".")[0])
+            elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef,
+                                ast.ClassDef)):
+                hasil.add(n.name)
+            elif isinstance(n, ast.Name) and isinstance(n.ctx, (ast.Store, ast.Del)):
+                hasil.add(n.id)
+            elif isinstance(n, ast.ExceptHandler) and n.name:
+                hasil.add(n.name)
+            elif isinstance(n, (ast.Global, ast.Nonlocal)):
+                hasil.update(n.names)
+        return hasil
+
+    def test_tidak_ada_variabel_dipakai_sebelum_didefinisikan(self):
+        import builtins
+
+        bawaan = set(dir(builtins)) | {"__file__", "__name__", "__doc__"}
+        salah = []
+
+        for f in HALAMAN:
+            pohon = ast.parse(f.read_text(encoding="utf-8"))
+            semua = self._nama_terikat(pohon)
+            for n in ast.walk(pohon):
+                if not (isinstance(n, ast.Name)
+                        and isinstance(n.ctx, ast.Load)):
+                    continue
+                if n.id in bawaan or n.id not in semua:
+                    continue
+                if n.id in self.DILEWARKAN:
+                    continue
+                sudah = self._nama_terikat(pohon, n.lineno)
+                if n.id not in sudah:
+                    salah.append("%s:%d  %s" % (f.name, n.lineno, n.id))
+
+        self.assertFalse(
+            salah,
+            "Variabel dipakai SEBELUM didefinisikan (NameError saat "
+            "dibuka di dashboard):\n  " + "\n  ".join(salah))
+
+    def test_semua_halaman_tanpa_error_sintaks(self):
+        rusak = []
+        for f in HALAMAN:
+            try:
+                ast.parse(f.read_text(encoding="utf-8"))
+            except SyntaxError as e:
+                rusak.append("%s: %s" % (f.name, e))
+        self.assertFalse(rusak, "Sintaks rusak:\n  " + "\n  ".join(rusak))
 
 
 class TestModulDapatDiimport(unittest.TestCase):
