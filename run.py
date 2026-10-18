@@ -99,6 +99,8 @@ PERINTAH = {
                           "Uji asap: semua modul bisa dijalankan"),
     "structure": lambda: run(["tests/test_structure.py"],
                              "Validasi struktur repo"),
+    "thesis": lambda: run(["tests/test_thesis.py"],
+                          "Penjaga naskah: utuh & sama dengan versi commit"),
     "dashboard": lambda: run(["-m", "streamlit", "run", "app/main.py"],
                              "Dashboard Streamlit"),
 }
