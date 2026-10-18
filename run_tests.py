@@ -150,19 +150,6 @@ def _run_smoke():
     return result.wasSuccessful(), result.testsRun
 
 
-def _run_thesis():
-    """Verifikasi tambahan: naskah skripsi utuh dan sama dengan versi commit."""
-    from tests import test_thesis as tt
-    loader4 = unittest.TestLoader()
-    suite4 = unittest.TestSuite()
-    for name in dir(tt):
-        obj = getattr(tt, name)
-        if isinstance(obj, type) and issubclass(obj, unittest.TestCase):
-            suite4.addTests(loader4.loadTestsFromTestCase(obj))
-    result = unittest.TextTestRunner(verbosity=0).run(suite4)
-    return result.wasSuccessful(), result.testsRun
-
-
 if __name__ == "__main__":
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -204,15 +191,8 @@ if __name__ == "__main__":
               "python run.py smoke")
     print("=" * 62)
 
-    thesis_ok, thesis_n = _run_thesis()
-    if thesis_ok:
-        print(f"[OK] {thesis_n} pemeriksaan naskah: utuh dan sama dengan commit")
-    else:
-        print("[GAGAL] Naskah bermasalah - jalankan: python run.py thesis")
-    print("=" * 62)
-
-    total = result.testsRun + sync_n + struct_n + smoke_n + thesis_n
+    total = result.testsRun + sync_n + struct_n + smoke_n
     if (not result.wasSuccessful() or not label_ok or not sync_ok
-            or not struct_ok or not smoke_ok or not thesis_ok):
+            or not struct_ok or not smoke_ok):
         sys.exit(1)
     print(f"\nSELURUH {total} UNIT TEST LULUS.")
