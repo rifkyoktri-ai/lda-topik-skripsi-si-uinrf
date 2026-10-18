@@ -1,3 +1,20 @@
+"""
+modeling.py — Mesin Pelatihan Model LDA (Topic Modeling)
+
+Apa yang dilakukan file ini?
+  File ini adalah jantung dari proses pemodelan topik:
+  1. Memuat teks skripsi yang sudah di-preprocess (token / kata bersih).
+  2. Memuat kamus kata (dictionary) dan representasi dokumen (corpus Bag-of-Words).
+  3. Membagi data menjadi 80% data latih (Train) dan 20% data uji (Hold-out Test).
+  4. Melatih model LDA (Latent Dirichlet Allocation) dan mencari jumlah topik K terbaik
+     (berdasarkan nilai Coherence C_V dan U_Mass).
+  5. Menentukan topik dominan untuk setiap dokumen skripsi.
+  6. Memasang label/nama resmi ke masing-masing topik (menggunakan labels.json yang terkunci).
+  7. Menyimpan visualisasi interaktif pyLDAvis dan metrik evaluasi ke folder outputs/model/.
+
+Dipakai oleh: Notebook 04 (Modeling) atau dijalankan langsung dari terminal.
+"""
+
 import argparse
 import logging
 import sys
@@ -21,10 +38,10 @@ import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 
 from . import config as C
-from .labeling import load_approved_labels, export_human_validation_dataset
+from .labeling import load_approved_labels
 
 # ---------------------------------------------------------------------------
-# LOGGING SETUP
+# PENGATURAN LOGGING (CATATAN PROSES KE TERMINAL DAN FILE LOG)
 # ---------------------------------------------------------------------------
 os.makedirs('logs', exist_ok=True)
 
@@ -42,7 +59,7 @@ PROSES_DIR = str(C.INTERMEDIATE_DIR)
 MODEL_DIR = 'model'
 
 # ---------------------------------------------------------------------------
-# PENCATATAN RIWAYAT EKSPERIMEN
+# PENCATATAN RIWAYAT EKSPERIMEN (EXPERIMENT TRACKER)
 # ---------------------------------------------------------------------------
 def log_experiment_history(
     random_state: int,
@@ -59,7 +76,8 @@ def log_experiment_history(
     vocab_size: int
 ):
     """
-    Menyimpan metadata model dan metrik evaluasi ke file CSV.
+    Menyimpan rekam jejak parameter dan skor hasil pengujian model ke file CSV.
+    Berguna agar setiap kali model dilatih, riwayatnya tersimpan rapi dan bisa ditelusuri.
     """
     history_file = os.path.join(MODEL_DIR, 'experiment_history.csv')
     new_entry = {
@@ -86,17 +104,23 @@ def log_experiment_history(
         df_history = df_new
         
     df_history.to_csv(history_file, index=False)
-    logger.info(f"  [EXPERIMENT TRACKER] Run logged to {history_file}")
+    logger.info(f"  [CATATAN EKSPERIMEN] Hasil tersimpan ke {history_file}")
 
 
 def get_dominant_topic(lda_model, corpus):
+    """
+    Mencari topik paling dominan untuk tiap skripsi.
+
+    Untuk setiap dokumen, model LDA menghitung peluang topik (misal Topik 1 = 70%, Topik 2 = 30%).
+    Fungsi ini memilih topik dengan peluang terbesar (persentase tertinggi).
+    """
     dominant_topics = []
     for bow in corpus:
         topic_probs = lda_model.get_document_topics(bow, minimum_probability=0)
         dominant = max(topic_probs, key=lambda x: x[1])
         dominant_topics.append({
-            'topik_dominan': dominant[0] + 1,
-            'prob_dominan': round(dominant[1], 4)
+            'topik_dominan': dominant[0] + 1,        # diubah ke format 1-indexed (Topik 1..K)
+            'prob_dominan': round(dominant[1], 4)     # seberapa yakin model terhadap topik ini
         })
     return pd.DataFrame(dominant_topics)
 
@@ -114,7 +138,14 @@ def train_model(
     random_state: int = 42
 ) -> LdaModel:
     """
-    Melatih model LDA dengan konfigurasi prior alpha dan eta.
+    Melatih model LDA dengan data teks dan konfigurasi hyperparameter yang ditentukan.
+
+    Parameter penting:
+      - num_topics   : jumlah topik yang ingin dibentuk (K)
+      - passes       : berapa kali model membaca seluruh dokumen (semakin banyak, semakin matang)
+      - iterations   : pengulangan perhitungan matematis di tiap dokumen
+      - alpha & eta  : parameter sebaran topik pada dokumen dan kata pada topik
+      - random_state : kunci acak agar hasil pelatihan selalu konsisten dan bisa diulang
     """
     # Parsing string float ke numeric float jika memungkinkan (misal '0.01' -> 0.01)
     if isinstance(alpha, str):
@@ -143,7 +174,7 @@ def train_model(
     return model
 
 # ---------------------------------------------------------------------------
-# TUNING HYPERPARAMETER MODEL LDA
+# PENCARIAN JUMLAH TOPIK TERBAIK SECARA OTOMATIS (AUTO-TUNE)
 # ---------------------------------------------------------------------------
 def auto_tune(
     corpus_train,
@@ -158,20 +189,24 @@ def auto_tune(
     random_state: int = 42
 ) -> Tuple[int, float, float, float, float, LdaModel]:
     """
-    Mengevaluasi nilai Coherence (C_V dan U_Mass) serta Perplexity data Train dan Test pada rentang K.
+    Menguji model pada berbagai pilihan jumlah topik (misal K=4 sampai 12).
+    
+    Nilai K terbaik dipilih berdasarkan:
+    1. Coherence C_V tertinggi (kata-kata dalam satu topik paling nyambung/masuk akal bagi manusia).
+    2. Coherence U_Mass sebagai penentu cadangan jika nilai C_V sama.
     """
     eval_results = []
     models = {}
 
     for k in k_range:
-        logger.info(f"  Auto-tune K={k} (Alpha={alpha}, Eta={eta})...")
+        logger.info(f"  Mencoba K={k} (Alpha={alpha}, Eta={eta})...")
         model = train_model(
             corpus_train, dictionary, k,
             passes=passes, iterations=iterations,
             alpha=alpha, eta=eta, random_state=random_state
         )
         
-        # Evaluasi Coherence (C_V dan U_Mass)
+        # Hitung skor Coherence C_V (keterbacaan manusia)
         cm_cv = CoherenceModel(
             model=model,
             texts=tokenized_docs,
@@ -181,6 +216,7 @@ def auto_tune(
         )
         cv_score = cm_cv.get_coherence()
 
+        # Hitung skor Coherence U_Mass (keterkaitan statistik dokumen)
         cm_umass = CoherenceModel(
             model=model,
             corpus=corpus_train,
@@ -190,7 +226,7 @@ def auto_tune(
         )
         umass_score = cm_umass.get_coherence()
 
-        # Evaluasi Perplexity (Train vs Test)
+        # Evaluasi tingkat kebingungan model (Perplexity: makin kecil nilainya makin baik)
         train_perp = model.log_perplexity(corpus_train)
         test_perp = model.log_perplexity(corpus_test)
 
@@ -204,12 +240,12 @@ def auto_tune(
         })
         logger.info(f"  K={k:2d} | C_V: {cv_score:.4f} | U_Mass: {umass_score:.4f} | Train Perp: {train_perp:.4f} | Test Perp: {test_perp:.4f}")
 
-    # Rank by C_V as primary, tie-break with U_Mass
+    # Urutkan berdasarkan C_V tertinggi terlebih dahulu, lalu U_Mass
     eval_results.sort(key=lambda x: (-x['cv'], -x['umass']))
     best_res = eval_results[0]
     optimal_k = best_res['k']
     
-    logger.info(f"\n  [OPTIMAL K SELECTION] K={optimal_k} | C_V={best_res['cv']:.4f} | U_Mass={best_res['umass']:.4f}")
+    logger.info(f"\n  [TOPIK OPTIMAL TERPILIH] K={optimal_k} | C_V={best_res['cv']:.4f} | U_Mass={best_res['umass']:.4f}")
 
     return (
         optimal_k,
@@ -222,6 +258,10 @@ def auto_tune(
 
 
 def plot_topic_words(lda_model, optimal_k: int):
+    """
+    Membuat diagram batang untuk melihat kata kunci terpenting di tiap topik
+    dan menyimpannya sebagai gambar grafik.
+    """
     n_cols = min(3, optimal_k)
     n_rows = (optimal_k + n_cols - 1) // n_cols
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(16, n_rows * 4))
@@ -244,10 +284,13 @@ def plot_topic_words(lda_model, optimal_k: int):
     plt.tight_layout()
     plt.savefig(f'{MODEL_DIR}/top_words_per_topic.png', dpi=150)
     plt.close()
-    logger.info(f"  Plot top words -> {MODEL_DIR}/top_words_per_topic.png")
+    logger.info(f"  Plot kata kunci teratas tersimpan -> {MODEL_DIR}/top_words_per_topic.png")
 
 
 def plot_topic_distribution(df_result: pd.DataFrame, optimal_k: int):
+    """
+    Membuat diagram batang jumlah skripsi pada masing-masing topik.
+    """
     topic_counts = df_result['topik_dominan'].value_counts().sort_index()
 
     plt.figure(figsize=(10, 5))
@@ -270,10 +313,13 @@ def plot_topic_distribution(df_result: pd.DataFrame, optimal_k: int):
     plt.tight_layout()
     plt.savefig(f'{MODEL_DIR}/distribusi_topik.png', dpi=150)
     plt.close()
-    logger.info(f"  Plot distribusi topik -> {MODEL_DIR}/distribusi_topik.png")
+    logger.info(f"  Plot sebaran topik tersimpan -> {MODEL_DIR}/distribusi_topik.png")
 
 
 def plot_topic_trend(df_result: pd.DataFrame):
+    """
+    Membuat peta panas (heatmap) untuk melihat perubahan jumlah skripsi tiap topik dari tahun ke tahun.
+    """
     pivot = df_result.groupby(['Tahun', 'topik_dominan']).size().unstack(fill_value=0)
 
     plt.figure(figsize=(12, 6))
@@ -290,16 +336,13 @@ def plot_topic_trend(df_result: pd.DataFrame):
     plt.tight_layout()
     plt.savefig(f'{MODEL_DIR}/tren_topik_per_tahun.png', dpi=150)
     plt.close()
-    logger.info(f"  Plot tren tahunan -> {MODEL_DIR}/tren_topik_per_tahun.png")
-
-    # Catatan: tabel tren proporsi per TIDAK ditulis ke model/ sebagai sumber
-    # kebenaran. Sumber resmi tren & proyeksi adalah
-    # `outputs/topics/topic_by_year_final.csv` dan `outputs/forecast/forecast_table.csv`
-    # yang dipakai dashboard. Lihat GROUND_TRUTH.md.
+    logger.info(f"  Plot tren tahunan tersimpan -> {MODEL_DIR}/tren_topik_per_tahun.png")
 
 
 def main():
-    # Validasi awal integritas label resmi
+    # -------------------------------------------------------------------------
+    # VALIDASI AWAL: Pastikan nama label resmi cocok dengan model saat ini
+    # -------------------------------------------------------------------------
     from .topic_labels import validate_labels
     try:
         validate_labels(str(C.LDA_MODEL), str(C.LABELS_JSON))
@@ -307,7 +350,8 @@ def main():
         logger.error(f"❌ INTEGRITY CHECK FAILED (pipeline.py): {e}")
         raise ValueError(f"Label validation failed: {e}")
 
-    parser = argparse.ArgumentParser(description='Pipeline LDA Topic Modeling')
+    # Parameter baris perintah (CLI args)
+    parser = argparse.ArgumentParser(description='Pipeline Pelatihan Model Topik LDA')
     parser.add_argument('--num-topics', type=int, default=None,
                         help='Jumlah topik (default: auto-tune dari 4-12)')
     parser.add_argument('--passes', type=int, default=30,
@@ -315,13 +359,13 @@ def main():
     parser.add_argument('--iterations', type=int, default=500,
                         help='Jumlah iterasi LDA (default: 500)')
     parser.add_argument('--alpha', type=str, default=C.LDA_ALPHA,
-                        help='Alpha parameter (default: auto, symmetric, asymmetric, or float)')
+                        help='Alpha parameter (default: auto, symmetric, asymmetric, atau float)')
     parser.add_argument('--eta', type=str, default=C.LDA_ETA,
-                        help='Eta parameter (default: auto, symmetric, or float)')
+                        help='Eta parameter (default: auto, symmetric, atau float)')
     parser.add_argument('--seed', type=int, default=42,
-                        help='Random seed untuk reproduksibilitas (default: 42)')
+                        help='Random seed untuk hasil yang konsisten (default: 42)')
     parser.add_argument('--no-auto-tune', action='store_true',
-                        help='Nonaktifkan auto-tune (wajib set --num-topics)')
+                        help='Nonaktifkan auto-tune (wajib isi --num-topics)')
     parser.add_argument('--min-k', type=int, default=4,
                         help='K minimum untuk auto-tune (default: 4)')
     parser.add_argument('--max-k', type=int, default=10,
@@ -332,15 +376,17 @@ def main():
     os.makedirs('logs', exist_ok=True)
 
     logger.info("=" * 60)
-    logger.info("PIPELINE TOPIC MODELING LDA")
+    logger.info("MULAI PELATIHAN MODEL TOPIK LDA")
     logger.info("=" * 60)
 
+    # 1. Memuat dataset hasil pembersihan
     logger.info(f"\n[1/6] Memuat data preprocessed...")
     df = pd.read_csv(f'{PROSES_DIR}/dataset_preprocessed.csv')
     df['tokens'] = df['tokens'].apply(ast.literal_eval)
     tokenized_docs = df['tokens'].tolist()
-    logger.info(f"  Dokumen: {len(df)}")
+    logger.info(f"  Total Dokumen: {len(df)}")
 
+    # 2. Memuat kamus kata & korpus angka
     logger.info(f"\n[2/6] Memuat dictionary & corpus...")
     dict_path = f'{PROSES_DIR}/dictionary.gensim'
     corpus_path = f'{PROSES_DIR}/corpus.pkl'
@@ -349,7 +395,7 @@ def main():
         dictionary = corpora.Dictionary.load(dict_path)
         with open(corpus_path, 'rb') as f:
             corpus = pickle.load(f)
-        logger.info(f"  Dictionary: {len(dictionary)} kata/n-gram")
+        logger.info(f"  Dictionary: {len(dictionary)} kata/frasa unik")
         logger.info(f"  Corpus: {len(corpus)} dokumen")
     else:
         dictionary = corpora.Dictionary(tokenized_docs)
@@ -358,22 +404,21 @@ def main():
         dictionary.save(dict_path)
         with open(corpus_path, 'wb') as f:
             pickle.dump(corpus, f)
-        logger.info(f"  Dictionary: {len(dictionary)} kata/n-gram")
+        logger.info(f"  Dictionary: {len(dictionary)} kata/frasa unik")
 
-    # Menggunakan corpus Bag-of-Words (BoW) mentah
     logger.info("  Pelatihan LDA menggunakan corpus Bag-of-Words (BoW)...")
 
-    # Pembagian data Train dan Test (80/20)
+    # 3. Pembagian data latih (80%) dan data uji (20%)
     logger.info("\n[3/6] Membagi dataset (80% Train / 20% Test)...")
     corpus_train, corpus_test = train_test_split(corpus, test_size=0.20, random_state=args.seed)
-    logger.info(f"  Train corpus: {len(corpus_train)} dokumen | Hold-out test corpus: {len(corpus_test)} dokumen")
+    logger.info(f"  Dokumen Latih (Train): {len(corpus_train)} | Dokumen Uji (Test): {len(corpus_test)}")
 
-    # Pelatihan & validasi model LDA
-    logger.info(f"\n[4/6] Training & Validasi Model LDA (Alpha='{args.alpha}', Eta='{args.eta}')...")
+    # 4. Pelatihan model LDA
+    logger.info(f"\n[4/6] Pelatihan & Evaluasi Model LDA (Alpha='{args.alpha}', Eta='{args.eta}')...")
 
     if args.no_auto_tune or args.num_topics is not None:
         k = args.num_topics or 5
-        logger.info(f"  Manual K={k} (auto-tune disabled)")
+        logger.info(f"  Menggunakan K={k} secara manual (tanpa auto-tune)")
         lda_model = train_model(
             corpus_train, dictionary, k,
             passes=args.passes, iterations=args.iterations,
@@ -396,7 +441,7 @@ def main():
         train_perp_final = lda_model.log_perplexity(corpus_train)
         test_perp_final = lda_model.log_perplexity(corpus_test)
     else:
-        logger.info(f"  Auto-tune K ({args.min_k}-{args.max_k})...")
+        logger.info(f"  Menjalankan auto-tune untuk rentang K={args.min_k} sampai {args.max_k}...")
         k_range = range(args.min_k, args.max_k + 1)
         (
             OPTIMAL_K,
@@ -429,7 +474,8 @@ def main():
 
     plot_topic_words(lda_model, OPTIMAL_K)
 
-    logger.info(f"\n[5/6] Menentukan topik dominan & labeling...")
+    # 5. Menentukan topik dominan & penggabungan dengan label resmi
+    logger.info(f"\n[5/6] Menentukan topik dominan & pemberian label resmi...")
 
     topic_df = get_dominant_topic(lda_model, corpus)
     df_result = pd.concat([df[['ID', 'Judul', 'Tahun']].reset_index(drop=True), topic_df], axis=1)
@@ -437,22 +483,15 @@ def main():
     plot_topic_distribution(df_result, OPTIMAL_K)
     plot_topic_trend(df_result)
 
-    # -------------------------------------------------------------------------
-    # PELABELAN TOPIK — Human-in-the-Loop (label terkunci di outputs/model/labels.json)
-    # -------------------------------------------------------------------------
-    # Label TIDAK lagi dihasilkan otomatis (KeyBERT). Label ditetapkan oleh
-    # peneliti melalui analisis interpretatif top-15 words, divalidasi bersama
-    # dosen pembimbing, lalu dikunci di outputs/model/labels.json dengan
-    # fingerprint SHA-256 dari top-10 kata tiap topik.
-    # validate_labels() di awal main() menjamin model ini masih cocok dengan label.
-    logger.info("  Labeling method: Human-in-the-Loop (label terkunci + fingerprint SHA-256)")
+    # Human-in-the-Loop: Label diambil dari labels.json yang sudah divalidasi ahli/dosen
+    logger.info("  Metode Pelabelan: Human-in-the-Loop (label terkunci + fingerprint SHA-256)")
     topic_labels = load_approved_labels(
         labels_path=str(C.LABELS_JSON),
         model_path=f'{MODEL_DIR}/lda_model.gensim',
         validate=False,
     )
 
-    logger.info("  Menghitung per-topic coherence...")
+    logger.info("  Menghitung nilai coherence untuk masing-masing topik...")
     coherence_per_topic = {}
     for tid_str in topic_labels.keys():
         tid0 = int(tid_str)
@@ -472,7 +511,7 @@ def main():
 
     labels_rows = []
     for tid_str, info in sorted(topic_labels.items(), key=lambda kv: int(kv[0])):
-        tid = int(info['topic_id'])          # sudah 1-indexed
+        tid = int(info['topic_id'])          # sudah 1-indexed (1..8)
         doc_count = int((df_result['topik_dominan'] == tid).sum())
         top5 = [w for w, _ in lda_model.show_topic(tid - 1, topn=5)]
         labels_rows.append({
@@ -488,14 +527,9 @@ def main():
 
     labels_df = pd.DataFrame(labels_rows)
     labels_df.to_csv(f'{MODEL_DIR}/topic_labels.csv', index=False, encoding='utf-8-sig')
-    logger.info(f"  topic_labels.csv -> {MODEL_DIR}/topic_labels.csv")
+    logger.info(f"  Tabel nama topik disimpan -> {MODEL_DIR}/topic_labels.csv")
 
-    # Ekspor lembar validasi untuk penilai ahli / dosen pembimbing
-    export_human_validation_dataset(
-        lda_model, corpus, df_result,
-        output_path=f'{MODEL_DIR}/human_topic_validation.csv'
-    )
-
+    # 6. Menyimpan model final dan visualisasi interaktif pyLDAvis
     logger.info(f"\n[6/6] Menyimpan model & visualisasi...")
 
     vis_data = gensimvis.prepare(
@@ -517,7 +551,7 @@ def main():
                                     f'<script type="text/javascript">{lib_js}</script>')
         with open(viz_path, 'w', encoding='utf-8') as f:
             f.write(viz_html)
-        logger.info(f"  JS library inlined -> self-contained HTML")
+        logger.info(f"  File visualisasi HTML siap dibuka secara offline")
 
     lda_model.save(f'{MODEL_DIR}/lda_model.gensim')
     df_result.to_csv(f'{MODEL_DIR}/topic_distribution.csv', index=False)
@@ -545,8 +579,8 @@ def main():
     eval_df.to_csv(f'{MODEL_DIR}/evaluation_metrics.csv', index=False)
 
     logger.info(f"\n" + "=" * 60)
-    logger.info("PIPELINE SELESAI")
-    logger.info(f"  K                   = {OPTIMAL_K}")
+    logger.info("PELATIHAN SELESAI DENGAN SUKSES")
+    logger.info(f"  Jumlah Topik (K)    = {OPTIMAL_K}")
     logger.info(f"  Coherence (C_V)     = {cv_final:.4f}")
     logger.info(f"  Coherence (U_Mass)  = {umass_final:.4f}")
     logger.info(f"  Train Perplexity    = {train_perp_final:.4f}")
@@ -554,8 +588,8 @@ def main():
     logger.info("=" * 60)
 
     print("\n" + "=" * 60)
-    print("PIPELINE SELESAI")
-    print(f"  K                   = {OPTIMAL_K}")
+    print("PELATIHAN SELESAI DENGAN SUKSES")
+    print(f"  Jumlah Topik (K)    = {OPTIMAL_K}")
     print(f"  Coherence (C_V)     = {cv_final:.4f}")
     print(f"  Coherence (U_Mass)  = {umass_final:.4f}")
     print(f"  Train Perplexity    = {train_perp_final:.4f}")
@@ -566,4 +600,3 @@ def main():
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     main()
-

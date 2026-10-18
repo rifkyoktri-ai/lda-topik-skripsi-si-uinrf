@@ -62,7 +62,5 @@ sedangkan `asymmetric`/`symmetric` mengambang di 1/K = 0,125. Riwayat di
 | `hyperparameter_results.csv` | 140 konfigurasi grid search | `src/grid_search.py` (notebook 04b) |
 | `evaluation_metrics.csv` | Metrik ringkas model | `src/modeling.py` |
 | `experiment_history.csv` | Rekam jejak 19 eksperimen (Sept–Okt 2026) | akumulasi manual |
-| `human_topic_validation.csv` | Instrumen validasi olehexpert (40 dokumen) | `src/labeling.py` |
-| `Lembar_Validasi_Pakar_LDA.xlsx` | Lembar cetak validasi expert | `src/labeling.py` |
 | `top_words_per_topic.png`, `distribusi_topik.png` | Grafik keluaran pipeline | `src/modeling.py` |
 | `lda_visualization.html`, `pyldavis_lib.js` | Eksplorasi pyLDAvis | `src/modeling.py` |

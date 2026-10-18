@@ -1,6 +1,14 @@
 """
-Skrip Perubahan & Pembaruan auto_labeling.py
-Menggunakan label terkunci dari outputs/model/labels.json dengan pemindaian validasi fingerprint.
+labeling.py — Pengelola Nama Resmi Topik LDA
+
+File ini mengelola nama (label) untuk setiap topik LDA.
+Nama topik tidak dibuat otomatis oleh komputer — melainkan ditetapkan
+secara manual oleh peneliti setelah menganalisis kata kunci tiap topik,
+lalu dikonfirmasi bersama dosen pembimbing ("Human-in-the-Loop").
+
+Label resmi disimpan di: outputs/model/labels.json
+File ini membacanya, memvalidasi keasliannya, dan menyediakannya untuk
+dipakai oleh modeling.py dan dashboard.
 """
 import json
 import warnings
@@ -14,35 +22,39 @@ from . import config as C
 from .data_manager import to_one_indexed
 from .topic_labels import validate_labels
 
+
 def load_approved_labels(
     labels_path: str = str(C.LABELS_JSON),
     model_path: str = str(C.LDA_MODEL),
     validate: bool = True
 ) -> dict:
     """
-    Memuat label resmi yang telah disetujui dari outputs/model/labels.json.
+    Muat nama-nama topik resmi dari file labels.json.
 
-    Args:
-        labels_path: Path ke berkas labels.json.
-        model_path: Path ke model LDA Gensim.
-        validate: Jika True, jalankan validasi fingerprint SHA-256 terhadap model
-                  dan gagal keras bila tidak cocok. Set False hanya bila pemanggil
-                  sudah memvalidasi model yang sama sebelumnya (mis. pipeline.py).
+    Secara default, fungsi ini juga memverifikasi bahwa nama-nama tersebut
+    masih cocok dengan model LDA yang sekarang (menggunakan sidik jari SHA-256).
 
-    Returns:
-        dict dengan key string 0-indexed -> info label.
+    Parameter:
+      labels_path — lokasi file labels.json
+      model_path  — lokasi model LDA
+      validate    — jika True (default), jalankan pengecekan sidik jari.
+                    Set False hanya jika pemanggil sudah mengecek sebelumnya.
+
+    Mengembalikan dict dengan format:
+      {"0": {"topic_id": 1, "label_final": "...", ...},
+       "1": {"topic_id": 2, ...}, ...}
+    (kunci string 0-indexed untuk kompatibilitas dengan model Gensim)
     """
     if validate:
         validate_labels(model_path=model_path, labels_path=labels_path)
-    
+
     with open(labels_path, 'r', encoding='utf-8') as f:
         labels_data = json.load(f)
-        
+
     topic_labels_map = {}
     for item in labels_data:
         tid = item["topic_id"]
-        # Format 0-indexed internal key string
-        tid_str = str(tid - 1)
+        tid_str = str(tid - 1)  # ubah ke 0-indexed untuk kunci internal
         topic_labels_map[tid_str] = {
             "topic_id": tid,
             "label_final": item["label"],
@@ -53,52 +65,6 @@ def load_approved_labels(
     return topic_labels_map
 
 
-def export_human_validation_dataset(
-    lda_model: LdaModel,
-    corpus: list,
-    dist_df: pd.DataFrame,
-    output_path: str = str(C.HUMAN_VALIDATION_CSV)
-) -> pd.DataFrame:
-    """
-    Mengekspor distribusi dokumen-topik beserta 15 kata teratas per topik
-    ke file CSV untuk keperluan validasi pakar.
-    """
-    print(f"\n[EXPERT VALIDATION EXPORTER] Exporting Human Validation Dataset...")
-    rows = []
-    
-    topic_top_words = {}
-    for t_id in range(lda_model.num_topics):
-        words = [w for w, _ in lda_model.show_topic(t_id, topn=15)]
-        topic_top_words[to_one_indexed(t_id)] = ", ".join(words)
-        
-    for idx, row in dist_df.iterrows():
-        doc_id = row.get('ID', idx)
-        title = str(row.get('Judul', '')).replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').strip()
-        tahun = row.get('Tahun', '')
-        dom_topic = int(row.get('topik_dominan', 1))
-        prob = row.get('prob_dominan', 0.0)
-        
-        top_15_words = topic_top_words.get(dom_topic, "")
-        
-        rows.append({
-            'document_id': doc_id,
-            'tahun': tahun,
-            'judul_skripsi': title,
-            'assigned_dominant_topic': dom_topic,
-            'topic_probability': prob,
-            'topic_top15_words': top_15_words,
-            'expert_relevance_score_1to5': '',
-            'expert_notes': ''
-        })
-        
-    export_df = pd.DataFrame(rows)
-    out_file = Path(output_path)
-    out_file.parent.mkdir(parents=True, exist_ok=True)
-    export_df.to_csv(out_file, index=False)
-    print(f"  [HUMAN-IN-THE-LOOP] Expert validation CSV exported to: {out_file} ({len(export_df)} rows)")
-    return export_df
-
-
 def export_topic_labels_json(
     topic_labels_map: dict,
     lda_model: LdaModel,
@@ -106,13 +72,13 @@ def export_topic_labels_json(
     output_path: str = str(C.TOPIC_LABELS_JSON),
 ) -> None:
     """
-    Menulis cerminan JSON dari label yang telah disetujui.
+    Tulis cerminan label resmi ke file topic_labels.json.
 
-    Berkas ini sebelumnya tidak ditulis siapa pun dan masih memuat label
-    hasil auto-labeling lama (label topik 7 berisi label milik topik 5),
-    sehingga menyesatkan. Sekarang label_final diambil dari
-    outputs/model/labels.json agar identik dengan topic_labels.csv.
+    File ini sebelumnya mengandung label auto-labeling lama yang salah
+    (label topik 7 berisi label milik topik 5). Sekarang label diambil
+    dari labels.json agar topic_labels.json dan topic_labels.csv selalu identik.
     """
+    # Hitung jumlah dokumen per topik (opsional, jika dist_df tersedia)
     num_docs = {}
     if dist_df is not None and 'topik_dominan' in dist_df.columns:
         num_docs = dist_df['topik_dominan'].value_counts().to_dict()
@@ -135,26 +101,34 @@ def export_topic_labels_json(
     out_file.parent.mkdir(parents=True, exist_ok=True)
     with open(out_file, 'w', encoding='utf-8') as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    print(f"  [LABEL JSON] Cerminan label disetujui ditulis ke: {out_file}")
+    print(f"  [LABEL JSON] Ditulis ke: {out_file}")
 
 
 def run_auto_labeling():
-    parser = argparse.ArgumentParser(description="Auto Labeling Topik LDA & Expert Validation Exporter")
-    parser.add_argument("--model_path", type=str, default=str(C.LDA_MODEL), help="Path ke file model LDA")
-    parser.add_argument("--labels_path", type=str, default=str(C.LABELS_JSON), help="Path ke file labels JSON")
-    parser.add_argument("--dist_path", type=str, default=str(C.TOPIC_DISTRIBUTION), help="Path ke topic distribution CSV")
-    parser.add_argument("--output", type=str, default=str(C.TOPIC_LABELS_CSV), help="Path untuk menyimpan hasil label (CSV)")
+    """
+    Jalankan proses pelabelan dari terminal (command line).
+
+    Membaca label dari labels.json, lalu mengekspor ke:
+    - topic_labels.csv (tabel label per topik)
+    - topic_labels.json (format JSON)
+    """
+    parser = argparse.ArgumentParser(description="Ekspor label topik LDA ke CSV & JSON")
+    parser.add_argument("--model_path", type=str, default=str(C.LDA_MODEL), help="Lokasi file model LDA")
+    parser.add_argument("--labels_path", type=str, default=str(C.LABELS_JSON), help="Lokasi file labels JSON resmi")
+    parser.add_argument("--dist_path", type=str, default=str(C.TOPIC_DISTRIBUTION), help="Lokasi file distribusi topik CSV")
+    parser.add_argument("--output", type=str, default=str(C.TOPIC_LABELS_CSV), help="Lokasi penyimpanan hasil label CSV")
     args = parser.parse_args()
 
     model_path = Path(args.model_path)
     if not model_path.exists():
-        raise FileNotFoundError(f"LDA model tidak ditemukan: {model_path}")
+        raise FileNotFoundError(f"Model LDA tidak ditemukan: {model_path}")
 
-    # Memuat & memvalidasi label resmi (Gagal keras jika fingerprint salah)
+    # Muat & validasi label resmi (akan berhenti jika sidik jari tidak cocok)
     topic_labels_map = load_approved_labels(args.labels_path, str(model_path))
 
     lda_model = LdaModel.load(str(model_path))
 
+    # Buat dan simpan CSV label
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     labels_rows = []
@@ -171,9 +145,9 @@ def run_auto_labeling():
         })
     df_labels = pd.DataFrame(labels_rows)
     df_labels.to_csv(output_path, index=False)
-    print(f"✅ Topic labels CSV successfully created at -> {output_path}")
+    print(f"[OK] File label topik berhasil dibuat -> {output_path}")
 
-    # Cerminan JSON agar topic_labels.json tidak lagi basi/merusak
+    # Perbarui juga file topic_labels.json agar tidak ketinggalan
     dist_df = None
     if Path(args.dist_path).exists():
         dist_df = pd.read_csv(args.dist_path, encoding='utf-8-sig')
